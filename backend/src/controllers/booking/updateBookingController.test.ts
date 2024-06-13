@@ -12,12 +12,14 @@ import { freeBusyQuery, updateEndTime } from '../googleAPI/calendarAPI';
 jest.mock('../../utils/responses');
 jest.mock('../googleAPI/calendarAPI');
 
-const mockedFreeBusyQuery = mocked(freeBusyQuery, false);
-const mockedUpdateEndTime = mocked(updateEndTime, false);
+const mockedFreeBusyQuery = mocked(freeBusyQuery, { shallow: false });
+const mockedUpdateEndTime = mocked(updateEndTime, { shallow: false });
 
-const mockedBadRequest = mocked(badRequest, false);
-const mockedCustomResponse = mocked(custom, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedCustomResponse = mocked(custom, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('updateBookingController', () => {
     let mockRequest: Partial<Request>;

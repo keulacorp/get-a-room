@@ -12,9 +12,13 @@ jest.mock('../roomController');
 jest.mock('../googleAPI/adminAPI');
 jest.mock('../../utils/responses');
 
-const mockedInternalServerError = mocked(internalServerError, false);
-const mockedGetSingleRoomData = mocked(getSingleRoomData, false);
-const mockedSimplifySingleRoomData = mocked(simplifySingleRoomData, false);
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
+const mockedGetSingleRoomData = mocked(getSingleRoomData, { shallow: false });
+const mockedSimplifySingleRoomData = mocked(simplifySingleRoomData, {
+    shallow: false
+});
 
 const MOCK_ROOM_DATA: RoomData = {
     id: 'roomID',

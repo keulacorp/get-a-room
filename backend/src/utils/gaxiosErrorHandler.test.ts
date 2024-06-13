@@ -12,10 +12,12 @@ import { mocked } from 'jest-mock';
 jest.mock('gaxios');
 jest.mock('./responses');
 
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
-const mockedUnauthorized = mocked(unauthorized, false);
-const mockedNotFound = mocked(notFound, false);
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
+const mockedUnauthorized = mocked(unauthorized, { shallow: false });
+const mockedNotFound = mocked(notFound, { shallow: false });
 
 describe('gaxiosErrorHandler', () => {
     let mockRequest: Partial<Request>;

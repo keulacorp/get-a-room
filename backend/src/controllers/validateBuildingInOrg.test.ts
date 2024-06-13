@@ -7,9 +7,11 @@ import { validateBuildingInOrg } from './validateBuildingInOrg';
 jest.mock('./buildingsController');
 jest.mock('../utils/responses');
 
-const mockedGetBuildings = mocked(getBuildings, false);
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetBuildings = mocked(getBuildings, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('buildingsController', () => {
     let mockRequest: Partial<Request>;

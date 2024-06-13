@@ -8,9 +8,11 @@ jest.mock('../../utils/responses');
 jest.mock('../googleAPI/calendarAPI');
 jest.mock('../googleAPI/adminAPI');
 
-const mockedDeleteEvent = mocked(deleteEvent, false);
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedDeleteEvent = mocked(deleteEvent, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('deleteBookingController', () => {
     let mockRequest: Partial<Request>;

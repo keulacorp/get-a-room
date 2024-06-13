@@ -8,8 +8,8 @@ import { EventData } from '../../utils/googleSchema';
 jest.mock('../../utils/responses');
 jest.mock('../googleAPI/calendarAPI');
 
-const mockedGetEventData = mocked(getEventData, false);
-const mockedBadRequest = mocked(badRequest, false);
+const mockedGetEventData = mocked(getEventData, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
 
 describe('getBookingController', () => {
     let mockRequest: Partial<Request>;

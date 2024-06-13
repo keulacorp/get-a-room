@@ -11,10 +11,12 @@ import { mocked } from 'jest-mock';
 jest.mock('../utils/responses');
 jest.mock('./userController');
 
-const mockedGetUserWithSubject = mocked(getUserWithSubject, false);
-const mockedUpdatePreferences = mocked(updatePreferences, false);
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetUserWithSubject = mocked(getUserWithSubject, { shallow: false });
+const mockedUpdatePreferences = mocked(updatePreferences, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('preferencesController', () => {
     let mockRequest: Partial<Request>;

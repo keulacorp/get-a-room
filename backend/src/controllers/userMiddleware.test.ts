@@ -10,9 +10,9 @@ import { mocked } from 'jest-mock';
 const TEST_TOKEN_PAYLOAD = { sub: 'sub' };
 
 jest.mock('./userController');
-const mockedCreateUser = mocked(createUserFromTokenPayload, false);
-const mockedGetUserWithSubject = mocked(getUserWithSubject, false);
-const mockedUpdateRefreshToken = mocked(updateRefreshToken, false);
+const mockedCreateUser = mocked(createUserFromTokenPayload, { shallow: false });
+const mockedGetUserWithSubject = mocked(getUserWithSubject, { shallow: false });
+const mockedUpdateRefreshToken = mocked(updateRefreshToken, { shallow: false });
 
 describe('createUserIfNotFound', () => {
     let mockRequest: Partial<Request>;

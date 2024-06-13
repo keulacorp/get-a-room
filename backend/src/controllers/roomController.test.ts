@@ -23,10 +23,10 @@ jest.mock('./googleAPI/adminAPI');
 jest.mock('./googleAPI/calendarAPI');
 jest.mock('../utils/responses');
 
-const mockedBadRequest = mocked(badRequest, false);
-const mockedNoContent = mocked(noContent, false);
-const mockedGetRoomData = mocked(getRoomData, false);
-const mockedFreeQuery = mocked(freeBusyQueryData, false);
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedNoContent = mocked(noContent, { shallow: false });
+const mockedGetRoomData = mocked(getRoomData, { shallow: false });
+const mockedFreeQuery = mocked(freeBusyQueryData, { shallow: false });
 
 describe('roomController', () => {
     let mockRequest: Partial<Request>;

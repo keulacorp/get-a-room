@@ -9,9 +9,9 @@ jest.mock('./utils/responses');
 jest.mock('./controllers/auth/token');
 jest.mock('google-auth-library');
 
-const mockedInvalidToken = mocked(invalidToken, false);
-const mockedReadToken = mocked(readToken, false);
-const mockedUpdateToken = mocked(updateToken, false);
+const mockedInvalidToken = mocked(invalidToken, { shallow: false });
+const mockedReadToken = mocked(readToken, { shallow: false });
+const mockedUpdateToken = mocked(updateToken, { shallow: false });
 const mockedAuth = mocked(OAuth2Client, true);
 
 describe('authMiddleware', () => {

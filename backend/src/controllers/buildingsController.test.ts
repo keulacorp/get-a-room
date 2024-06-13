@@ -8,8 +8,10 @@ import { OAuth2Client } from 'google-auth-library';
 jest.mock('../utils/responses');
 jest.mock('./googleAPI/adminAPI');
 
-const mockedGetBuildingData = mocked(getBuildingData, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetBuildingData = mocked(getBuildingData, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('buildingsController', () => {
     let mockRequest: Partial<Request>;
