@@ -6,7 +6,7 @@ import {
     readPreferenceBody,
     updatePreferencesToDatabase
 } from './preferencesController';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 jest.mock('../utils/responses');
 jest.mock('./userController');

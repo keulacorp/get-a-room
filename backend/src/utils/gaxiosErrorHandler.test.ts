@@ -7,7 +7,7 @@ import {
 } from './responses';
 import { gaxiosErrorHandler } from './gaxiosErrorHandler';
 import { GaxiosError, GaxiosResponse } from 'gaxios';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 jest.mock('gaxios');
 jest.mock('./responses');

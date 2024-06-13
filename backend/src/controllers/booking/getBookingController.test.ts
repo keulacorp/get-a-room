@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { badRequest } from '../../utils/responses';
 import { getBooking } from './getBookingController';
 import { getEventData } from '../googleAPI/calendarAPI';

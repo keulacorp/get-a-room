@@ -5,7 +5,7 @@ import {
     getUserWithSubject,
     updateRefreshToken
 } from './userController';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 const TEST_TOKEN_PAYLOAD = { sub: 'sub' };
 

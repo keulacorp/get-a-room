@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getBuildings, getBuildingsMiddleware } from './buildingsController';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { getBuildingData } from './googleAPI/adminAPI';
 import { internalServerError } from '../utils/responses';
 import { OAuth2Client } from 'google-auth-library';

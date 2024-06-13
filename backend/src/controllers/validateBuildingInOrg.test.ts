@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { getBuildings } from './buildingsController';
 import { badRequest, internalServerError } from '../utils/responses';
 import { validateBuildingInOrg } from './validateBuildingInOrg';

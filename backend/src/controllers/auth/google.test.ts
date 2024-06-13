@@ -7,7 +7,7 @@ import {
     verifyCode
 } from './google';
 import { Credentials, LoginTicket, OAuth2Client } from 'google-auth-library';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { DateTime } from 'luxon';
 
 jest.mock('google-auth-library');

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import {
     addAllRooms,
     fetchAvailability,

@@ -5,7 +5,7 @@
     "description": "",
     "scripts": {
         "prepare": "husky install",
-        "lint": "lint-staged",
+        "lint": "lint-staged --allow-empty",
         "check-style": "prettier --check .",
         "format": "prettier --write ."
     },

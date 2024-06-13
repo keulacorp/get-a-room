@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { badRequest, custom, internalServerError } from '../../utils/responses';
 import { DateTime } from 'luxon';
 import {

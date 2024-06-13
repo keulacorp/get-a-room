@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { authFilter, parseToken, validateAccessToken } from './authMiddleware';
 import { invalidToken } from './utils/responses';
 import { readToken, updateToken } from './controllers/auth/token';

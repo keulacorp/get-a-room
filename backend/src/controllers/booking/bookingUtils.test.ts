@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { DateTime } from 'luxon';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { internalServerError } from '../../utils/responses';
 import { getSingleRoomData } from '../googleAPI/adminAPI';
 import { simplifySingleRoomData } from '../roomController';
