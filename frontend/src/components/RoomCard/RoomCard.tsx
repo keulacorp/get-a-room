@@ -16,13 +16,15 @@ import {
     Card,
     CardActionArea,
     CircularProgress,
-    styled,
     IconButton
 } from '@mui/material';
 import { getTimeLeftMinutes, getTimeDiff, getTimeLeft } from '../util/TimeLeft';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
-import { DateTime } from 'luxon';
+import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
+//import styled from '@emotion/styled';
+//import { styled } from "@mui/material/styles";
+import styled from '@mui/styled-engine';
 
 function getName(room: Room) {
     return room.name;
@@ -81,8 +83,8 @@ export function getTimeAvailableMinutes(booking: Booking | undefined) {
 }
 
 function busyAvailableFor(room: Room) {
-    let end = DateTime.now().endOf('day');
-    let start = DateTime.now();
+    let end: DateTimeMaybeValid = DateTime.now().endOf('day');
+    let start: DateTimeMaybeValid = DateTime.now();
 
     if (Array.isArray(room.busy) && room.busy.length > 0) {
         start = DateTime.fromISO(room.busy[0].end as string);
@@ -95,7 +97,7 @@ function busyAvailableFor(room: Room) {
 }
 
 export const GridContainer = styled(Box)(({ theme }) => ({
-    container: true,
+    //container: true,  FIXME villep : Check this
     flexDirection: 'column',
     alignItems: 'flex-start',
     padding: '16px'

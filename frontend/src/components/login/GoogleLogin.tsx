@@ -1,6 +1,5 @@
-import React from 'react';
-
-import { ReactComponent as GoogleSvg } from './google-login-button.svg';
+/// <reference types="vite-plugin-svgr/client" />
+import GoogleSvg from './google-login-button.svg?react';
 
 import { login } from '../../services/authService';
 import { ButtonBase, Paper } from '@mui/material';

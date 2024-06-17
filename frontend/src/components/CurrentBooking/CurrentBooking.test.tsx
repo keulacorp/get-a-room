@@ -41,7 +41,6 @@ describe('CurrentBooking', () => {
     afterEach(() => {
         // cleanup on exiting
         jest.clearAllMocks();
-        unmountComponentAtNode(container);
         container.remove();
         container = null;
     });
@@ -61,7 +60,7 @@ describe('CurrentBooking', () => {
         render(<CurrentBooking bookings={fakeBooking} />), container;
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        await userEvent.click(bookingCard);
 
         const drawer = screen.queryByTestId('BookingDrawer');
         await waitFor(() => expect(drawer).toBeTruthy());
@@ -76,10 +75,10 @@ describe('CurrentBooking', () => {
         render(<CurrentBooking bookings={fakeBooking} />), container;
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        await userEvent.click(bookingCard);
 
         const alterButton = await screen.queryByTestId('add15');
-        userEvent.click(alterButton);
+        await userEvent.click(alterButton);
 
         await waitFor(() =>
             expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
@@ -98,10 +97,10 @@ describe('CurrentBooking', () => {
         render(<CurrentBooking bookings={fakeBooking} />), container;
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        await userEvent.click(bookingCard);
 
         const endBookingButton = await screen.queryByTestId('EndBookingButton');
-        userEvent.click(endBookingButton);
+        await userEvent.click(endBookingButton);
 
         await waitFor(() =>
             expect(endBooking as jest.Mock).toHaveBeenCalledWith(

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, styled, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
@@ -9,6 +9,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
+import styled from '@mui/styled-engine';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',

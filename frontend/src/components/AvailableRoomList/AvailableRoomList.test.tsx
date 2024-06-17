@@ -84,7 +84,6 @@ describe('AvailableRoomList', () => {
 
     afterEach(() => {
         // Cleanup on exiting
-        unmountComponentAtNode(container);
         container.remove();
         container = null;
     });
@@ -176,7 +175,7 @@ describe('AvailableRoomList', () => {
 
         fireEvent.click(card);
 
-        const drawer = screen.queryByTestId('BookingDrawer');
+        const drawer = screen.queryAllByTestId('BookingDrawer')[0];
         await waitFor(() => expect(drawer).toBeTruthy());
     });
 

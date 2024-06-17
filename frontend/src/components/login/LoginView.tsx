@@ -1,6 +1,7 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { Box, Stack, Typography } from '@mui/material';
 import GoogleLogin from './GoogleLogin';
-import { ReactComponent as DuckLogo } from './duck.svg';
+import DuckLogo from './duck.svg?react';
 
 const LoginView = () => {
     return (

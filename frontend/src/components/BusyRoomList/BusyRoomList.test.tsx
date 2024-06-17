@@ -58,7 +58,6 @@ describe('BusyRoomList', () => {
 
     afterEach(() => {
         // Cleanup on exiting
-        unmountComponentAtNode(container);
         container.remove();
         container = null;
     });

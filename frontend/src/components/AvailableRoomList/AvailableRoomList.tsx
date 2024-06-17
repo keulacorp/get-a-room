@@ -121,6 +121,11 @@ const AvailableRoomList = (props: BookingListProps) => {
                   })
                       .plus({ minutes: bookingDuration })
                       .toObject();
+
+        if (!halfTime || !halfTime.hour || !halfTime.minute) {
+            throw new Error('Time not set');
+        }
+
         if (halfTime.minute >= 30) {
             halfTime.hour = halfTime.hour + 1;
         }
@@ -159,6 +164,10 @@ const AvailableRoomList = (props: BookingListProps) => {
                   })
                       .plus({ minutes: bookingDuration })
                       .toObject();
+        if (!fullTime || !fullTime.hour || !fullTime.minute) {
+            throw new Error('Time not set');
+        }
+
         fullTime.hour = fullTime.hour + 1;
         fullTime.minute = 0;
         fullTime.second = 0;
@@ -214,11 +223,15 @@ const AvailableRoomList = (props: BookingListProps) => {
             return;
         }
 
-        const bookingStartTime =
+        const bookingStartTime: string =
             startingTime === 'Now'
                 ? DateTime.utc().toISO()
-                : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO();
+                : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO() ||
+                  '';
 
+        if (startingTime === '') {
+            throw new Error('Time not set');
+        }
         let bookingDetails: BookingDetails = {
             duration: duration,
             title: 'Reservation from Get a Room!',

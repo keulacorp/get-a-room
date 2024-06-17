@@ -9,7 +9,7 @@ const initiateAxiosClient = () => {
     client.interceptors.response.use(
         (response) => response,
         (error) => {
-            if (error.response.status === 401) {
+            if (error.status === 401) {
                 // Redirect user to login screen
                 history.push('/login');
             }

@@ -115,6 +115,10 @@ const AlterBookingDrawer = (props: Props) => {
 
     const nextHalfHour = () => {
         const newEndTime = checkStartingTime().toObject();
+
+        if (!newEndTime || !newEndTime.hour || !newEndTime.minute) {
+            throw new Error('Time not set');
+        }
         if (newEndTime.minute >= 30) {
             newEndTime.hour = newEndTime.hour + 1;
         }
@@ -127,6 +131,11 @@ const AlterBookingDrawer = (props: Props) => {
 
     const nextFullHour = () => {
         const newEndTime = checkStartingTime().toObject();
+
+        if (!newEndTime || !newEndTime.hour || !newEndTime.minute) {
+            throw new Error('Time not set');
+        }
+
         newEndTime.hour = newEndTime.hour + 1;
         newEndTime.minute = 0;
         newEndTime.second = 0;
@@ -294,7 +303,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="subtract 15 minutes"
                             data-testid="subtract15"
-                            onClick={(e) => handleAdditionalTime(-15)}
+                            onClick={() => handleAdditionalTime(-15)}
                             disabled={disableSubtractTime()}
                         >
                             <RemoveIcon /> 15 min
@@ -303,7 +312,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="add 15 minutes"
                             data-testid="add15"
-                            onClick={(e) => handleAdditionalTime(15)}
+                            onClick={() => handleAdditionalTime(15)}
                             disabled={disableAddTime()}
                         >
                             <AddIcon /> 15 min

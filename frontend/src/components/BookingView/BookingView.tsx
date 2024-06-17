@@ -104,12 +104,12 @@ function BookingView(props: BookingViewProps) {
      */
     const filterRooms = useCallback(
         (
-            roomSize,
-            resources,
-            rooms,
-            customFilter,
-            onlyFavourites,
-            fav_rooms
+            roomSize: string[],
+            resources: string[],
+            rooms: Room[],
+            customFilter: string,
+            onlyFavourites: boolean,
+            fav_rooms: string[]
         ) => {
             // These filtering functions could be combined into one where the rooms array
             // is iterated through only once. The already small rooms array gets shaved down each pass
@@ -269,7 +269,7 @@ function BookingView(props: BookingViewProps) {
             rooms,
             customFilter,
             onlyFavourites,
-            preferences?.fav_rooms
+            preferences?.fav_rooms || []
         );
     }, [
         roomSize,

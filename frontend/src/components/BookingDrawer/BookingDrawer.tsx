@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
-
+import styled from '@mui/styled-engine';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
+import { theme } from '../../theme';
 
 const MIN_DURATION = 15;
 
@@ -81,7 +82,7 @@ function getBookingRangeText(minutes: number, startingTime: string) {
     );
 }
 
-export const Row = styled(Box)(({ theme }) => ({
+export const Row = styled(Box)(() => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -89,7 +90,7 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-export const RowCentered = styled(Box)(({ theme }) => ({
+export const RowCentered = styled(Box)(() => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -98,7 +99,7 @@ export const RowCentered = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-export const DrawerButton = styled(Button)(({ theme }) => ({
+export const DrawerButton = styled(Button)(() => ({
     textTransform: 'none',
     fontSize: '16px',
     display: 'flex',
@@ -109,7 +110,7 @@ export const DrawerButton = styled(Button)(({ theme }) => ({
     margin: '8px 0px'
 }));
 
-export const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
+export const DrawerButtonPrimary = styled(DrawerButton)(() => ({
     color: theme.palette.background.default,
     background: theme.palette.text.primary,
     '&.Mui-disabled': {
@@ -121,15 +122,17 @@ export const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     }
 }));
 
-export const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
-    color: theme.palette.text.primary,
-    border: '1px solid',
-    borderColor: theme.palette.text.primary,
-    '&.Mui-disabled': {
-        color: theme.palette.text.disabled,
-        borderColor: theme.palette.text.disabled
-    }
-}));
+export const DrawerButtonSecondary = styled(DrawerButton)(
+    ({ theme: DefaultTheme }) => ({
+        color: theme.palette.text.primary,
+        border: '1px solid',
+        borderColor: theme.palette.text.primary,
+        '&.Mui-disabled': {
+            color: theme.palette.text.disabled,
+            borderColor: theme.palette.text.disabled
+        }
+    })
+);
 
 export const TimeText = styled(Typography)(() => ({
     fontSize: '24px',
@@ -247,6 +250,10 @@ const BookingDrawer = (props: Props) => {
                   })
                       .plus({ minutes: duration })
                       .toObject();
+
+        if (!halfHour || !halfHour.hour || !halfHour.minute) {
+            throw new Error('Time not set');
+        }
         if (halfHour.minute >= 30) {
             halfHour.hour = halfHour.hour + 1;
         }
@@ -268,6 +275,11 @@ const BookingDrawer = (props: Props) => {
                   })
                       .plus({ minutes: duration })
                       .toObject();
+
+        if (!fullHour || !fullHour.hour || !fullHour.minute) {
+            throw new Error('Time not set');
+        }
+
         fullHour.minute = 0;
         fullHour.hour = fullHour.hour + 1;
         let fullHourString =
@@ -318,7 +330,7 @@ const BookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="subtract 15 minutes"
                             data-testid="subtract15"
-                            onClick={(e) => handleAdditionalTime(-15)}
+                            onClick={() => handleAdditionalTime(-15)}
                             disabled={disableSubtractTime()}
                         >
                             <RemoveIcon /> 15 min
@@ -327,7 +339,7 @@ const BookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="add 15 minutes"
                             data-testid="add15"
-                            onClick={(e) => handleAdditionalTime(15)}
+                            onClick={() => handleAdditionalTime(15)}
                             disabled={disableAddTime()}
                         >
                             <AddIcon /> 15 min
