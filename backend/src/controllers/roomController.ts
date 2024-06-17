@@ -76,7 +76,12 @@ export const fetchAvailability = () => {
                     req.query.until as string
                 ).toUTC();
                 start = startDt.toISO();
-                end = endDt.toISO();
+
+                end = endDt.toISO() || '';
+
+                if (end === '') {
+                    throw new Error('End date not found');
+                }
 
                 if (endDt <= startDt) {
                     return responses.badRequest(req, res);

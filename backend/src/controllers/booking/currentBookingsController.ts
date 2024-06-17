@@ -103,7 +103,11 @@ export const addNextCalendarEventMiddleware = () => {
                     const endDt = DateTime.fromISO(
                         req.query.until as string
                     ).toUTC();
-                    end = endDt.toISO();
+                    end = endDt.toISO() || '';
+
+                    if (end === '') {
+                        throw new Error('End date not found');
+                    }
 
                     if (endDt <= startDt) {
                         return responses.badRequest(req, res);
