@@ -60,7 +60,7 @@ export const parseToken = () => {
         }
     };
 
-    middleware.unless = unless.unless;
+    middleware.unless = unless?.unless;
 
     return middleware;
 };
@@ -114,7 +114,7 @@ export const validateAccessToken = () => {
         }
     };
 
-    middleware.unless = unless.unless;
+    middleware.unless = unless?.unless;
 
     return middleware;
 };
