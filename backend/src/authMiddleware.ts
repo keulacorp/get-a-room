@@ -1,5 +1,5 @@
 import express from 'express';
-import unless, { Params } from 'express-unless';
+import unless from 'express-unless';
 import { getOAuthClient } from './utils/oAuthClient';
 import * as responses from './utils/responses';
 import { readToken, updateToken } from './controllers/auth/token';
