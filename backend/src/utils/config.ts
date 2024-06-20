@@ -37,7 +37,7 @@ export const createDatabaseUrl = (
     if (dbOverrideUrl && dbOverrideUrl !== '') {
         return dbOverrideUrl;
     }
-    return `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}/${dbName}?retryWrites=true&w=majority}`;
+    return `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}/${dbName}?retryWrites=true&w=majority`;
 };
 
 export const setupVapidDetails = () => {
