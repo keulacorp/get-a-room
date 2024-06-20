@@ -1,15 +1,25 @@
 import webpush from 'web-push';
 
 export const getDatabaseUrl = () => {
-    const { DB_USER, DB_NAME, DB_PASSWORD, DB_URL } = process.env;
-    return createDatabaseUrl(DB_USER, DB_NAME, DB_PASSWORD, DB_URL);
+    const { DB_USER, DB_NAME, DB_PASSWORD, DB_URL, DB_OVERRIDE_URL } =
+        process.env;
+    const databaseUrl = createDatabaseUrl(
+        DB_USER,
+        DB_NAME,
+        DB_PASSWORD,
+        DB_URL,
+        DB_OVERRIDE_URL
+    );
+    console.log(`Connecting to database: ${databaseUrl}`);
+    return databaseUrl;
 };
 
 export const createDatabaseUrl = (
     dbUser?: string,
     dbName?: string,
     dbPassword?: string,
-    dbUrl?: string
+    dbUrl?: string,
+    dbOverrideUrl?: string
 ) => {
     if (!dbUser) {
         throw new Error('Database user not defined');
@@ -24,7 +34,10 @@ export const createDatabaseUrl = (
         throw new Error('Database name not defined');
     }
 
-    return `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}/${dbName}?retryWrites=true&w=majority`;
+    if (dbOverrideUrl && dbOverrideUrl !== '') {
+        return dbOverrideUrl;
+    }
+    return `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}/${dbName}?retryWrites=true&w=majority}`;
 };
 
 export const setupVapidDetails = () => {
