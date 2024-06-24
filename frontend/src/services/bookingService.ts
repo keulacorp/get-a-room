@@ -32,7 +32,7 @@ export const getBookings = async (): Promise<Booking[]> => {
     urlParams.append('until', endTime.toISO());
 
     const response = await axios.get('booking/current', { params: urlParams });
-    return response.data;
+    return [...response.data] as Booking[];
 };
 
 export const updateBooking = async (

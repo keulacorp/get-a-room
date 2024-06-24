@@ -8,8 +8,6 @@ import * as responses from '../utils/responses';
 import * as schema from '../utils/googleSchema';
 import roomData from '../types/roomData';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Middleware that adds all the rooms to the res.locals.rooms
  * @returns
@@ -217,6 +215,7 @@ export const simplifyRoomData = (
  * @param resource Result from Google API
  * @returns simplified result
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const simplifySingleRoomData = (
     resource: schema.CalendarResource
 ): roomData => {

@@ -24,9 +24,6 @@ export const authFilter = (req: express.Request) => {
     return false;
 };
 
-export const myUnless = (callback: (req: express.Request) => boolean) => {
-    return unless({ custom: callback });
-};
 /**
  * Parses access token from headers and refresh token from
  * httpOnly cookie and sets them to res.locals
@@ -38,7 +35,7 @@ export type ExpressMiddlewareWithUnless = {
         res: express.Response,
         next: express.NextFunction
     ): Promise<express.Response | undefined>;
-    unless: typeof myUnless;
+    unless: typeof unless;
 };
 export const parseToken = (): ExpressMiddlewareWithUnless => {
     const middleware = async (
@@ -71,7 +68,7 @@ export const parseToken = (): ExpressMiddlewareWithUnless => {
         }
     };
 
-    middleware.unless = myUnless;
+    middleware.unless = unless;
 
     return middleware;
 };
@@ -125,7 +122,7 @@ export const validateAccessToken = (): ExpressMiddlewareWithUnless => {
         }
     };
 
-    middleware.unless = myUnless;
+    middleware.unless = unless;
 
     return middleware;
 };

@@ -25,7 +25,16 @@ export default defineConfig({
         // this ensures that the browser opens upon server start
         open: true,
         // this sets a default port to 3000
-        port: 3000
+        port: 3000,
+        proxy: {
+            // with options: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: false,
+                secure: true
+                // rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
     },
     build: {
         outDir: './build'

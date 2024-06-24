@@ -7,8 +7,7 @@ import MainView from './MainView/MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { renderToStaticMarkup } from 'react-dom/server';
-import MobileBackground from './images/Background image.svg?react';
-import DesktopBackground from './images/Background image desktop.svg?react';
+import { MobileBackground, DesktopBackground } from './images/svgImages';
 
 const App = () => {
     // Basic solution for differentiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh

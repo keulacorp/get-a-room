@@ -125,8 +125,8 @@ function BookingView(props: BookingViewProps) {
             setDisplayRooms(filteredRooms);
 
             // Collect all features in the current displayed rooms to a set to force uniqueness.
-            var allFeaturesSet = new Set<string>();
-            for (var room of filteredRooms) {
+            const allFeaturesSet = new Set<string>();
+            for (const room of filteredRooms) {
                 if (room.features) {
                     for (var feature of room.features) {
                         allFeaturesSet.add(feature);

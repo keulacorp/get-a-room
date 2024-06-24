@@ -17,7 +17,6 @@ export const getPreferences = () => {
     ) => {
         try {
             const sub = res.locals.sub;
-
             if (!sub) {
                 return responses.badRequest(req, res);
             }

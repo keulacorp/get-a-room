@@ -1,7 +1,7 @@
 export const checkEnvVariables = () => {
-    const { REACT_APP_SERVER_KEY } = process.env;
+    const { VITE_REACT_APP_SERVER_KEY } = import.meta.env;
 
-    if (!REACT_APP_SERVER_KEY) {
+    if (!VITE_REACT_APP_SERVER_KEY) {
         throw new Error('Application server key not set');
     }
 };

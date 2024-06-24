@@ -1,8 +1,8 @@
 /// <reference types="vite-plugin-svgr/client" />
-import GoogleSvg from './google-login-button.svg?react';
 
 import { login } from '../../services/authService';
 import { ButtonBase, Paper } from '@mui/material';
+import { GoogleSvg } from '../images/svgImages';
 
 const GoogleLogin = () => {
     return (
