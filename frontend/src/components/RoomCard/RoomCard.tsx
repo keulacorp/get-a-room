@@ -1,10 +1,14 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Room, Booking, Preferences } from '../../types';
+import { Booking, Preferences, Room } from '../../types';
 import { updatePreferences } from '../../services/preferencesService';
 
-import TimeLeft from '../util/TimeLeft';
+import TimeLeft, {
+    getTimeDiff,
+    getTimeLeft,
+    getTimeLeftMinutes
+} from '../util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -18,13 +22,10 @@ import {
     CircularProgress,
     IconButton
 } from '@mui/material';
-import { getTimeLeftMinutes, getTimeDiff, getTimeLeft } from '../util/TimeLeft';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
-//import styled from '@emotion/styled';
-//import { styled } from "@mui/material/styles";
-import styled from '@mui/styled-engine';
+import { styled } from '@mui/material/styles';
 
 function getName(room: Room) {
     return room.name;

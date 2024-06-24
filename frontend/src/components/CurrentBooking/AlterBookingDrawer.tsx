@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ShareIcon from '@mui/icons-material/Share';

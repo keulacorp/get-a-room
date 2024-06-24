@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { List, Typography, Box, styled, ToggleButton } from '@mui/material';
+import { List, Typography, Box, ToggleButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { makeBooking } from '../../services/bookingService';
 import { Booking, BookingDetails, Room, Preferences } from '../../types';

@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
-import styled from '@mui/styled-engine';
+import { styled } from '@mui/material/styles';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
@@ -110,7 +110,7 @@ export const DrawerButton = styled(Button)(({ theme }) => ({
     margin: '8px 0px'
 }));
 
-export const DrawerButtonPrimary = styled(DrawerButton)(() => ({
+export const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     color: theme.palette.background.default,
     background: theme.palette.text.primary,
     '&.Mui-disabled': {

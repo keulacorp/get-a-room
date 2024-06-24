@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, styled, IconButton } from '@mui/material';
+import { Typography, Box, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../../services/roomService';
