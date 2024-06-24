@@ -82,7 +82,7 @@ function getBookingRangeText(minutes: number, startingTime: string) {
     );
 }
 
-export const Row = styled(Box)(() => ({
+export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -90,7 +90,7 @@ export const Row = styled(Box)(() => ({
     width: '100%'
 }));
 
-export const RowCentered = styled(Box)(() => ({
+export const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -99,7 +99,7 @@ export const RowCentered = styled(Box)(() => ({
     width: '100%'
 }));
 
-export const DrawerButton = styled(Button)(() => ({
+export const DrawerButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
     fontSize: '16px',
     display: 'flex',
@@ -148,7 +148,7 @@ export const AvailableText = styled(Typography)(() => ({
     color: '#82716F'
 }));
 
-export const SmallText = styled(Typography)(() => ({
+export const SmallText = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
     fontSize: '12px',
     lineHeight: '12px',

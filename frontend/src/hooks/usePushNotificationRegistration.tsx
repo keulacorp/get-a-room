@@ -53,7 +53,7 @@ const usePushNotificationRegistration = () => {
 
             const serviceWorker = await navigator.serviceWorker.ready;
             const applicationServerKey = urlBase64ToUint8Array(
-                import.meta.env.VITE_REACT_APP_SERVER_KEY as string
+                process.env.VITE_REACT_APP_SERVER_KEY as string
             );
 
             // Get existing / old subscription

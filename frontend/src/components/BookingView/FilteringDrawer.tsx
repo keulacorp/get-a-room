@@ -19,7 +19,7 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-export const SmallText = styled(Typography)(() => ({
+export const SmallText = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
     fontSize: '12px',
     lineHeight: '12px',

@@ -26,7 +26,7 @@ type BuildingSelectProps = {
 };
 
 const GridContainer = styled(Box)(({ theme }) => ({
-    container: true,
+    // container: true, FIXME villep: Check
     flexDirection: 'column',
     alignItems: 'flex-start'
 }));
