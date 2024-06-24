@@ -1,4 +1,35 @@
-import { createTheme, Theme, ThemeOptions } from '@mui/material/styles';
+import {
+    createTheme,
+    Theme as MuiTheme,
+    ThemeOptions
+} from '@mui/material/styles';
+import TimeLeft, { TimeLeftTypography } from './components/util/TimeLeft';
+import { ComponentsOverrides, ComponentsVariants } from '@mui/material';
+
+declare module '@mui/material/Button' {
+    interface ButtonPropsVariantOverrides {
+        dashed: true;
+    }
+}
+type Theme = Omit<MuiTheme, 'components'>;
+
+declare module '@mui/material/styles' {
+    interface ComponentNameToClassKey {
+        MuiStat: 'root' | 'value' | 'unit';
+    }
+
+    interface ComponentsPropsList {
+        TimeLeftTypography: Partial<typeof TimeLeftTypography>;
+    }
+
+    interface Components {
+        TimeLeftTypography?: {
+            defaultProps?: ComponentsPropsList['MuiTypography'];
+            styleOverrides?: ComponentsOverrides<Theme>['MuiTypography'];
+            variants?: ComponentsVariants['MuiTypography'];
+        };
+    }
+}
 
 export const COLORS = {
     ACCENT_PINK: '#FFCAFF',
@@ -92,7 +123,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
                     color: COLORS.TEXT_PRIMARY,
                     fontStyle: 'normal',
                     fontWeight: 'bold',
-                    fontSize: '16px',
+                    fontSize: '24px',
                     lineHeight: '21px',
 
                     '&.Mui-selected': {
@@ -100,7 +131,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
                         background: COLORS.ACCENT_PINK
                     },
                     '&.Mui-selected:hover': {
-                        background: '#C13217'
+                        background: COLORS.ACCENT_PINK
                     }
                 }
             }
@@ -119,6 +150,18 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             styleOverrides: {
                 root: {
                     margin: '24px 0px'
+                }
+            }
+        },
+        TimeLeftTypography: {
+            styleOverrides: {
+                h2: {
+                    color: COLORS.ACCENT_PINK,
+                    textColor: COLORS.ACCENT_PINK,
+                    fontStyle: 'normal',
+                    fontWeight: 'bold',
+                    fontSize: '24px',
+                    lineHeight: '21px'
                 }
             }
         }

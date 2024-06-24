@@ -293,7 +293,7 @@ const RoomCard = (props: RoomCardProps) => {
                     <Row>
                         <Typography
                             data-testid="BookingRoomTitle"
-                            variant="h3"
+                            variant="h2"
                             color={isBusy ? 'text.disabled' : 'text.main'}
                         >
                             {getName(room)}
