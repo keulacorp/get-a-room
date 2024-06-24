@@ -8,6 +8,7 @@ import LoginView from './login/LoginView';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MobileBackground, DesktopBackground } from './images/svgImages';
+import { theme_2024 } from '../theme_2024';
 
 const App = () => {
     // Basic solution for differentiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh
@@ -22,7 +23,7 @@ const App = () => {
     }
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme_2024}>
             <CssBaseline />
             <SnackbarProvider
                 maxSnack={1}
