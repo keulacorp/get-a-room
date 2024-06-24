@@ -2,6 +2,7 @@
     "name": "get-a-room-frontend",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "proxy": "http://localhost:8080",
     "dependencies": {
         "@emotion/babel-plugin": "^11.11.0",

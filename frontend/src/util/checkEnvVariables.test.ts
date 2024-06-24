@@ -1,22 +1,29 @@
+const valueMock = jest.fn();
+
+const envMock = jest.mock('util/getARoomEnv', () => () => {
+    valueMock.mockImplementationOnce(() => 'VITE_REACT_APP_SERVER_KEY');
+    return {
+        VITE_REACT_APP_SERVER_KEY: valueMock()
+    };
+});
+
 import { checkEnvVariables } from './checkEnvVariables';
 
 describe('checkEnvVariables', () => {
     beforeEach(() => {
-        process.env = {
-            ...process.env,
-            REACT_APP_SERVER_KEY: 'Test server key'
-        };
+        jest.resetAllMocks();
     });
 
     test('Should fail without application server key', () => {
-        process.env.REACT_APP_SERVER_KEY = undefined;
+        valueMock.mockImplementationOnce(() => undefined);
+
         expect(() => {
             checkEnvVariables();
         }).toThrow('Application server key not set');
     });
 
     test('Should fail with empty application server key', () => {
-        process.env.REACT_APP_SERVER_KEY = '';
+        valueMock.mockImplementationOnce(() => '');
         expect(() => {
             checkEnvVariables();
         }).toThrow('Application server key not set');

@@ -1,5 +1,7 @@
+import GETAROOM_ENV from './getARoomEnv';
+
 export const checkEnvVariables = () => {
-    const { VITE_REACT_APP_SERVER_KEY } = import.meta.env;
+    const { VITE_REACT_APP_SERVER_KEY } = GETAROOM_ENV();
 
     if (!VITE_REACT_APP_SERVER_KEY) {
         throw new Error('Application server key not set');
