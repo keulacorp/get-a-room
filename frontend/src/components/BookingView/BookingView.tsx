@@ -439,15 +439,8 @@ function BookingView(props: BookingViewProps) {
                 </Typography>
             </Typography>
             <RowCentered>
-                <Typography
-                    py={2}
-                    variant="h2"
-                    textAlign="left"
-                    marginLeft="24px"
-                    paddingTop="0px"
-                    paddingBottom="24px"
-                >
-                    Available rooms
+                <Typography variant={'h1'}>
+                    ROOMS
                     <IconButton
                         aria-label="profile menu"
                         size="small"

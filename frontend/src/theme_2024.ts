@@ -67,11 +67,11 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
     },
     typography: {
         h1: {
-            color: COLORS.BACKGROUND_DIM,
+            color: COLORS.TEXT_PRIMARY,
             fontFamily: 'Studio Feixen Sans',
             fontSize: '36px',
             fontStyle: 'normal',
-            fontWeight: 'bold',
+            fontWeight: 4,
             lineHeight: 'normal',
             textTransform: 'uppercase'
         },
@@ -79,7 +79,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             color: COLORS.TEXT_PRIMARY,
             fontFamily: 'Studio Feixen Sans',
             fontStyle: 'normal',
-            fontWeight: 'bold',
+            fontWeight: 4,
             fontSize: '24px',
             lineHeight: 'normal'
         },
@@ -87,14 +87,14 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             color: COLORS.TEXT_PRIMARY,
             fontFamily: 'Studio Feixen Sans',
             fontStyle: 'normal',
-            fontWeight: 'bold',
+            fontWeight: 2,
             fontSize: '16px',
             lineHeight: 'normal'
         },
         body1: {
             fontFamily: 'Studio Feixen Sans',
             fontStyle: 'normal',
-            fontWeight: 'bold',
+            fontWeight: 4,
             fontSize: '12px',
             lineHeight: 'normal'
         },
@@ -141,9 +141,9 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
 
                     color: COLORS.TEXT_PRIMARY,
                     fontStyle: 'normal',
-                    fontWeight: 'bold',
-                    fontSize: '24px',
-                    lineHeight: '21px',
+                    fontWeight: 4,
+                    fontSize: '16px',
+                    lineHeight: 'normal',
 
                     '&.Mui-selected': {
                         color: COLORS.TEXT_PRIMARY,
