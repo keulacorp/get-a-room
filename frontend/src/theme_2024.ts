@@ -3,9 +3,47 @@ import {
     Theme as MuiTheme,
     ThemeOptions
 } from '@mui/material/styles';
-import TimeLeft, { TimeLeftTypography } from './components/util/TimeLeft';
-import { ComponentsOverrides, ComponentsVariants } from '@mui/material';
+import { TimeLeftTypography } from './components/util/TimeLeft';
+import {
+    ComponentsOverrides,
+    ComponentsVariants,
+    Container,
+    Stack,
+    styled
+} from '@mui/material';
 import { GarApp } from './components/App';
+
+export const COLORS = {
+    ACCENT_PINK: '#FFCAFF',
+    ACCENT_GREEN: '#388641',
+    ACCENT_YELLOW: '#F2BB32',
+    ACCENT_BLUE: '#2C69D2',
+    ACCENT_RED: '#E83520',
+    TEXT_PRIMARY: '#1D1D1D',
+    TEXT_DISABLED: '#A4A4A4',
+    BACKGROUND_PRIMARY: '#FFF',
+    BACKGROUND_DIM: '#FBFBF6',
+    ALTERNATE: '#FBFBF6'
+};
+
+export const DEFAULT_STYLES = {
+    defaultSpacer: '24px',
+    smallerSpacer: '16px'
+};
+
+export const BackButtonAndHeader = styled(Stack)(({ theme }) => ({
+    alignItems: 'center',
+    gap: 1
+}));
+
+export const DefaultHorizontalSpacer = styled(Container)(({ theme }) => ({
+    height: DEFAULT_STYLES.defaultSpacer,
+    minHeight: DEFAULT_STYLES.defaultSpacer
+}));
+export const SmallerHorizontalSpacer = styled(Container)(({ theme }) => ({
+    height: DEFAULT_STYLES.smallerSpacer,
+    minHeight: DEFAULT_STYLES.smallerSpacer
+}));
 
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
@@ -22,6 +60,7 @@ declare module '@mui/material/styles' {
     interface ComponentsPropsList {
         GarApp: Partial<typeof GarApp>;
         TimeLeftTypography: Partial<typeof TimeLeftTypography>;
+        BackButtonAndHeader: Partial<typeof BackButtonAndHeader>;
     }
 
     interface Components {
@@ -35,21 +74,13 @@ declare module '@mui/material/styles' {
             styleOverrides?: ComponentsOverrides<Theme>['MuiTypography'];
             variants?: ComponentsVariants['MuiTypography'];
         };
+        BackButtonAndHeader?: {
+            defaultProps?: ComponentsPropsList['MuiStack'];
+            styleOverrides?: ComponentsOverrides<Theme>['MuiStack'];
+            variants?: ComponentsVariants['MuiStack'];
+        };
     }
 }
-
-export const COLORS = {
-    ACCENT_PINK: '#FFCAFF',
-    ACCENT_GREEN: '#388641',
-    ACCENT_YELLOW: '#F2BB32',
-    ACCENT_BLUE: '#2C69D2',
-    ACCENT_RED: '#E83520',
-    TEXT_PRIMARY: '#1D1D1D',
-    TEXT_DISABLED: '#A4A4A4',
-    BACKGROUND_PRIMARY: '#FFF',
-    BACKGROUND_DIM: '#FBFBF6',
-    ALTERNATE: '#FBFBF6'
-};
 
 export const DEFAULT_THEME_2024: ThemeOptions = {
     palette: {
@@ -161,7 +192,8 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
                     overflowX: 'auto',
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'flex-start'
+                    alignItems: 'flex-start',
+                    marginBottom: DEFAULT_STYLES.defaultSpacer
                 }
             }
         },
@@ -181,6 +213,15 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
                     fontWeight: 'bold',
                     fontSize: '24px',
                     lineHeight: '21px'
+                }
+            }
+        },
+        BackButtonAndHeader: {
+            styleOverrides: {
+                root: {
+                    spacing: 0,
+                    alignItems: 'center',
+                    flexWrap: 'wrap'
                 }
             }
         }

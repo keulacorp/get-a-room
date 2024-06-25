@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, IconButton } from '@mui/material';
+import { Typography, Box, IconButton, Stack, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Person from '@mui/icons-material/Person';
 
@@ -20,6 +20,12 @@ import SwipeableEdgeDrawer, {
 import UserDrawer from '../UserDrawer/UserDrawer';
 import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
+import {
+    BackButtonAndHeader,
+    DEFAULT_STYLES,
+    DefaultHorizontalSpacer,
+    SmallerHorizontalSpacer
+} from '../../theme_2024';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -406,58 +412,58 @@ function BookingView(props: BookingViewProps) {
                     </Box>
                 </SwipeableEdgeDrawer>
             </div>
-
-            <UserDrawer
-                open={expandSettingsDrawer}
-                toggle={toggleDrawers}
-                name={name}
-                expandedFeaturesAll={expandedFeaturesAll}
-                setExpandedFeaturesAll={setExpandedFeaturesAll}
-            />
-
-            <Typography
-                onClick={moveToChooseOfficePage}
-                textAlign="left"
-                variant="subtitle1"
-                color={'#ce3b20'}
-                paddingLeft="24px"
-                paddingTop="20px"
-                style={{ cursor: 'pointer' }}
-                display="flex"
+            <Box
+                sx={{
+                    paddingLeft: '16px',
+                    marginBottom: DEFAULT_STYLES.defaultSpacer
+                }}
             >
-                <ArrowBackIcon
-                    style={{ width: '20px', height: '20px' }}
-                ></ArrowBackIcon>
-                <Typography
-                    style={{
-                        marginLeft: '8px',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
-                    }}
-                >
-                    {preferences?.building ? preferences.building.name : 'Back'}
-                </Typography>
-            </Typography>
-            <RowCentered>
-                <Typography variant={'h1'}>
-                    ROOMS
-                    <IconButton
-                        aria-label="profile menu"
-                        size="small"
-                        sx={{
-                            bgcolor: 'primary.main',
-                            color: '#fff',
-                            position: 'absolute',
-                            right: 50
-                        }}
-                        onClick={openSettingsDrawer}
+                <UserDrawer
+                    open={expandSettingsDrawer}
+                    toggle={toggleDrawers}
+                    name={name}
+                    expandedFeaturesAll={expandedFeaturesAll}
+                    setExpandedFeaturesAll={setExpandedFeaturesAll}
+                />
+                <DefaultHorizontalSpacer />
+                <BackButtonAndHeader direction={'row'}>
+                    <Typography
+                        onClick={moveToChooseOfficePage}
+                        textAlign="left"
+                        variant="subtitle1"
+                        color={'#ce3b20'}
                         style={{ cursor: 'pointer' }}
-                    >
-                        <Person />
-                    </IconButton>
-                </Typography>
-            </RowCentered>
-
+                        display="flex"
+                    />
+                    <ArrowBackIcon sx={{ fontSize: '20px' }}></ArrowBackIcon>
+                    <Box>
+                        <Typography variant={'subtitle1'}>
+                            {preferences?.building
+                                ? preferences.building.name
+                                : 'Back'}
+                        </Typography>
+                    </Box>
+                </BackButtonAndHeader>
+                <RowCentered>
+                    <Typography variant={'h1'}>
+                        ROOMS
+                        <IconButton
+                            aria-label="profile menu"
+                            size="small"
+                            sx={{
+                                bgcolor: 'primary.main',
+                                color: '#fff',
+                                position: 'absolute',
+                                right: 50
+                            }}
+                            onClick={openSettingsDrawer}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <Person />
+                        </IconButton>
+                    </Typography>
+                </RowCentered>
+            </Box>
             <DurationPicker
                 duration={duration}
                 setDuration={setDuration}
