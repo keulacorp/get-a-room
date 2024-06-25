@@ -20,7 +20,7 @@ export const COLORS = {
     ACCENT_BLUE: '#2C69D2',
     ACCENT_RED: '#E83520',
     TEXT_PRIMARY: '#1D1D1D',
-    TEXT_DISABLED: '#A4A4A4',
+    TEXT_DIMGREY: '#A4A4A4',
     BACKGROUND_PRIMARY: '#FFF',
     BACKGROUND_DIM: '#FBFBF6',
     ALTERNATE: '#FBFBF6'
@@ -93,7 +93,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         text: {
             primary: COLORS.TEXT_PRIMARY,
             secondary: COLORS.BACKGROUND_PRIMARY,
-            disabled: COLORS.TEXT_DISABLED
+            disabled: COLORS.TEXT_DIMGREY
         }
     },
     typography: {
@@ -138,7 +138,14 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             lineHeight: '12px',
             textTransform: 'uppercase'
         },
-        h4: { color: COLORS.TEXT_PRIMARY, fontWeight: 'bold' },
+        h4: {
+            color: COLORS.TEXT_DIMGREY,
+            fontFamily: 'Studio Feixen Sans',
+            fontStyle: 'normal',
+            fontWeight: 2,
+            fontSize: '16px',
+            lineHeight: 'normal'
+        },
         h5: { color: COLORS.TEXT_PRIMARY, fontWeight: 'bold' }
     },
     zIndex: {

@@ -20,7 +20,8 @@ import {
     Card,
     CardActionArea,
     CircularProgress,
-    IconButton
+    IconButton,
+    Stack
 } from '@mui/material';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
@@ -312,34 +313,46 @@ const RoomCard = (props: RoomCardProps) => {
                     {bookingTime()}
 
                     <Row>
-                        {isReserved ? (
-                            <Typography>
-                                {booking?.resourceStatus === 'accepted' &&
-                                DateTime.fromISO(booking.startTime) >
-                                    DateTime.now()
-                                    ? `Your booking starts in ${getTimeLeft(
-                                          booking.startTime
-                                      )}`
-                                    : `Available for another ${minutesToSimpleString(
-                                          getTimeAvailableMinutes(booking)
-                                      )}`}
-                            </Typography>
-                        ) : isBusy ? (
+                        <Stack direction={'column'}>
+                            {isReserved ? (
+                                <Typography>
+                                    {booking?.resourceStatus === 'accepted' &&
+                                    DateTime.fromISO(booking.startTime) >
+                                        DateTime.now()
+                                        ? `Your booking starts in ${getTimeLeft(
+                                              booking.startTime
+                                          )}`
+                                        : `Available for another ${minutesToSimpleString(
+                                              getTimeAvailableMinutes(booking)
+                                          )}`}
+                                </Typography>
+                            ) : isBusy ? (
+                                <Typography
+                                    variant="body1"
+                                    color="text.disabled"
+                                    align="left"
+                                >
+                                    Available in{' '}
+                                    <b>{roomFreeIn(room)} minutes</b> for{' '}
+                                    {minutesToSimpleString(
+                                        busyAvailableFor(room)
+                                    )}
+                                </Typography>
+                            ) : (
+                                <TimeLeft
+                                    timeLeftText="Available for "
+                                    endTime={getNextCalendarEvent(room)}
+                                />
+                            )}
+                            {/*FIXME villep: Not Implemented?*/}
                             <Typography
-                                variant="body1"
-                                color="text.disabled"
-                                align="left"
+                                variant={'h4'}
+                                align={'left'}
+                                marginTop={'9px'}
                             >
-                                Available in <b>{roomFreeIn(room)} minutes</b>{' '}
-                                for{' '}
-                                {minutesToSimpleString(busyAvailableFor(room))}
+                                Test
                             </Typography>
-                        ) : (
-                            <TimeLeft
-                                timeLeftText="Available for "
-                                endTime={getNextCalendarEvent(room)}
-                            />
-                        )}
+                        </Stack>
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
@@ -357,7 +370,6 @@ const RoomCard = (props: RoomCardProps) => {
                             )}
                         </IconButton>
                     </Row>
-
                     {expandFeatures ? (
                         <Row>
                             <Typography variant="body1" color="text.disabled">
