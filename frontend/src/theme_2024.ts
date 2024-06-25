@@ -5,6 +5,7 @@ import {
 } from '@mui/material/styles';
 import TimeLeft, { TimeLeftTypography } from './components/util/TimeLeft';
 import { ComponentsOverrides, ComponentsVariants } from '@mui/material';
+import { GarApp } from './components/App';
 
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
@@ -19,10 +20,16 @@ declare module '@mui/material/styles' {
     }
 
     interface ComponentsPropsList {
+        GarApp: Partial<typeof GarApp>;
         TimeLeftTypography: Partial<typeof TimeLeftTypography>;
     }
 
     interface Components {
+        GarApp?: {
+            defaultProps?: ComponentsPropsList['MuiDivider'];
+            styleOverrides?: ComponentsOverrides<Theme>['MuiDivider'];
+            variants?: ComponentsVariants['MuiDivider'];
+        };
         TimeLeftTypography?: {
             defaultProps?: ComponentsPropsList['MuiTypography'];
             styleOverrides?: ComponentsOverrides<Theme>['MuiTypography'];
@@ -107,6 +114,18 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         snackbar: 1
     },
     components: {
+        GarApp: {
+            styleOverrides: {
+                root: {
+                    width: '100%',
+                    minWidth: '100%',
+                    backgroundColor: COLORS.BACKGROUND_PRIMARY,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }
+            }
+        },
         MuiToggleButton: {
             styleOverrides: {
                 root: {
