@@ -9,7 +9,7 @@ import { Room, Booking, Preferences } from '../../types';
 import CurrentBooking from '../CurrentBooking/CurrentBooking';
 import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
-import DurationPicker from './DurationPicker';
+import StartingTimePicker from './StartingTimePicker';
 import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
@@ -82,6 +82,8 @@ function BookingView(props: BookingViewProps) {
         false as boolean
     );
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
+
+    const [startingTime, setStartingTime] = useState<string>('Now');
 
     // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
@@ -316,6 +318,10 @@ function BookingView(props: BookingViewProps) {
         setBookingDuration(newDuration);
     };
 
+    const handleStartingTimeChange = (newStartingTime: string) => {
+        setStartingTime(newStartingTime);
+    };
+
     const updateBookings = useCallback(() => {
         getBookings()
             .then((bookings) =>
@@ -466,11 +472,11 @@ function BookingView(props: BookingViewProps) {
                     </Typography>
                 </RowCentered>
             </Box>
-            <DurationPicker
-                duration={duration}
-                setDuration={setDuration}
-                onChange={handleDurationChange}
-                title="duration"
+            <StartingTimePicker
+                startingTime={startingTime}
+                setStartingTime={setStartingTime}
+                onChange={handleStartingTimeChange}
+                title="starting time"
             />
 
             <CurrentBooking
@@ -487,6 +493,8 @@ function BookingView(props: BookingViewProps) {
             ) : (
                 <AvailableRoomList
                     bookingDuration={bookingDuration}
+                    startingTime={startingTime} 
+                    setStartingTime={setStartingTime}
                     rooms={displayRooms}
                     bookings={bookings}
                     setBookings={setBookings}

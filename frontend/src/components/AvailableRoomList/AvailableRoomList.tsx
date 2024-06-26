@@ -79,6 +79,8 @@ type BookingListProps = {
     expandedFeaturesAll: boolean;
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
+    startingTime: string;
+    setStartingTime: (newStartingTime: string) => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
@@ -90,7 +92,9 @@ const AvailableRoomList = (props: BookingListProps) => {
         updateData,
         expandedFeaturesAll,
         preferences,
-        setPreferences
+        setPreferences,
+        startingTime,
+        setStartingTime
     } = props;
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -105,7 +109,6 @@ const AvailableRoomList = (props: BookingListProps) => {
     );
 
     const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
-    const [startingTime, setStartingTime] = useState<string>('Now');
 
     const handleAdditionalDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
