@@ -502,6 +502,8 @@ function BookingView(props: BookingViewProps) {
                     expandedFeaturesAll={expandedFeaturesAll}
                     preferences={preferences}
                     setPreferences={setPreferences}
+                    setBookingDuration={setBookingDuration}
+                    setDuration={setDuration}
                 />
             )}
 

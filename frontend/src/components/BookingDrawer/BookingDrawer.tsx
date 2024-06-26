@@ -10,6 +10,7 @@ import SwipeableEdgeDrawer, {
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
+import DurationPicker from './DurationPicker';
 
 const MIN_DURATION = 15;
 
@@ -174,6 +175,9 @@ interface Props {
     availableMinutes: number;
     room?: Room;
     startingTime: string;
+    bookingDuration: number;
+    setBookingDuration: (minutes: number) => void;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -189,13 +193,20 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilFull,
         onAddTimeUntilNext,
         availableMinutes,
-        startingTime
+        startingTime,
+        bookingDuration,
+        setBookingDuration,
+        setDuration
     } = props;
 
     useEffect(() => {
         updateHalfHour();
         updateFullHour();
     });
+
+    const handleDurationChange = (newDuration: number) => {
+        setBookingDuration(newDuration);
+    };
 
     // Placeholder values
     const [nextHalfHour, setNextHalfHour] = useState('00:30');
@@ -305,6 +316,14 @@ const BookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
+                    <RowCentered>
+                        <DurationPicker
+                            duration={duration}
+                            setDuration={setDuration}
+                            onChange={handleDurationChange}
+                            title="duration"
+                        />
+                    </RowCentered>
                     <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(

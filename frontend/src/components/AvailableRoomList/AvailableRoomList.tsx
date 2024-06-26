@@ -10,6 +10,7 @@ import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import TimePickerDrawer from '../TimePickerDrawer/TimePickerDrawer';
+
 const SKIP_CONFIRMATION = true;
 
 const TimePickerButton = styled(ToggleButton)(() => ({
@@ -81,6 +82,8 @@ type BookingListProps = {
     setPreferences: (pref: Preferences) => void;
     startingTime: string;
     setStartingTime: (newStartingTime: string) => void;
+    setBookingDuration: (minutes: number) => void;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
@@ -94,7 +97,9 @@ const AvailableRoomList = (props: BookingListProps) => {
         preferences,
         setPreferences,
         startingTime,
-        setStartingTime
+        setStartingTime,
+        setBookingDuration,
+        setDuration
     } = props;
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -279,6 +284,9 @@ const AvailableRoomList = (props: BookingListProps) => {
                     onAddTimeUntilFull={handleUntilFull}
                     onAddTimeUntilNext={handleUntilNextDurationChange}
                     startingTime={startingTime}
+                    bookingDuration={bookingDuration}
+                    setBookingDuration={setBookingDuration}
+                    setDuration={setDuration}
                 />
                 <TimePickerDrawer
                     open={expandTimePickerDrawer}
