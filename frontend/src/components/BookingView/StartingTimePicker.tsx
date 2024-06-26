@@ -59,7 +59,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     };
 
     const now = DateTime.now();
-    const startingTimeNow = timeFormat(now.hour, now.minute);
+    const startingTimeNow = 'Now'; //timeFormat(now.hour, now.minute);
     const startingTime2 = formatTimeToHalfAndFullHours(now, 0);
     const startingTime3 = formatTimeToHalfAndFullHours(now, 30);
     const startingTime4 = formatTimeToHalfAndFullHours(now, 60);

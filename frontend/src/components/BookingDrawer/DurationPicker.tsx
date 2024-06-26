@@ -7,6 +7,12 @@ const DurationButton = styled(ToggleButton)(() => ({
     padding: '8px 16px'
 }));
 
+const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
+    minWidth: '100%',
+    padding: '6px 8px',
+    marginBottom: '0px !important'
+}));
+
 type DurationPickerProps = {
     onChange: (duration: number) => void;
     title: string;
@@ -29,15 +35,7 @@ const DurationPicker = (props: DurationPickerProps) => {
 
     return (
         <div>
-            <Typography
-                variant="subtitle1"
-                textAlign="left"
-                marginBottom={'8px'}
-                marginLeft={'24px'}
-            >
-                {title}
-            </Typography>
-            <ToggleButtonGroup
+            <DurationButtonGroup
                 data-testid="DurationPicker"
                 color="primary"
                 value={duration}
@@ -75,7 +73,7 @@ const DurationPicker = (props: DurationPickerProps) => {
                 >
                     2 h
                 </DurationButton>
-            </ToggleButtonGroup>
+            </DurationButtonGroup>
         </div>
     );
 };

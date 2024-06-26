@@ -335,13 +335,15 @@ const BookingDrawer = (props: Props) => {
                         </AvailableText>
                     </RowCentered>
                     <Row>
-                        <DurationPicker
-                            duration={duration}
-                            setDuration={setDuration}
-                            onChange={handleDurationChange}
-                            title="duration"
-                        />
+                        <SmallText>quick duration selection</SmallText>
                     </Row>
+
+                    <DurationPicker
+                        duration={duration}
+                        setDuration={setDuration}
+                        onChange={handleDurationChange}
+                        title="quick duration selection"
+                    />
                     <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>
                     </Row>
