@@ -21,7 +21,7 @@ import UserDrawer from '../UserDrawer/UserDrawer';
 import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import {
-    BackButtonAndHeader,
+    CenterAlignedStack,
     DEFAULT_STYLES,
     DefaultHorizontalSpacer,
     SmallerHorizontalSpacer
@@ -426,7 +426,7 @@ function BookingView(props: BookingViewProps) {
                     setExpandedFeaturesAll={setExpandedFeaturesAll}
                 />
                 <DefaultHorizontalSpacer />
-                <BackButtonAndHeader direction={'row'}>
+                <CenterAlignedStack direction={'row'}>
                     <Typography
                         onClick={moveToChooseOfficePage}
                         textAlign="left"
@@ -443,7 +443,7 @@ function BookingView(props: BookingViewProps) {
                                 : 'Back'}
                         </Typography>
                     </Box>
-                </BackButtonAndHeader>
+                </CenterAlignedStack>
                 <RowCentered>
                     <Typography variant={'h1'}>
                         ROOMS

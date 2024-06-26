@@ -27,6 +27,7 @@ import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
 import { styled } from '@mui/material/styles';
+import { CenterAlignedStack, DEFAULT_STYLES } from '../../theme_2024';
 
 function getName(room: Room) {
     return room.name;
@@ -156,6 +157,31 @@ type RoomCardProps = {
     isSelected: boolean;
     expandFeatures: boolean;
     isBusy?: boolean;
+};
+
+const RoomCardTitleWithDescription = (props: {
+    isBusy: boolean | undefined;
+    room: Room;
+}) => {
+    return (
+        <CenterAlignedStack direction={'row'} spacing={1}>
+            <Typography
+                data-testid="BookingRoomTitle"
+                variant="h2"
+                color={props.isBusy ? 'text.disabled' : 'text.main'}
+            >
+                {getName(props.room)}
+            </Typography>
+            {/*TODO villep: Not Implemented?*/}
+            <Typography
+                variant={'h4'}
+                align={'left'}
+                paddingLeft={DEFAULT_STYLES.smallerSpacer}
+            >
+                Test
+            </Typography>
+        </CenterAlignedStack>
+    );
 };
 
 const RoomCard = (props: RoomCardProps) => {
@@ -292,13 +318,10 @@ const RoomCard = (props: RoomCardProps) => {
             >
                 <GridContainer>
                     <Row>
-                        <Typography
-                            data-testid="BookingRoomTitle"
-                            variant="h2"
-                            color={isBusy ? 'text.disabled' : 'text.main'}
-                        >
-                            {getName(room)}
-                        </Typography>
+                        <RoomCardTitleWithDescription
+                            isBusy={isBusy}
+                            room={room}
+                        />
                         <EndBox>
                             <Group color={isBusy ? 'disabled' : 'inherit'} />
                             <Typography
@@ -344,7 +367,7 @@ const RoomCard = (props: RoomCardProps) => {
                                     endTime={getNextCalendarEvent(room)}
                                 />
                             )}
-                            {/*FIXME villep: Not Implemented?*/}
+                            {/*TODO villep: Not Implemented?*/}
                             <Typography
                                 variant={'h4'}
                                 align={'left'}

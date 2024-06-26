@@ -31,7 +31,7 @@ export const DEFAULT_STYLES = {
     smallerSpacer: '16px'
 };
 
-export const BackButtonAndHeader = styled(Stack)(({ theme }) => ({
+export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
     alignItems: 'center',
     gap: 1
 }));
@@ -60,7 +60,7 @@ declare module '@mui/material/styles' {
     interface ComponentsPropsList {
         GarApp: Partial<typeof GarApp>;
         TimeLeftTypography: Partial<typeof TimeLeftTypography>;
-        BackButtonAndHeader: Partial<typeof BackButtonAndHeader>;
+        BackButtonAndHeader: Partial<typeof CenterAlignedStack>;
     }
 
     interface Components {
