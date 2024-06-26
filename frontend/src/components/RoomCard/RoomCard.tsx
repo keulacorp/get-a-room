@@ -28,6 +28,11 @@ import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
 import { styled } from '@mui/material/styles';
 import { CenterAlignedStack, DEFAULT_STYLES } from '../../theme_2024';
+import {
+    Bookmark,
+    BookmarkBorder,
+    BookmarksOutlined
+} from '@mui/icons-material';
 
 function getName(room: Room) {
     return room.name;
@@ -184,6 +189,47 @@ const RoomCardTitleWithDescription = (props: {
     );
 };
 
+class RoomCardFavoriteButton extends React.Component<{
+    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    room: Room;
+    pref: Preferences | undefined;
+    busy: boolean | undefined;
+}> {
+    render() {
+        return (
+            <IconButton aria-label="favorite room" onClick={this.props.onClick}>
+                {isFavorited(this.props.room, this.props.pref) ? (
+                    <Bookmark sx={{ color: '#F04E30' }} />
+                ) : (
+                    <BookmarkBorder
+                        color={this.props.busy ? 'disabled' : 'inherit'}
+                    />
+                )}
+            </IconButton>
+        );
+    }
+}
+
+class RoomCardCapacityBox extends React.Component<{
+    busy: boolean | undefined;
+    room: Room;
+}> {
+    render() {
+        return (
+            <EndBox>
+                <Group color={this.props.busy ? 'disabled' : 'inherit'} />
+                <Typography
+                    fontWeight="bold"
+                    color={this.props.busy ? 'text.disabled' : 'text.main'}
+                    marginLeft={'8px'}
+                >
+                    {getCapacity(this.props.room)}
+                </Typography>
+            </EndBox>
+        );
+    }
+}
+
 const RoomCard = (props: RoomCardProps) => {
     const {
         room,
@@ -322,15 +368,7 @@ const RoomCard = (props: RoomCardProps) => {
                             isBusy={isBusy}
                             room={room}
                         />
-                        <EndBox>
-                            <Group color={isBusy ? 'disabled' : 'inherit'} />
-                            <Typography
-                                fontWeight="bold"
-                                color={isBusy ? 'text.disabled' : 'text.main'}
-                            >
-                                {getCapacity(room)}
-                            </Typography>
-                        </EndBox>
+                        <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
 
                     {bookingTime()}
@@ -380,18 +418,12 @@ const RoomCard = (props: RoomCardProps) => {
                             <CircularProgress color="primary" />
                         ) : null}
 
-                        <IconButton
-                            aria-label="favorite room"
+                        <RoomCardFavoriteButton
                             onClick={handleFavoriteClick}
-                        >
-                            {isFavorited(room, preferences) ? (
-                                <Favorite sx={{ color: '#F04E30' }} />
-                            ) : (
-                                <FavoriteBorderIcon
-                                    color={isBusy ? 'disabled' : 'inherit'}
-                                />
-                            )}
-                        </IconButton>
+                            room={room}
+                            pref={preferences}
+                            busy={isBusy}
+                        />
                     </Row>
                     {expandFeatures ? (
                         <Row>
