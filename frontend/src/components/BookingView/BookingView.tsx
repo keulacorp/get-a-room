@@ -493,7 +493,7 @@ function BookingView(props: BookingViewProps) {
             ) : (
                 <AvailableRoomList
                     bookingDuration={bookingDuration}
-                    startingTime={startingTime} 
+                    startingTime={startingTime}
                     setStartingTime={setStartingTime}
                     rooms={displayRooms}
                     bookings={bookings}

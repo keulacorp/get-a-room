@@ -10,25 +10,29 @@ const StartingTimeButton = styled(ToggleButton)(() => ({
 
 type StartingTimePickerProps = {
     onChange: (startingTime: string) => void;
-    startingTime: string
+    startingTime: string;
     title: string;
     setStartingTime: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const timeFormat = (h: number, m: number) => {
-    return h.toString() + ':' + (m < 10 ? '0' + m.toString(): m.toString())
-}
+    return h.toString() + ':' + (m < 10 ? '0' + m.toString() : m.toString());
+};
 
-const formatTimeToHalfAndFullHours = (startingTime: DateTime, addition: number): string => {
+const formatTimeToHalfAndFullHours = (
+    startingTime: DateTime,
+    addition: number
+): string => {
     let timeObj = DateTime.fromObject({
         hour: Number(startingTime.hour),
         minute: Number(startingTime.minute),
-        second: 0})
+        second: 0
+    })
         .plus({ minutes: addition })
-        .toObject()
-    
+        .toObject();
+
     if (timeObj.minute! < 30) {
-        timeObj.minute = 30
+        timeObj.minute = 30;
     } else if (timeObj.minute! > 30) {
         timeObj = DateTime.fromObject({
             hour: Number(timeObj.hour),
@@ -36,10 +40,10 @@ const formatTimeToHalfAndFullHours = (startingTime: DateTime, addition: number):
             second: 0
         })
             .plus({ hours: 1 })
-            .toObject()
+            .toObject();
     }
-    return timeFormat(timeObj.hour!, timeObj.minute!)
-}
+    return timeFormat(timeObj.hour!, timeObj.minute!);
+};
 
 const StartingTimePicker = (props: StartingTimePickerProps) => {
     const { onChange, title, startingTime, setStartingTime } = props;
@@ -54,11 +58,11 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
         }
     };
 
-    const now = DateTime.now()
-    const startingTimeNow = timeFormat(now.hour, now.minute)
-    const startingTime2 = formatTimeToHalfAndFullHours(now, 0)
-    const startingTime3 = formatTimeToHalfAndFullHours(now, 30)
-    const startingTime4 = formatTimeToHalfAndFullHours(now, 60)
+    const now = DateTime.now();
+    const startingTimeNow = timeFormat(now.hour, now.minute);
+    const startingTime2 = formatTimeToHalfAndFullHours(now, 0);
+    const startingTime3 = formatTimeToHalfAndFullHours(now, 30);
+    const startingTime4 = formatTimeToHalfAndFullHours(now, 60);
 
     return (
         <div>
