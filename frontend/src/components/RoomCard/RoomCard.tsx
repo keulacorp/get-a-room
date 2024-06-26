@@ -27,7 +27,12 @@ import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
 import { styled } from '@mui/material/styles';
-import { CenterAlignedStack, DEFAULT_STYLES } from '../../theme_2024';
+import {
+    CenterAlignedStack,
+    CheckCircle,
+    DEFAULT_STYLES,
+    DoNotDisturb
+} from '../../theme_2024';
 import {
     Bookmark,
     BookmarkBorder,
@@ -229,6 +234,100 @@ class RoomCardCapacityBox extends React.Component<{
         );
     }
 }
+/*TODO villep : Not implemented*/
+export const RoomCardReservationStatusIndicator = (props: {
+    reserved?: boolean;
+    busy?: boolean;
+    myBookingAccepted?: boolean;
+}) => {
+    if (props.reserved === true) {
+        if (props.busy === true) {
+            return (
+                <CenterAlignedStack direction={'row'}>
+                    <DoNotDisturb />
+                    <Typography variant={'subtitle1'} marginLeft={'5px'}>
+                        Occupied for (TEST) minutes
+                    </Typography>
+                </CenterAlignedStack>
+            );
+        } else {
+            return (
+                <CenterAlignedStack direction={'row'}>
+                    <CheckCircle />
+                    <Typography marginLeft={'5px'} variant={'subtitle1'}>
+                        Reserved To you FOR (TEST) minutes.
+                    </Typography>
+                </CenterAlignedStack>
+            );
+        }
+    } else {
+        return <></>;
+    }
+};
+
+const ReservationStatusText = (props: {
+    reserved: boolean | undefined;
+    booking: Booking | undefined;
+    busy: boolean | undefined;
+    room: Room;
+}) => {
+    const myBookingAccepted =
+        props.booking?.resourceStatus === 'accepted' &&
+        DateTime.fromISO(props.booking.startTime) > DateTime.now();
+
+    return (
+        <>
+            {props.reserved ? (
+                <>
+                    <Stack direction={'row'}>
+                        <RoomCardReservationStatusIndicator
+                            reserved={props.reserved}
+                            busy={props.busy}
+                        />
+                    </Stack>
+                    <Typography>
+                        {props.booking && myBookingAccepted
+                            ? `Your booking starts in ${getTimeLeft(
+                                  props.booking.startTime
+                              )}`
+                            : `Available for another ${minutesToSimpleString(
+                                  getTimeAvailableMinutes(props.booking)
+                              )}`}
+                    </Typography>
+                </>
+            ) : props.busy ? (
+                <>
+                    <RoomCardReservationStatusIndicator
+                        reserved={props.reserved}
+                        busy={props.busy}
+                    />
+                    <Typography
+                        variant="body1"
+                        color="text.disabled"
+                        align="left"
+                    >
+                        Available in <b>{roomFreeIn(props.room)} minutes</b> for{' '}
+                        {minutesToSimpleString(busyAvailableFor(props.room))}
+                    </Typography>
+                </>
+            ) : (
+                <>
+                    {/*                    /!*FIXME villep : remove when done testing*!/
+                    (() => {
+                        const reserved = Math.floor(Math.random() * 3) + 1 === 1;
+                        const busy = Math.floor(Math.random() * 3) + 1 === 1;
+                        return (<RoomCardReservationStatusIndicator reserved={reserved} busy={busy} />);
+                    })()*/}
+
+                    <TimeLeft
+                        timeLeftText="Available for "
+                        endTime={getNextCalendarEvent(props.room)}
+                    />
+                </>
+            )}
+        </>
+    );
+};
 
 const RoomCard = (props: RoomCardProps) => {
     const {
@@ -375,36 +474,12 @@ const RoomCard = (props: RoomCardProps) => {
 
                     <Row>
                         <Stack direction={'column'}>
-                            {isReserved ? (
-                                <Typography>
-                                    {booking?.resourceStatus === 'accepted' &&
-                                    DateTime.fromISO(booking.startTime) >
-                                        DateTime.now()
-                                        ? `Your booking starts in ${getTimeLeft(
-                                              booking.startTime
-                                          )}`
-                                        : `Available for another ${minutesToSimpleString(
-                                              getTimeAvailableMinutes(booking)
-                                          )}`}
-                                </Typography>
-                            ) : isBusy ? (
-                                <Typography
-                                    variant="body1"
-                                    color="text.disabled"
-                                    align="left"
-                                >
-                                    Available in{' '}
-                                    <b>{roomFreeIn(room)} minutes</b> for{' '}
-                                    {minutesToSimpleString(
-                                        busyAvailableFor(room)
-                                    )}
-                                </Typography>
-                            ) : (
-                                <TimeLeft
-                                    timeLeftText="Available for "
-                                    endTime={getNextCalendarEvent(room)}
-                                />
-                            )}
+                            <ReservationStatusText
+                                reserved={isReserved}
+                                booking={booking}
+                                busy={isBusy}
+                                room={room}
+                            />
                             {/*TODO villep: Not Implemented?*/}
                             <Typography
                                 variant={'h4'}

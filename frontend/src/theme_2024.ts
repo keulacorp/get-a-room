@@ -12,6 +12,9 @@ import {
     styled
 } from '@mui/material';
 import { GarApp } from './components/App';
+import { DoNotDisturbOn } from '@mui/icons-material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { RoomCardReservationStatusIndicator } from './components/RoomCard/RoomCard';
 
 export const COLORS = {
     ACCENT_PINK: '#FFCAFF',
@@ -30,6 +33,13 @@ export const DEFAULT_STYLES = {
     defaultSpacer: '24px',
     smallerSpacer: '16px'
 };
+
+export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
+    color: COLORS.ACCENT_RED
+}));
+export const CheckCircle = styled(CheckCircleIcon)(({ theme }) => ({
+    color: COLORS.ACCENT_GREEN
+}));
 
 export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
     alignItems: 'center',
@@ -61,6 +71,9 @@ declare module '@mui/material/styles' {
         GarApp: Partial<typeof GarApp>;
         TimeLeftTypography: Partial<typeof TimeLeftTypography>;
         BackButtonAndHeader: Partial<typeof CenterAlignedStack>;
+        RoomCardReservationStatusIndicator: Partial<
+            typeof RoomCardReservationStatusIndicator
+        >;
     }
 
     interface Components {
@@ -75,6 +88,11 @@ declare module '@mui/material/styles' {
             variants?: ComponentsVariants['MuiTypography'];
         };
         BackButtonAndHeader?: {
+            defaultProps?: ComponentsPropsList['MuiStack'];
+            styleOverrides?: ComponentsOverrides<Theme>['MuiStack'];
+            variants?: ComponentsVariants['MuiStack'];
+        };
+        RoomCardReservationStatusIndicator?: {
             defaultProps?: ComponentsPropsList['MuiStack'];
             styleOverrides?: ComponentsOverrides<Theme>['MuiStack'];
             variants?: ComponentsVariants['MuiStack'];
@@ -229,6 +247,14 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
                     spacing: 0,
                     alignItems: 'center',
                     flexWrap: 'wrap'
+                }
+            }
+        },
+        RoomCardReservationStatusIndicator: {
+            styleOverrides: {
+                root: {
+                    marginTop: '8px',
+                    marginBottom: '8px'
                 }
             }
         }

@@ -426,9 +426,11 @@ function BookingView(props: BookingViewProps) {
                     setExpandedFeaturesAll={setExpandedFeaturesAll}
                 />
                 <DefaultHorizontalSpacer />
-                <CenterAlignedStack direction={'row'}>
+                <CenterAlignedStack
+                    direction={'row'}
+                    onClick={moveToChooseOfficePage}
+                >
                     <Typography
-                        onClick={moveToChooseOfficePage}
                         textAlign="left"
                         variant="subtitle1"
                         color={'#ce3b20'}
