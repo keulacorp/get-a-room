@@ -317,14 +317,6 @@ const BookingDrawer = (props: Props) => {
             >
                 <DrawerContent>
                     <RowCentered>
-                        <DurationPicker
-                            duration={duration}
-                            setDuration={setDuration}
-                            onChange={handleDurationChange}
-                            title="duration"
-                        />
-                    </RowCentered>
-                    <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(
                                 duration + additionalDuration
@@ -342,6 +334,14 @@ const BookingDrawer = (props: Props) => {
                             Maximum {getTimeAvailable(room)} available
                         </AvailableText>
                     </RowCentered>
+                    <Row>
+                        <DurationPicker
+                            duration={duration}
+                            setDuration={setDuration}
+                            onChange={handleDurationChange}
+                            title="duration"
+                        />
+                    </Row>
                     <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>
                     </Row>

@@ -94,7 +94,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -112,7 +112,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -126,7 +126,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={30}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -141,7 +141,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={60}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -156,7 +156,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={120}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -171,7 +171,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -199,7 +199,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -236,7 +236,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={30}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -273,7 +273,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={60}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
@@ -310,7 +310,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={120}
-                startingTime='Now'
+                startingTime="Now"
             />,
             container
         );
