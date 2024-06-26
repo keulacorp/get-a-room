@@ -22,10 +22,13 @@ import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import {
     CenterAlignedStack,
+    COLORS,
     DEFAULT_STYLES,
-    DefaultHorizontalSpacer,
-    SmallerHorizontalSpacer
+    DefaultVerticalSpacer,
+    SmallerVerticalSpacer,
+    StretchingHorizontalSpacer
 } from '../../theme_2024';
+import { PersonRounded } from '@mui/icons-material';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -66,6 +69,50 @@ type BookingViewProps = {
     open: boolean;
     toggle: (open: boolean) => void;
     name: String | undefined;
+};
+
+const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
+    return (
+        <CenterAlignedStack
+            direction={'row'}
+            sx={{
+                width: '100%'
+            }}
+        >
+            <Typography variant={'h1'}>
+                ROOMS
+                <IconButton
+                    aria-label="profile menu"
+                    size="small"
+                    sx={{
+                        bgcolor: 'primary.main',
+                        color: '#fff',
+                        position: 'absolute',
+                        right: 50
+                    }}
+                    onClick={props.onClick}
+                    style={{ cursor: 'pointer' }}
+                ></IconButton>
+            </Typography>
+            <StretchingHorizontalSpacer />
+            {/*// TODO: Button not implemented*/}
+            <Person
+                sx={{
+                    display: 'flex',
+                    width: '32px',
+                    height: ' 32px',
+                    padding: '4.5px 4px 3.5px 4px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: '24px',
+                    fontWeight: '400',
+                    border: '1px solid',
+                    borderRadius: '50px',
+                    borderColor: COLORS.ACCENT_PINK
+                }}
+            />
+        </CenterAlignedStack>
+    );
 };
 
 function BookingView(props: BookingViewProps) {
@@ -425,7 +472,7 @@ function BookingView(props: BookingViewProps) {
                     expandedFeaturesAll={expandedFeaturesAll}
                     setExpandedFeaturesAll={setExpandedFeaturesAll}
                 />
-                <DefaultHorizontalSpacer />
+                <DefaultVerticalSpacer />
                 <CenterAlignedStack
                     direction={'row'}
                     onClick={moveToChooseOfficePage}
@@ -447,23 +494,7 @@ function BookingView(props: BookingViewProps) {
                     </Box>
                 </CenterAlignedStack>
                 <RowCentered>
-                    <Typography variant={'h1'}>
-                        ROOMS
-                        <IconButton
-                            aria-label="profile menu"
-                            size="small"
-                            sx={{
-                                bgcolor: 'primary.main',
-                                color: '#fff',
-                                position: 'absolute',
-                                right: 50
-                            }}
-                            onClick={openSettingsDrawer}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <Person />
-                        </IconButton>
-                    </Typography>
+                    <RoomsPageHeaderWithUserIcon onClick={openSettingsDrawer} />
                 </RowCentered>
             </Box>
             <DurationPicker

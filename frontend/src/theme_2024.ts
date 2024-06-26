@@ -46,13 +46,20 @@ export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
     gap: 1
 }));
 
-export const DefaultHorizontalSpacer = styled(Container)(({ theme }) => ({
+export const DefaultVerticalSpacer = styled(Container)(({ theme }) => ({
     height: DEFAULT_STYLES.defaultSpacer,
     minHeight: DEFAULT_STYLES.defaultSpacer
 }));
-export const SmallerHorizontalSpacer = styled(Container)(({ theme }) => ({
+export const SmallerVerticalSpacer = styled(Container)(({ theme }) => ({
     height: DEFAULT_STYLES.smallerSpacer,
     minHeight: DEFAULT_STYLES.smallerSpacer
+}));
+
+export const StretchingHorizontalSpacer = styled(Container)(({ theme }) => ({
+    alignSelf: 'stretch',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    display: 'flex'
 }));
 
 declare module '@mui/material/Button' {
