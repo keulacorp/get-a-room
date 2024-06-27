@@ -15,6 +15,7 @@ import { GarApp } from './components/App';
 import { DoNotDisturbOn } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { RoomCardReservationStatusIndicator } from './components/RoomCard/RoomCard';
+import Person from '@mui/icons-material/Person';
 
 export const COLORS = {
     ACCENT_PINK: '#FFCAFF',
@@ -28,6 +29,20 @@ export const COLORS = {
     BACKGROUND_DIM: '#FBFBF6',
     ALTERNATE: '#FBFBF6'
 };
+
+export const UserIcon = styled(Person)(({ theme }) => ({
+    display: 'flex',
+    width: '32px',
+    height: ' 32px',
+    padding: '4.5px 4px 3.5px 4px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '24px',
+    fontWeight: '400',
+    border: '1px solid',
+    borderRadius: '50px',
+    borderColor: COLORS.ACCENT_PINK
+}));
 
 export const DEFAULT_STYLES = {
     defaultSpacer: '24px',
@@ -171,7 +186,13 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             fontSize: '16px',
             lineHeight: 'normal'
         },
-        h5: { color: COLORS.TEXT_PRIMARY, fontWeight: 'bold' }
+        h5: {
+            color: COLORS.TEXT_PRIMARY,
+            fontWeight: 'bold',
+            fontSize: '12px',
+
+            textTransform: 'uppercase'
+        }
     },
     zIndex: {
         snackbar: 1

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, IconButton, Stack, Grid } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../../services/roomService';
 import { deleteBooking, getBookings } from '../../services/bookingService';
-import { Room, Booking, Preferences } from '../../types';
+import { Booking, Preferences, Room } from '../../types';
 import CurrentBooking from '../CurrentBooking/CurrentBooking';
 import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
@@ -22,13 +21,11 @@ import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import {
     CenterAlignedStack,
-    COLORS,
     DEFAULT_STYLES,
     DefaultVerticalSpacer,
-    SmallerVerticalSpacer,
-    StretchingHorizontalSpacer
+    StretchingHorizontalSpacer,
+    UserIcon
 } from '../../theme_2024';
-import { PersonRounded } from '@mui/icons-material';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -96,21 +93,7 @@ const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
             </Typography>
             <StretchingHorizontalSpacer />
             {/*// TODO: Button not implemented*/}
-            <Person
-                sx={{
-                    display: 'flex',
-                    width: '32px',
-                    height: ' 32px',
-                    padding: '4.5px 4px 3.5px 4px',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    fontSize: '24px',
-                    fontWeight: '400',
-                    border: '1px solid',
-                    borderRadius: '50px',
-                    borderColor: COLORS.ACCENT_PINK
-                }}
-            />
+            <UserIcon />
         </CenterAlignedStack>
     );
 };
