@@ -104,7 +104,7 @@ describe('ChooseOfficeView', () => {
             );
         });
 
-        expect(screen.getByText('Welcome, testname')).toBeTruthy();
+        expect(screen.getByText('Welcome, testname!')).toBeTruthy();
     });
 
     it('updates preferences when clicking a building name', async () => {
