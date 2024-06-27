@@ -97,14 +97,13 @@ const BuildingList = (props: BuildingSelectProps) => {
                         <CardContent>
                             <GridContainer>
                                 <Row>
-                                    <Typography variant="h3">
+                                    <Typography variant="h2">
                                         {building.name}
                                     </Typography>
 
                                     <EndBox>
                                         {building.distance ? (
                                             <>
-                                                <GpsFixed></GpsFixed>
                                                 <Typography
                                                     variant="subtitle1"
                                                     align="right"
