@@ -9,7 +9,9 @@ import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
-import TimePickerDrawer from '../TimePickerDrawer/TimePickerDrawer';
+import MultiTimePickerDrawer from '../MultiTimePickerDrawer/MultiTimePickerDrawer';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 const SKIP_CONFIRMATION = true;
 
@@ -288,15 +290,17 @@ const AvailableRoomList = (props: BookingListProps) => {
                     setBookingDuration={setBookingDuration}
                     setDuration={setDuration}
                 />
-                <TimePickerDrawer
-                    open={expandTimePickerDrawer}
-                    toggle={(newOpen: any) =>
-                        setExpandTimePickerDrawer(newOpen)
-                    }
-                    startingTime={startingTime}
-                    setStartingTime={setStartingTime}
-                    setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <MultiTimePickerDrawer
+                        open={expandTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandTimePickerDrawer(newOpen)
+                        }
+                        startingTime={startingTime}
+                        setStartingTime={setStartingTime}
+                        setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    />
+                </LocalizationProvider>
             </div>
             <div
                 id="available-booking-typography"
