@@ -4,11 +4,12 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
 import { styled } from '@mui/material/styles';
-import { DrawerContent } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
-import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 const MIN_DURATION = 15;
 
@@ -287,7 +288,7 @@ const BookingDrawer = (props: Props) => {
     };
 
     return (
-        <BottomDrawer
+        <SwipeableEdgeDrawer
             headerTitle={getName(room)}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -380,7 +381,7 @@ const BookingDrawer = (props: Props) => {
                     </Row>
                 </DrawerContent>
             </Box>
-        </BottomDrawer>
+        </SwipeableEdgeDrawer>
     );
 };
 
