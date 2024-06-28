@@ -14,6 +14,7 @@ import Person from '@mui/icons-material/Person';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { COLORS } from '../../theme_2024';
 
 export const drawerBleeding = 88;
 
@@ -23,13 +24,6 @@ const Root = styled('div')(({ theme }) => ({
         theme.palette.mode === 'light'
             ? grey[100]
             : theme.palette.background.default
-}));
-
-const Puller = styled(Box)(({ theme }) => ({
-    width: '30%',
-    height: 4,
-    backgroundColor: theme.palette.mode === 'light' ? '#F6F5F5' : grey[900],
-    borderRadius: 3
 }));
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
@@ -59,8 +53,8 @@ const FilterCounter = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 4px',
-    color: '#F6F5F5',
-    backgroundColor: '#CE3B20'
+    color: COLORS.TEXT_PRIMARY,
+    backgroundColor: COLORS.ACCENT_BLUE
 }));
 
 const DrawerTitle = styled(Typography)(({ theme }) => ({
@@ -183,29 +177,31 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     maxWidth: '1000px'
                 }}
             >
-                <DrawerHeader onClick={handleHeaderClick}>
-                    <Box
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            width: '100%',
-                            maxWidth: '1000px'
-                        }}
-                    >
-                        {left}
-                        <Puller />
-                        {title}
-                        {filters}
-                        <Puller />
-                        <IconButton
-                            onClick={toggleDrawer(false)}
-                            aria-label={label}
+                {!disableSwipeToOpen ? (
+                    <DrawerHeader onClick={handleHeaderClick}>
+                        <Box
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: '100%',
+                                maxWidth: '1000px'
+                            }}
                         >
-                            {right}
-                        </IconButton>
-                    </Box>
-                </DrawerHeader>
+                            {left}
+                            {title}
+                            {filters}
+                            <IconButton
+                                onClick={toggleDrawer(false)}
+                                aria-label={label}
+                            >
+                                {right}
+                            </IconButton>
+                        </Box>
+                    </DrawerHeader>
+                ) : (
+                    ''
+                )}
                 {children}
             </SwipeableDrawer>
         </Root>

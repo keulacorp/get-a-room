@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { List, Typography, Box, ToggleButton } from '@mui/material';
+import { Box, List, ToggleButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { makeBooking } from '../../services/bookingService';
-import { Booking, BookingDetails, Room, Preferences } from '../../types';
+import { Booking, BookingDetails, Preferences, Room } from '../../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import TimePickerDrawer from '../TimePickerDrawer/TimePickerDrawer';
+
 const SKIP_CONFIRMATION = true;
 
 const TimePickerButton = styled(ToggleButton)(() => ({
@@ -277,15 +278,17 @@ const AvailableRoomList = (props: BookingListProps) => {
                     onAddTimeUntilNext={handleUntilNextDurationChange}
                     startingTime={startingTime}
                 />
-                <TimePickerDrawer
-                    open={expandTimePickerDrawer}
-                    toggle={(newOpen: any) =>
-                        setExpandTimePickerDrawer(newOpen)
-                    }
-                    startingTime={startingTime}
-                    setStartingTime={setStartingTime}
-                    setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                />
+                {
+                    <TimePickerDrawer
+                        open={expandTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandTimePickerDrawer(newOpen)
+                        }
+                        startingTime={startingTime}
+                        setStartingTime={setStartingTime}
+                        setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    />
+                }
             </div>
             <div
                 id="available-booking-typography"
