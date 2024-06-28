@@ -50,6 +50,7 @@ export const readPreferenceBody = () => {
         try {
             const building: BuildingData = req.body.building;
             const favoriteRooms: Array<string> = req.body.fav_rooms;
+            const showRoomResources = req.body.showRoomResources;
 
             if (!building || !building.id || !building.name) {
                 return responses.badRequest(req, res);
@@ -58,6 +59,7 @@ export const readPreferenceBody = () => {
             res.locals.buildingId = building.id;
             res.locals.buildingName = building.name;
             res.locals.fav_rooms = favoriteRooms;
+            res.locals.showRoomResources = showRoomResources;
             next();
         } catch (err) {
             next(err);
@@ -86,7 +88,8 @@ export const updatePreferencesToDatabase = () => {
                     latitude: res.locals.latitude,
                     longitude: res.locals.longitude
                 },
-                fav_rooms: res.locals.fav_rooms
+                fav_rooms: res.locals.fav_rooms,
+                showRoomResources: res.locals?.showRoomResources || false
             };
 
             if (!sub) {

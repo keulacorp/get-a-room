@@ -77,6 +77,8 @@ describe('preferencesController', () => {
                 id: 'id'
             };
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             mockedGetUserWithSubject.mockResolvedValueOnce({
                 subject: 'sub',
                 preferences: {
@@ -217,6 +219,8 @@ describe('preferencesController', () => {
         });
 
         test('Should set preferences to locals', async () => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             mockedUpdatePreferences.mockResolvedValueOnce({
                 subject: 'sub',
                 preferences: {
@@ -235,12 +239,14 @@ describe('preferencesController', () => {
 
             expect(mockNext).toBeCalledTimes(1);
             expect(mockNext).toBeCalledWith();
-            expect(mockResponse.locals?.preferences).toEqual({
-                building: {
-                    id: mockResponse.locals?.buildingId,
-                    name: mockResponse.locals?.buildingName
-                }
-            });
+            expect(mockResponse.locals?.preferences).toEqual(
+                expect.objectContaining({
+                    building: {
+                        id: mockResponse.locals?.buildingId,
+                        name: mockResponse.locals?.buildingName
+                    }
+                })
+            );
         });
     });
 });

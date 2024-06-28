@@ -29,6 +29,7 @@ export interface Building {
 export interface Preferences {
     building?: Building;
     fav_rooms?: Array<string>;
+    showRoomResources?: boolean;
 }
 
 type TimePeriod = { start?: string | null; end?: string | null };

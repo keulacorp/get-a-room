@@ -6,6 +6,7 @@ import { updatePreferences } from '../../services/preferencesService';
 import { Building, Preferences } from '../../types';
 import CenteredProgress from '../util/CenteredProgress';
 import { getBuildingsWithPosition } from '../../services/buildingService';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 type ChooseOfficeViewProps = {
     buildings: Building[];
@@ -51,6 +52,8 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         history.push('/');
     };
 
+    const { expandedFeaturesAll } = useUserSettings();
+
     const handlePreferencesSubmit = (buildingId: string) => {
         const foundBuilding = buildings.find(
             (building) => building.id === buildingId
@@ -58,6 +61,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         if (foundBuilding) {
             let newPrefs = preferences as Preferences;
             newPrefs.building = foundBuilding;
+            newPrefs.showRoomResources = expandedFeaturesAll;
             updatePreferences(newPrefs)
                 .then((savedPreferences) => {
                     setPreferences(savedPreferences);
