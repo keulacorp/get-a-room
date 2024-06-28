@@ -81,6 +81,13 @@ const FilteringDrawer = (props: Props) => {
         }
     }));
 
+    const StyledDrawerWrapper = styled(Box)(({ theme }) => ({
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    }));
+
     const handleRoomSizeChange = (
         event: React.MouseEvent<HTMLElement>,
         newRoomSize: string[]
@@ -123,14 +130,7 @@ const FilteringDrawer = (props: Props) => {
             disableSwipeToOpen={false}
             mounted={true}
         >
-            <Box
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}
-            >
+            <StyledDrawerWrapper>
                 <DrawerContent>
                     <Row>
                         <SmallText>Custom Filter</SmallText>
@@ -140,12 +140,14 @@ const FilteringDrawer = (props: Props) => {
                         value={customFilter}
                         placeholder="Room name, resource..."
                         size="small"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            )
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                )
+                            }
                         }}
                     />
 
@@ -200,7 +202,7 @@ const FilteringDrawer = (props: Props) => {
                         &nbsp; Only Favourites
                     </ToggleButton>
                 </DrawerContent>
-            </Box>
+            </StyledDrawerWrapper>
         </SwipeableEdgeDrawer>
     );
 };

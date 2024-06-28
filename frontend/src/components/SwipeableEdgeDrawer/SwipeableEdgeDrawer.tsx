@@ -6,7 +6,7 @@ import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { IconButton } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
@@ -48,12 +48,12 @@ const FilterCounter = styled(Box)(({ theme }) => ({
     height: '20px',
     fontstyle: 'normal',
     fontWeight: 700,
-    fontSize: '14px',
+    fontSize: '16px',
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: '0 4px',
-    color: COLORS.TEXT_PRIMARY,
+    margin: '0 0 0 8px',
+    color: COLORS.BACKGROUND_PRIMARY,
     backgroundColor: COLORS.ACCENT_BLUE
 }));
 
@@ -102,10 +102,10 @@ const SwipeableEdgeDrawer = (props: Props) => {
         toggle(newOpen);
     };
 
-    var left;
-    var title;
-    var right;
-    var filters;
+    let left;
+    let title;
+    let right;
+    let filters;
 
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
@@ -135,7 +135,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
         right = <CloseIcon />;
     }
 
-    var label;
+    let label;
     if (iconLeft === 'FilterList') {
         if (isOpen) {
             label = 'reduce';
@@ -189,8 +189,10 @@ const SwipeableEdgeDrawer = (props: Props) => {
                             }}
                         >
                             {left}
-                            {title}
-                            {filters}
+                            <Stack direction={'row'}>
+                                {title}
+                                {filters}
+                            </Stack>
                             <IconButton
                                 onClick={toggleDrawer(false)}
                                 aria-label={label}
