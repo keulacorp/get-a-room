@@ -1,12 +1,13 @@
 import { useHistory } from 'react-router-dom';
-import { Visibility } from '@mui/icons-material';
+import { Logout, Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { DrawerButtonSecondary } from '../BookingDrawer/BookingDrawer';
 import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 type userSettingsProps = {
     open: boolean;
@@ -67,10 +68,11 @@ const UserDrawer = (props: userSettingsProps) => {
                     </DrawerButtonSecondary>
                     <DrawerButtonSecondary
                         aria-label="logout"
-                        data-testid="BookNowButton"
+                        data-testid="Logout"
                         onClick={doLogout}
                     >
-                        logout
+                        <Logout aria-label={'logout'}></Logout>
+                        &nbsp;Logout
                     </DrawerButtonSecondary>
                 </DrawerContent>
             </Box>

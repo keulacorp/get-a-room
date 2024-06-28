@@ -21,6 +21,8 @@ import {
     StretchingHorizontalSpacer,
     UserIcon
 } from '../../theme_2024';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
+import UserDrawer from '../UserDrawer/UserDrawer';
 
 type BuildingSelectProps = {
     selectedBuildingId: string;
@@ -69,6 +71,12 @@ const BuildingList = (props: BuildingSelectProps) => {
             setAlignment(newAlignment);
         }
     };
+    const {
+        showUserSettingsMenu,
+        setShowUserSettingsMenu,
+        expandedFeaturesAll,
+        setExpandedFeaturesAll
+    } = useUserSettings();
 
     const renderBuildingList = (): JSX.Element[] => {
         if (alignment === 'names') {
@@ -158,7 +166,9 @@ const BuildingList = (props: BuildingSelectProps) => {
                             </Typography>
                             <StretchingHorizontalSpacer />
                             {/*TODO villep: NOT IMPLEMENTED*/}
-                            <UserIcon />
+                            <UserIcon
+                                onClick={() => setShowUserSettingsMenu(true)}
+                            />
                         </CenterAlignedStack>
                         <Typography
                             textAlign="left"
@@ -229,6 +239,14 @@ const BuildingList = (props: BuildingSelectProps) => {
             </Stack>
 
             {renderBuildingList()}
+
+            <UserDrawer
+                open={showUserSettingsMenu}
+                toggle={() => setShowUserSettingsMenu(!showUserSettingsMenu)}
+                name={name}
+                expandedFeaturesAll={expandedFeaturesAll}
+                setExpandedFeaturesAll={setExpandedFeaturesAll}
+            />
         </div>
     );
 };

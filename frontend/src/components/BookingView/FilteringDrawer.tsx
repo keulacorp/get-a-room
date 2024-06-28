@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -48,6 +49,7 @@ interface Props {
 
 // Note: Actual filtering of the rooms is done one level up in booking view
 const FilteringDrawer = (props: Props) => {
+    const { showUserSettingsMenu } = useUserSettings();
     const {
         open,
         toggle,
@@ -127,7 +129,7 @@ const FilteringDrawer = (props: Props) => {
             iconRight={'Expand'}
             isOpen={open}
             toggle={toggle}
-            disableSwipeToOpen={false}
+            disableSwipeToOpen={showUserSettingsMenu}
             mounted={true}
         >
             <StyledDrawerWrapper>
