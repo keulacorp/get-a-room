@@ -6,6 +6,7 @@ import MainView from './MainView/MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, Divider, styled, ThemeProvider } from '@mui/material';
 import { theme_2024 } from '../theme_2024';
+import { UserSettingsProvider } from '../contexts/UserSettingsContext';
 
 export const GarApp = styled(Divider)(() => ({}));
 
@@ -22,18 +23,20 @@ const App = () => {
                     vertical: 'bottom'
                 }}
             >
-                <GarApp id="app" orientation={'vertical'}>
-                    <Router history={history}>
-                        <Switch>
-                            <Route path="/login">
-                                <LoginView />
-                            </Route>
-                            <Route path="/">
-                                <MainView />
-                            </Route>
-                        </Switch>
-                    </Router>
-                </GarApp>
+                <UserSettingsProvider value={{}}>
+                    <GarApp id="app" orientation={'vertical'}>
+                        <Router history={history}>
+                            <Switch>
+                                <Route path="/login">
+                                    <LoginView />
+                                </Route>
+                                <Route path="/">
+                                    <MainView />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </GarApp>
+                </UserSettingsProvider>
             </SnackbarProvider>
         </ThemeProvider>
     );

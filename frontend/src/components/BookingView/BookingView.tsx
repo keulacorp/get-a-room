@@ -26,6 +26,7 @@ import {
     StretchingHorizontalSpacer,
     UserIcon
 } from '../../theme_2024';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -75,6 +76,7 @@ const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
             sx={{
                 width: '100%'
             }}
+            onClick={props.onClick}
         >
             <Typography variant={'h1'}>
                 ROOMS
@@ -105,12 +107,7 @@ function BookingView(props: BookingViewProps) {
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [expandSettingsDrawer, setExpandSettingsDrawer] = useState(
-        false as boolean
-    );
-    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
-        false as boolean
-    );
+
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 
     // Filtering states
@@ -122,6 +119,13 @@ function BookingView(props: BookingViewProps) {
     const [allFeatures, setAllFeatures] = useState<string[]>([]);
 
     const { createErrorNotification } = useCreateNotification();
+
+    const {
+        showUserSettingsMenu,
+        setShowUserSettingsMenu,
+        expandedFeaturesAll,
+        setExpandedFeaturesAll
+    } = useUserSettings();
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -362,11 +366,11 @@ function BookingView(props: BookingViewProps) {
     };
 
     const openSettingsDrawer = () => {
-        setExpandSettingsDrawer(true);
+        setShowUserSettingsMenu(true);
     };
 
-    const toggleDrawers = (newOpen: boolean) => {
-        setExpandSettingsDrawer(newOpen);
+    const toggleSettingsDrawer = (newOpen: boolean) => {
+        setShowUserSettingsMenu(newOpen);
     };
 
     const updateData = useCallback(() => {
@@ -449,8 +453,8 @@ function BookingView(props: BookingViewProps) {
                 }}
             >
                 <UserDrawer
-                    open={expandSettingsDrawer}
-                    toggle={toggleDrawers}
+                    open={showUserSettingsMenu}
+                    toggle={toggleSettingsDrawer}
                     name={name}
                     expandedFeaturesAll={expandedFeaturesAll}
                     setExpandedFeaturesAll={setExpandedFeaturesAll}
