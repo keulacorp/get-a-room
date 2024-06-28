@@ -8,6 +8,7 @@ import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import { Box, Typography } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 type userSettingsProps = {
     open: boolean;
@@ -42,7 +43,7 @@ const UserDrawer = (props: userSettingsProps) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={name}
             iconLeft={'Person'}
             isOpen={open}
@@ -76,7 +77,7 @@ const UserDrawer = (props: userSettingsProps) => {
                     </DrawerButtonSecondary>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 
