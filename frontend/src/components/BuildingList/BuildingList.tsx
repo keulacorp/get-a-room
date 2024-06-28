@@ -6,16 +6,21 @@ import {
     CardContent,
     FormGroup,
     Stack,
+    styled,
     ToggleButton,
     ToggleButtonGroup,
-    Typography,
-    styled
+    Typography
 } from '@mui/material';
 
 import Box from '@mui/material/Box';
 import { GpsFixed } from '@mui/icons-material';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import {
+    CenterAlignedStack,
+    StretchingHorizontalSpacer,
+    UserIcon
+} from '../../theme_2024';
 
 type BuildingSelectProps = {
     selectedBuildingId: string;
@@ -41,6 +46,10 @@ const EndBox = styled(Box)(({ theme }) => ({
     justifyContent: 'flex-end',
     alignItems: 'center'
 }));
+
+const handleProfileMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
+    // TODO villep NOT IMPLEMENTED
+};
 
 const BuildingList = (props: BuildingSelectProps) => {
     const { setSelectedBuildingId, buildings, handlePreferencesSubmit, name } =
@@ -88,14 +97,13 @@ const BuildingList = (props: BuildingSelectProps) => {
                         <CardContent>
                             <GridContainer>
                                 <Row>
-                                    <Typography variant="h3">
+                                    <Typography variant="h2">
                                         {building.name}
                                     </Typography>
 
                                     <EndBox>
                                         {building.distance ? (
                                             <>
-                                                <GpsFixed></GpsFixed>
                                                 <Typography
                                                     variant="subtitle1"
                                                     align="right"
@@ -140,18 +148,18 @@ const BuildingList = (props: BuildingSelectProps) => {
                     }}
                 >
                     <FormGroup sx={{ alignItems: 'left' }}>
-                        <Typography
-                            textAlign="left"
-                            variant="subtitle1"
-                            color={'#ce3b20'}
-                            paddingTop="8px"
-                            paddingBottom="8px"
-                        >
-                            Welcome, {name}
+                        <Typography textAlign="left" variant="h5">
+                            Welcome, {name}!
                         </Typography>
-                        <Typography textAlign="left" variant="h2">
-                            Choose office
-                        </Typography>
+
+                        <CenterAlignedStack direction={'row'}>
+                            <Typography textAlign="left" variant="h1">
+                                offices
+                            </Typography>
+                            <StretchingHorizontalSpacer />
+                            {/*TODO villep: NOT IMPLEMENTED*/}
+                            <UserIcon />
+                        </CenterAlignedStack>
                         <Typography
                             textAlign="left"
                             variant="subtitle1"

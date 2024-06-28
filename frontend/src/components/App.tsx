@@ -1,15 +1,14 @@
 import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import { history } from '../services/axiosConfigurer';
-import { theme } from '../theme';
 import { SnackbarProvider } from 'notistack';
 import MainView from './MainView/MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, Divider, styled, ThemeProvider } from '@mui/material';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { MobileBackground, DesktopBackground } from './images/svgImages';
+import { DesktopBackground, MobileBackground } from './images/svgImages';
 import { theme_2024 } from '../theme_2024';
-import ToggleButton from '@mui/material/ToggleButton';
+
 export const GarApp = styled(Divider)(() => ({}));
 
 const App = () => {
