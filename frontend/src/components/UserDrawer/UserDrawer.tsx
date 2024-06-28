@@ -60,7 +60,7 @@ const UserDrawer = (props: userSettingsProps) => {
                 <DrawerContent>
                     <DrawerButtonSecondary
                         aria-label="settings drawer "
-                        data-testid="BookNowButton"
+                        data-testid="HandleAllFeatureCollapseButton"
                         onClick={handleAllFeaturesCollapse}
                     >
                         <Visibility aria-label="visibility" />
@@ -68,7 +68,7 @@ const UserDrawer = (props: userSettingsProps) => {
                     </DrawerButtonSecondary>
                     <DrawerButtonSecondary
                         aria-label="logout"
-                        data-testid="Logout"
+                        data-testid="UserDrawerLogoutButton"
                         onClick={doLogout}
                     >
                         <Logout aria-label={'logout'}></Logout>
