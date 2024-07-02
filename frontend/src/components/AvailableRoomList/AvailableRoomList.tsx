@@ -88,6 +88,8 @@ type BookingListProps = {
     setStartingTime: (newStartingTime: string) => void;
     setBookingDuration: (minutes: number) => void;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
+    setExpandTimePickerDrawer: (show: boolean) => void;
+    expandTimePickerDrawer: boolean;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
@@ -103,7 +105,9 @@ const AvailableRoomList = (props: BookingListProps) => {
         startingTime,
         setStartingTime,
         setBookingDuration,
-        setDuration
+        setDuration,
+        setExpandTimePickerDrawer,
+        expandTimePickerDrawer
     } = props;
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -117,7 +121,6 @@ const AvailableRoomList = (props: BookingListProps) => {
         undefined
     );
 
-    const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
     const [expandDurationTimePickerDrawer, setExpandDurationTimePickerDrawer] = useState(false);
 
     const handleAdditionalDurationChange = (additionalMinutes: number) => {
@@ -289,8 +292,8 @@ const AvailableRoomList = (props: BookingListProps) => {
                     onAddTimeUntilFull={handleUntilFull}
                     onAddTimeUntilNext={handleUntilNextDurationChange}
                     startingTime={startingTime}
-                    bookingDuration={bookingDuration}
                     setBookingDuration={setBookingDuration}
+                    setAdditionalDuration={setAdditionalDuration}
                     setDuration={setDuration}
                     setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
                 />

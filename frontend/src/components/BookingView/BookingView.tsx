@@ -314,12 +314,18 @@ function BookingView(props: BookingViewProps) {
         );
     }, [roomSize, resources, customFilter, onlyFavourites]);
 
+    const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
+
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
     };
 
     const handleStartingTimeChange = (newStartingTime: string) => {
-        setStartingTime(newStartingTime);
+        if (newStartingTime !== 'Custom') {
+            setStartingTime(newStartingTime);
+        } else {
+            setExpandTimePickerDrawer(true);
+        }
     };
 
     const updateBookings = useCallback(() => {
@@ -504,6 +510,8 @@ function BookingView(props: BookingViewProps) {
                     setPreferences={setPreferences}
                     setBookingDuration={setBookingDuration}
                     setDuration={setDuration}
+                    setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    expandTimePickerDrawer={expandTimePickerDrawer}
                 />
             )}
 

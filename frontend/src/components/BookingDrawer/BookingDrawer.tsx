@@ -175,8 +175,8 @@ interface Props {
     availableMinutes: number;
     room?: Room;
     startingTime: string;
-    bookingDuration: number;
     setBookingDuration: (minutes: number) => void;
+    setAdditionalDuration: (minutes: number) => void;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandDurationTimePickerDrawer: (show: boolean) => void;
 }
@@ -195,8 +195,8 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilNext,
         availableMinutes,
         startingTime,
-        bookingDuration,
         setBookingDuration,
+        setAdditionalDuration,
         setDuration,
         setExpandDurationTimePickerDrawer
     } = props;
@@ -207,7 +207,10 @@ const BookingDrawer = (props: Props) => {
     });
 
     const handleDurationChange = (newDuration: number) => {
-        setBookingDuration(newDuration);
+        if (newDuration !== -1) {
+            setBookingDuration(newDuration);
+        }
+        setAdditionalDuration(0);
     };
 
     // Placeholder values
@@ -341,11 +344,12 @@ const BookingDrawer = (props: Props) => {
                     </Row>
 
                     <DurationPicker
-                        bookingDuration={bookingDuration}
+                        bookingDuration={duration}
                         setBookingDuration={setBookingDuration}
                         onChange={handleDurationChange}
                         title="quick duration selection"
                         setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
+                        additionalDuration={additionalDuration}
                     />
                     <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>

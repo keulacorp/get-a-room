@@ -53,7 +53,9 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
         newStartingTime: string
     ) => {
         if (newStartingTime !== null) {
-            setStartingTime(newStartingTime);
+            if (newStartingTime !== 'Custom') {
+                setStartingTime(newStartingTime);
+            }
             onChange(newStartingTime);
         }
     };
@@ -63,6 +65,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     const startingTime2 = formatTimeToHalfAndFullHours(now, 0);
     const startingTime3 = formatTimeToHalfAndFullHours(now, 30);
     const startingTime4 = formatTimeToHalfAndFullHours(now, 60);
+    const startingTimeCustom = 'Custom';
 
     return (
         <div>
@@ -111,6 +114,13 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     aria-label={startingTime4}
                 >
                     {startingTime4}
+                </StartingTimeButton>
+                <StartingTimeButton
+                    data-testid="StartingTimePickerCustom"
+                    value={startingTimeCustom}
+                    aria-label={startingTimeCustom}
+                >
+                    {startingTimeCustom}
                 </StartingTimeButton>
             </ToggleButtonGroup>
         </div>
