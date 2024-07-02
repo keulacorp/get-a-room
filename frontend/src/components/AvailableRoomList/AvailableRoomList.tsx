@@ -9,9 +9,11 @@ import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
-import MultiTimePickerDrawer from '../MultiTimePickerDrawer/MultiTimePickerDrawer';
+import StartingTimePickerDrawer from '../StartingTimePickerDrawer/StartingTimePickerDrawer';
+import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePickerDrawer';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { duration } from '@material-ui/core';
 
 const SKIP_CONFIRMATION = true;
 
@@ -116,6 +118,7 @@ const AvailableRoomList = (props: BookingListProps) => {
     );
 
     const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
+    const [expandDurationTimePickerDrawer, setExpandDurationTimePickerDrawer] = useState(false);
 
     const handleAdditionalDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
@@ -289,9 +292,10 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookingDuration={bookingDuration}
                     setBookingDuration={setBookingDuration}
                     setDuration={setDuration}
+                    setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <MultiTimePickerDrawer
+                    <StartingTimePickerDrawer
                         open={expandTimePickerDrawer}
                         toggle={(newOpen: any) =>
                             setExpandTimePickerDrawer(newOpen)
@@ -299,6 +303,15 @@ const AvailableRoomList = (props: BookingListProps) => {
                         startingTime={startingTime}
                         setStartingTime={setStartingTime}
                         setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    />
+                    <DurationTimePickerDrawer
+                        open={expandDurationTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandDurationTimePickerDrawer(newOpen)
+                        }
+                        bookingDuration={bookingDuration}
+                        setBookingDuration={setBookingDuration}
+                        setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
                     />
                 </LocalizationProvider>
             </div>

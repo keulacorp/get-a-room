@@ -16,20 +16,29 @@ const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
 type DurationPickerProps = {
     onChange: (duration: number) => void;
     title: string;
-    duration: number;
-    setDuration: React.Dispatch<React.SetStateAction<number>>;
+    bookingDuration: number;
+    setBookingDuration: (dur: number) => void;
+    setExpandDurationTimePickerDrawer: (show: boolean) => void;
 };
 
 const DurationPicker = (props: DurationPickerProps) => {
-    const { onChange, title, duration, setDuration } = props;
+    const { onChange, title, bookingDuration, setBookingDuration, setExpandDurationTimePickerDrawer } = props;
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newDuration: number
     ) => {
         if (newDuration !== null) {
-            setDuration(newDuration);
-            onChange(newDuration);
+            if (newDuration !== 15 &&
+                newDuration !== 30 &&
+                newDuration !== 60 &&
+                newDuration !== 120
+            ) {
+                setExpandDurationTimePickerDrawer(true)
+            } else {
+                setBookingDuration(newDuration);
+                onChange(newDuration);
+            }
         }
     };
 
@@ -38,7 +47,7 @@ const DurationPicker = (props: DurationPickerProps) => {
             <DurationButtonGroup
                 data-testid="DurationPicker"
                 color="primary"
-                value={duration}
+                value={bookingDuration}
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
@@ -72,6 +81,13 @@ const DurationPicker = (props: DurationPickerProps) => {
                     aria-label="2 hours"
                 >
                     2 h
+                </DurationButton>
+                <DurationButton
+                    data-testid="DurationPickerCustom"
+                    value={-1}
+                    aria-label="Custom duration"
+                >
+                    Custom
                 </DurationButton>
             </DurationButtonGroup>
         </div>

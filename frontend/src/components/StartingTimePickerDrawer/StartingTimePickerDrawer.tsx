@@ -13,7 +13,7 @@ import SwipeableEdgeDrawer, {
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import dayjs from 'dayjs';
 
-interface MultiTimePickerDrawerProps {
+interface StartingTimePickerDrawerProps {
     open: boolean;
     toggle: (open: boolean) => void;
     startingTime: string;
@@ -35,7 +35,7 @@ function nowDate() {
     ].join("");
   }
 
-const MultiTimePickerDrawer = (props: MultiTimePickerDrawerProps) => {
+const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
     const {
         open,
         toggle,
@@ -150,4 +150,4 @@ const MultiTimePickerDrawer = (props: MultiTimePickerDrawerProps) => {
     );
 };
 
-export default MultiTimePickerDrawer;
+export default StartingTimePickerDrawer;
