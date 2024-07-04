@@ -7,6 +7,8 @@ import React, {
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
 import { useHistory } from 'react-router-dom';
+import { Preferences } from '../types';
+import { updatePreferences } from '../services/preferencesService';
 
 export interface UserSettingsContextProps {
     showUserSettingsMenu: boolean;
@@ -14,6 +16,8 @@ export interface UserSettingsContextProps {
     expandedFeaturesAll: boolean;
     setExpandedFeaturesAll: (expand: boolean) => void;
     doLogout: () => void;
+    preferences: Preferences | undefined;
+    setPreferences: (preferences: Preferences | undefined) => any;
 }
 
 export const userSettingsContextDefaults = {
@@ -43,20 +47,34 @@ export const UserSettingsProvider = (
                 history.push('/login');
             });
     };
+    const [preferences, setPreferences] = useState<Preferences>();
 
     const [showUserSettingsMenu, setShowUserSettingsMenu] = React.useState(
         props.value?.showUserSettingsMenu || false
     );
-    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
-        false as boolean
+    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState<boolean>(
+        preferences?.showRoomResources || false
     );
 
-    const ctx = {
+    const setExpandFeatures = (expandAll: boolean) => {
+        if (preferences) {
+            updatePreferences({
+                ...preferences,
+                showRoomResources: expandAll
+            }).then(() => setExpandedFeaturesAll(expandAll));
+        } else {
+            setExpandedFeaturesAll(expandAll);
+        }
+    };
+    const ctx: Partial<UserSettingsContextProps> = {
         showUserSettingsMenu,
         setShowUserSettingsMenu,
         doLogout,
-        expandedFeaturesAll,
-        setExpandedFeaturesAll
+        expandedFeaturesAll:
+            expandedFeaturesAll || preferences?.showRoomResources || false,
+        setExpandedFeaturesAll: setExpandFeatures,
+        preferences,
+        setPreferences
     };
 
     return (

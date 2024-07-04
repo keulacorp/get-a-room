@@ -10,6 +10,7 @@ import SwipeableEdgeDrawer, {
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
+import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 const MIN_DURATION = 15;
 
@@ -288,7 +289,7 @@ const BookingDrawer = (props: Props) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={getName(room)}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -381,7 +382,7 @@ const BookingDrawer = (props: Props) => {
                     </Row>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

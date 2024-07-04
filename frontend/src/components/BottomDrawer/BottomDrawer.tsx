@@ -6,7 +6,7 @@ import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { IconButton, Stack } from '@mui/material';
+import { Drawer, IconButton, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
@@ -86,7 +86,7 @@ interface Props {
     mounted?: boolean;
 }
 
-const SwipeableEdgeDrawer = (props: Props) => {
+const BottomDrawer = (props: Props) => {
     const {
         children,
         headerTitle,
@@ -94,7 +94,6 @@ const SwipeableEdgeDrawer = (props: Props) => {
         iconLeft,
         isOpen,
         toggle,
-        disableSwipeToOpen,
         mounted
     } = props;
 
@@ -162,14 +161,11 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     }
                 }}
             />
-            <SwipeableDrawer
+            <Drawer
                 data-testid="BookingDrawer"
                 anchor="bottom"
                 open={isOpen}
                 onClose={toggleDrawer(false)}
-                onOpen={toggleDrawer(true)}
-                swipeAreaWidth={drawerBleeding}
-                disableSwipeToOpen={disableSwipeToOpen && isOpen}
                 keepMounted={mounted}
                 style={{
                     position: 'relative',
@@ -177,7 +173,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     maxWidth: '1000px'
                 }}
             >
-                {!disableSwipeToOpen ? (
+                {headerTitle && headerTitle != '' ? (
                     <DrawerHeader onClick={handleHeaderClick}>
                         <Box
                             style={{
@@ -205,9 +201,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     ''
                 )}
                 {children}
-            </SwipeableDrawer>
+            </Drawer>
         </Root>
     );
 };
 
-export default SwipeableEdgeDrawer;
+export default BottomDrawer;

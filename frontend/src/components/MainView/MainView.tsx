@@ -15,10 +15,10 @@ import { Box } from '@mui/material';
 import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
 import usePushNotificationRegistration from '../../hooks/usePushNotificationRegistration';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 const MainView = () => {
-    const [preferences, setPreferences] = useState<Preferences | undefined>();
-
+    const { preferences, setPreferences } = useUserSettings();
     const [buildings, setBuildings] = useState<Building[]>([]);
 
     const [name, setName] = useState<String>();
@@ -31,7 +31,9 @@ const MainView = () => {
 
     useEffect(() => {
         getPreferences()
-            .then(setPreferences)
+            .then((preferences) => {
+                setPreferences(preferences);
+            })
             .catch((e) => {
                 // Redirected to login
                 console.log(e);
