@@ -38,6 +38,7 @@ export interface Room {
     id: string;
     name: string;
     building: string;
+    floor: string;
     capacity?: number;
     features?: Array<string>;
     nextCalendarEvent: string;
