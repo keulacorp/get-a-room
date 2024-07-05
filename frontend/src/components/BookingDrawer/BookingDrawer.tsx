@@ -267,7 +267,11 @@ const BookingDrawer = (props: Props) => {
                       .plus({ minutes: duration })
                       .toObject();
 
-        if (!halfHour || !halfHour.hour || !halfHour.minute) {
+        console.log(startingTime);
+
+        if (halfHour.hour === undefined || halfHour.minute === undefined ||
+            Number.isNaN(halfHour.hour) || Number.isNaN(halfHour.minute)
+        ) {
             throw new Error('Time not set');
         }
         if (halfHour.minute >= 30) {

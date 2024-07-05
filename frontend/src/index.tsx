@@ -11,6 +11,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { createRoot } from 'react-dom/client';
+import {Provider} from 'react-redux';
+import customDurationStore from './store/customDurationStore';
 
 checkEnvVariables();
 const element: HTMLElement | null = document.getElementById('root');
@@ -22,7 +24,9 @@ if (!element) {
 const root = createRoot(element);
 root.render(
     <StrictMode>
-        <App />
+        <Provider store={customDurationStore}>
+            <App />
+        </Provider>
     </StrictMode>
 );
 // If you want to start measuring performance in your app, pass a function

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
 import { TextField, Box } from '@mui/material';
 import { DateTime } from 'luxon';
+import {useSelector, useDispatch} from 'react-redux'
 
 import {
     DrawerButtonPrimary,
@@ -65,7 +66,9 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
           (dd > 9 ? "" : "0") + dd,
         ].join("");
       }
-
+    
+    const dispatch = useDispatch();
+    
     useEffect(() => {
         setTime(bookingDuration ? convertDurationToTime(bookingDuration): '03:00');
     }, [open]);
@@ -74,12 +77,9 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         const h = Number(time.split(':')[0]);
         const m = Number(time.split(':')[1]);
 
-        console.log(bookingDuration);
-        setBookingDuration(h*60+m);
+        dispatch({ type: "TRUE" });
 
-        console.log(time);
-        console.log(h*60+m);
-        console.log(bookingDuration);
+        setBookingDuration(h*60+m);
 
         setExpandDurationTimePickerDrawer(false);
     };
