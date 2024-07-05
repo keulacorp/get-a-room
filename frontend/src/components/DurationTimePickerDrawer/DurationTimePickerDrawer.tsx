@@ -77,7 +77,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         const h = Number(time.split(':')[0]);
         const m = Number(time.split(':')[1]);
 
-        dispatch({ type: "TRUE" });
+        dispatch({ type: "DURATION_TRUE" });
 
         setBookingDuration(h*60+m);
 

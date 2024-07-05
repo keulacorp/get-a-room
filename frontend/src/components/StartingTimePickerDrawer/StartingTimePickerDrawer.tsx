@@ -12,6 +12,7 @@ import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import dayjs from 'dayjs';
+import {useSelector, useDispatch} from 'react-redux'
 
 interface StartingTimePickerDrawerProps {
     open: boolean;
@@ -44,6 +45,8 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         setExpandTimePickerDrawer
     } = props;
     const [time, setTime] = useState<string>(DateTime.now().toFormat('hh:mm'));
+
+    const dispatch = useDispatch();
 
     // Whenever drawer is opened, set the time to current time - otherwise it can display old time as the default
     useEffect(() => {
@@ -78,6 +81,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         } else {
             setStartingTime(time);
         }
+        dispatch({ type: 'STARTING_TIME_TRUE' });
         setExpandTimePickerDrawer(false);
     };
 

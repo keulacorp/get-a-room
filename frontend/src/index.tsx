@@ -12,7 +12,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { createRoot } from 'react-dom/client';
 import {Provider} from 'react-redux';
-import customDurationStore from './store/customDurationStore';
+import store from './store/store';
 
 checkEnvVariables();
 const element: HTMLElement | null = document.getElementById('root');
@@ -24,7 +24,7 @@ if (!element) {
 const root = createRoot(element);
 root.render(
     <StrictMode>
-        <Provider store={customDurationStore}>
+        <Provider store={store}>
             <App />
         </Provider>
     </StrictMode>

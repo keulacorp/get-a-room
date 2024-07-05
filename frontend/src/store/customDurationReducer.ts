@@ -4,9 +4,9 @@ const initialCustomDuration = {
 
 const customDurationReducer = (state:any = initialCustomDuration, action: any) => {
     switch(action.type){
-        case "TRUE":
+        case "DURATION_TRUE":
             return { ...state, custom: true };
-        case "FALSE":
+        case "DURATION_FALSE":
             return { ...state, custom: false };
         default: 
             return state

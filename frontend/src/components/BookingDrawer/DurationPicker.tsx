@@ -31,10 +31,10 @@ const DurationPicker = (props: DurationPickerProps) => {
             bookingDuration === 30 ||
             bookingDuration === 60 ||
             bookingDuration === 120) {
-                dispatch({ type: 'FALSE' });
+                dispatch({ type: 'DURATION_FALSE' });
                 return bookingDuration.toString();
             }
-        dispatch({ type: 'TRUE' });
+        dispatch({ type: 'DURATION_TRUE' });
         return bookingDuration.toString();
     }
 
@@ -54,7 +54,7 @@ const DurationPicker = (props: DurationPickerProps) => {
                 onChange(-1);
             } else {
                 quickDuration = newDuration;
-                dispatch({ type: "FALSE" });
+                dispatch({ type: "DURATION_FALSE" });
                 onChange(parseInt(newDuration));
             }
         }

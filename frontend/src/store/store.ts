@@ -1,9 +1,11 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 
 import customDurationReducer from './customDurationReducer'
+import customStartingTimeReducer from './customStartingTimeReducer'
 
 const rootReducer = combineReducers({
-    customDurationReducer
+    customDurationReducer,
+    customStartingTimeReducer
 })
 
 const store = configureStore({

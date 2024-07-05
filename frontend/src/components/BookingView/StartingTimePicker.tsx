@@ -3,6 +3,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { styled, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
+import {useSelector, useDispatch} from 'react-redux'
 
 const StartingTimeButton = styled(ToggleButton)(() => ({
     padding: '8px 16px'
@@ -48,6 +49,8 @@ const formatTimeToHalfAndFullHours = (
 const StartingTimePicker = (props: StartingTimePickerProps) => {
     const { onChange, title, startingTime, setStartingTime } = props;
 
+    const dispatch = useDispatch();
+
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newStartingTime: string
@@ -55,17 +58,38 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
         if (newStartingTime !== null) {
             if (newStartingTime !== 'Custom') {
                 setStartingTime(newStartingTime);
+                dispatch({ type: 'STARTING_TIME_FALSE' });
+            } else {
+                dispatch({ type: 'STARTING_TIME_TRUE' });
             }
             onChange(newStartingTime);
         }
     };
 
+    const isCustomStartingTimeReducer = useSelector((state: any) => state.customStartingTimeReducer.custom);
+
     const now = DateTime.now();
-    const startingTimeNow = 'Now'; //timeFormat(now.hour, now.minute);
+    const startingTimeNow = 'Now';
     const startingTime2 = formatTimeToHalfAndFullHours(now, 0);
     const startingTime3 = formatTimeToHalfAndFullHours(now, 30);
     const startingTime4 = formatTimeToHalfAndFullHours(now, 60);
     const startingTimeCustom = 'Custom';
+
+    const CustomStartingTimeButton = () => {
+        if (isCustomStartingTimeReducer)
+        {
+            return (
+                <StartingTimeButton
+                    data-testid="StartingTimePickerCustomValue"
+                    value={startingTime}
+                    aria-label={startingTime}
+                >
+                    {startingTime}
+                </StartingTimeButton>)
+        } else {
+            return "";
+        }
+    }
 
     return (
         <div>
@@ -115,6 +139,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                 >
                     {startingTime4}
                 </StartingTimeButton>
+                { CustomStartingTimeButton() }
                 <StartingTimeButton
                     data-testid="StartingTimePickerCustom"
                     value={startingTimeCustom}
