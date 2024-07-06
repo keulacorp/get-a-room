@@ -12,7 +12,6 @@ import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import dayjs from 'dayjs';
-import {useSelector, useDispatch} from 'react-redux'
 
 interface StartingTimePickerDrawerProps {
     open: boolean;
@@ -42,11 +41,9 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         toggle,
         startingTime,
         setStartingTime,
-        setExpandTimePickerDrawer
+        setExpandTimePickerDrawer,
     } = props;
-    const [time, setTime] = useState<string>(DateTime.now().toFormat('hh:mm'));
-
-    const dispatch = useDispatch();
+    const [time, setTime] = useState<string>(DateTime.now().toFormat('HH:mm'));
 
     // Whenever drawer is opened, set the time to current time - otherwise it can display old time as the default
     useEffect(() => {
@@ -81,9 +78,14 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         } else {
             setStartingTime(time);
         }
-        dispatch({ type: 'STARTING_TIME_TRUE' });
+        
         setExpandTimePickerDrawer(false);
     };
+
+    function getStartingTimeDefaultSelection(): any {
+        console.log(nowDate() + ' ' + time);
+        return dayjs(nowDate() + ' ' + time);
+    }
 
     return (
         <SwipeableEdgeDrawer
@@ -122,14 +124,13 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                             timeSteps={{ hours: 1, minutes: 5 }}
                             views={['hours', 'minutes']}
                             onChange={(val) => {
-                                console.log(val)
                                 setTime(val
                                         ? getHourMinute(val)
-                                        : DateTime.now().toFormat('hh:mm'));
-                                console.log(time)
+                                        : DateTime.now().toFormat('HH:mm'));
                             }}
                             ampm={false}
-                            value={dayjs(nowDate() + ' ' + time)}
+                            value={getStartingTimeDefaultSelection()}
+                            minTime={dayjs()}
                         />
                     </form>
                     <Row>

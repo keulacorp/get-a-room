@@ -27,7 +27,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
         setStartingTime,
         setExpandTimePickerDrawer
     } = props;
-    const [time, setTime] = useState<string>(DateTime.now().toFormat('hh:mm'));
+    const [time, setTime] = useState<string>(DateTime.now().toFormat('HH:mm'));
 
     // Whenever drawer is opened, set the time to current time - otherwise it can display old time as the default
     useEffect(() => {
@@ -48,7 +48,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
             (h === currentTime.hour && m <= currentTime.minute)
         ) {
             setStartingTime('Now');
-            setTime(currentTime.toFormat('hh:mm'));
+            setTime(currentTime.toFormat('HH:mm'));
         } else {
             setStartingTime(time);
         }
@@ -102,7 +102,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
                                 setTime(
                                     e?.target?.value
                                         ? e?.target?.value
-                                        : DateTime.now().toFormat('hh:mm')
+                                        : DateTime.now().toFormat('HH:mm')
                                 );
                             }}
                             style={{ width: '150px' }}

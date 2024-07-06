@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
 import { TextField, Box } from '@mui/material';
 import { DateTime } from 'luxon';
-import {useSelector, useDispatch} from 'react-redux'
 
 import {
     DrawerButtonPrimary,
@@ -20,6 +19,7 @@ interface DurationTimePickerDrawerProps {
     bookingDuration: number;
     setBookingDuration: (duration: number) => void;
     setExpandDurationTimePickerDrawer: (state: boolean) => void;
+    maxDuration: any;
 }
 
 const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
@@ -28,10 +28,11 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         toggle,
         bookingDuration,
         setBookingDuration,
-        setExpandDurationTimePickerDrawer
+        setExpandDurationTimePickerDrawer,
+        maxDuration
     } = props;
 
-    const [time, setTime] = useState<string>(DateTime.now().toFormat('hh:mm'));
+    const [time, setTime] = useState<string>(DateTime.now().toFormat('HH:mm'));
 
     const convertDurationToTime = (duration: number) => {
         const h = Math.floor(duration / 60);
@@ -67,8 +68,6 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         ].join("");
       }
     
-    const dispatch = useDispatch();
-    
     useEffect(() => {
         setTime(bookingDuration ? convertDurationToTime(bookingDuration): '03:00');
     }, [open]);
@@ -76,8 +75,6 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
     const handleSetDuration = () => {
         const h = Number(time.split(':')[0]);
         const m = Number(time.split(':')[1]);
-
-        dispatch({ type: "DURATION_TRUE" });
 
         setBookingDuration(h*60+m);
 
@@ -127,6 +124,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                             }}
                             ampm={false}
                             value={dayjs(nowDate() + ' ' + time)}
+                            maxTime={maxDuration}
                         />
                     </form>
                     <Row>

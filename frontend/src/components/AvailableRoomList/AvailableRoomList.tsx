@@ -13,7 +13,7 @@ import StartingTimePickerDrawer from '../StartingTimePickerDrawer/StartingTimePi
 import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePickerDrawer';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { duration } from '@material-ui/core';
+import dayjs from 'dayjs';
 
 const SKIP_CONFIRMATION = true;
 
@@ -46,6 +46,12 @@ export async function isFavorited(room: Room, pref?: Preferences) {
 
 function noAvailableRooms(rooms: Room[]) {
     return rooms.length === 0;
+}
+
+function maxDuration(room: Room | undefined, startingTime: String) {
+    const mm = availableForMinutes(room, startingTime);
+
+    return dayjs().minute(mm % 60).hour(Math.floor(mm / 60));
 }
 
 function availableForMinutes(room: Room | undefined, startingTime: String) {
@@ -315,6 +321,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                         bookingDuration={bookingDuration}
                         setBookingDuration={setBookingDuration}
                         setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
+                        maxDuration={maxDuration(selectedRoom, startingTime)}
                     />
                 </LocalizationProvider>
             </div>

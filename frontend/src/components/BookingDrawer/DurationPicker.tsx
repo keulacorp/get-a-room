@@ -2,7 +2,6 @@ import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { styled, Typography } from '@mui/material';
-import {useSelector, useDispatch} from 'react-redux'
 
 const DurationButton = styled(ToggleButton)(() => ({
     padding: '8px 16px'
@@ -26,24 +25,19 @@ type DurationPickerProps = {
 const DurationPicker = (props: DurationPickerProps) => {
     const { onChange, title, bookingDuration, setBookingDuration, setExpandDurationTimePickerDrawer, additionalDuration } = props;
 
-    const getQuickDuration = (bookingDuration: number): string => {
-        if(bookingDuration === 15 ||
-            bookingDuration === 30 ||
-            bookingDuration === 60 ||
-            bookingDuration === 120) {
-                dispatch({ type: 'DURATION_FALSE' });
-                return bookingDuration.toString();
-            }
-        dispatch({ type: 'DURATION_TRUE' });
-        return bookingDuration.toString();
+    let isCustomDuration: boolean = false;
+
+    const bookingDurationTotal = bookingDuration + additionalDuration;
+    if (bookingDurationTotal === 15 ||
+        bookingDurationTotal === 30 ||
+        bookingDurationTotal === 60 ||
+        bookingDurationTotal === 120) {
+        isCustomDuration = false;
+    } else {
+        isCustomDuration = true;
     }
-
-    const isCustomDuration = useSelector((state: any) => state.customDurationReducer.custom)
-
-    const dispatch = useDispatch();
-
-    let quickDuration = getQuickDuration(bookingDuration + additionalDuration);
-
+    let quickDuration: string = bookingDurationTotal.toString();
+    
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newDuration: string
@@ -54,21 +48,28 @@ const DurationPicker = (props: DurationPickerProps) => {
                 onChange(-1);
             } else {
                 quickDuration = newDuration;
-                dispatch({ type: "DURATION_FALSE" });
                 onChange(parseInt(newDuration));
             }
         }
     }
+    
+    function toHourMinuteFormat(quickDuration: string): string | undefined {
+        const min = parseInt(quickDuration);
+        const h = Math.floor(min / 60);
+        const m = min % 60;
+        return (h < 10 ? '0' : '') + h.toString() + ' h ' + (m < 10 ? '0' : '') + m.toString() + ' min';
+    }
 
     function CustomDurationValueButton(): React.ReactNode {
         if (isCustomDuration) {
+            
             return (<DurationButton
             data-testid="DurationPickerCustomValue"
             value={quickDuration}
-            aria-label={quickDuration.toString() + ' min'}
+            aria-label={toHourMinuteFormat(quickDuration)}
             >
                 {
-                    quickDuration.toString() + ' min'
+                    toHourMinuteFormat(quickDuration)
                 }
             </DurationButton>)
         }

@@ -205,7 +205,7 @@ const BookingDrawer = (props: Props) => {
         updateHalfHour();
         updateFullHour();
     });
-
+    
     const handleDurationChange = (newDuration: number) => {
         if (newDuration !== -1) {
             setBookingDuration(newDuration);
@@ -266,8 +266,6 @@ const BookingDrawer = (props: Props) => {
                   })
                       .plus({ minutes: duration })
                       .toObject();
-
-        console.log(startingTime);
 
         if (halfHour.hour === undefined || halfHour.minute === undefined ||
             Number.isNaN(halfHour.hour) || Number.isNaN(halfHour.minute)
