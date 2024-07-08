@@ -63,6 +63,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={true}
+            zindex={1200}
         >
             <Box
                 style={{

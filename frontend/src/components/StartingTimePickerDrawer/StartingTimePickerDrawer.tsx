@@ -25,15 +25,15 @@ function nowDate() {
     const dt = new Date();
     const mm = dt.getMonth() + 1;
     const dd = dt.getDate();
-  
+
     return [
-      dt.getFullYear(),
-      "-",
-      (mm > 9 ? "" : "0") + mm,
-      "-",
-      (dd > 9 ? "" : "0") + dd,
-    ].join("");
-  }
+        dt.getFullYear(),
+        '-',
+        (mm > 9 ? '' : '0') + mm,
+        '-',
+        (dd > 9 ? '' : '0') + dd
+    ].join('');
+}
 
 const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
     const {
@@ -41,7 +41,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         toggle,
         startingTime,
         setStartingTime,
-        setExpandTimePickerDrawer,
+        setExpandTimePickerDrawer
     } = props;
     const [time, setTime] = useState<string>(DateTime.now().toFormat('HH:mm'));
 
@@ -54,14 +54,14 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
     }, [open, startingTime]);
 
     const getHourMinute = (v: any) => {
-        let h = v.get('hour').toString()
+        let h = v.get('hour').toString();
         if (v.get('hour') < 10) h = '0' + h;
 
-        let m = v.get('minute').toString()
+        let m = v.get('minute').toString();
         if (v.get('minute') < 10) m = '0' + m;
 
         return h + ':' + m;
-    }
+    };
 
     const handleSetTime = (isNow: Boolean) => {
         const h = Number(time.split(':')[0]);
@@ -78,13 +78,12 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
         } else {
             setStartingTime(time);
         }
-        
+
         setExpandTimePickerDrawer(false);
     };
 
     function getStartingTimeDefaultSelection(): any {
-        console.log(nowDate() + ' ' + time);
-        return dayjs(nowDate() + ' ' + time);
+        dayjs(nowDate() + ' ' + time);
     }
 
     return (
@@ -95,6 +94,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={true}
+            zindex={1200}
         >
             <Box
                 style={{
@@ -124,9 +124,11 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                             timeSteps={{ hours: 1, minutes: 5 }}
                             views={['hours', 'minutes']}
                             onChange={(val) => {
-                                setTime(val
+                                setTime(
+                                    val
                                         ? getHourMinute(val)
-                                        : DateTime.now().toFormat('HH:mm'));
+                                        : DateTime.now().toFormat('HH:mm')
+                                );
                             }}
                             ampm={false}
                             value={getStartingTimeDefaultSelection()}

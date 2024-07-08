@@ -47,10 +47,11 @@ const timeToHalfAndFullHours = (
 
 const formatTimeToHalfAndFullHours = (
     startingTime: DateTime,
-    addition: number) => {
+    addition: number
+) => {
     const timeObj = timeToHalfAndFullHours(startingTime, addition);
     return timeFormat(timeObj.hour!, timeObj.minute!);
-}
+};
 
 const StartingTimePicker = (props: StartingTimePickerProps) => {
     const { onChange, title, startingTime, setStartingTime } = props;
@@ -62,11 +63,12 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     const startingTime4 = formatTimeToHalfAndFullHours(now, 60);
     const startingTimeCustom = 'Custom';
 
-    const isCustomStartingTime = (startingTime !== startingTimeNow &&
+    const isCustomStartingTime =
+        startingTime !== startingTimeNow &&
         startingTime !== startingTime2 &&
         startingTime !== startingTime3 &&
-        startingTime !== startingTime4)
-    
+        startingTime !== startingTime4;
+
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newStartingTime: string
@@ -80,8 +82,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     };
 
     const CustomStartingTimeButton = () => {
-        if (isCustomStartingTime)
-        {
+        if (isCustomStartingTime) {
             return (
                 <StartingTimeButton
                     data-testid="StartingTimePickerCustomValue"
@@ -89,11 +90,12 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     aria-label={startingTime}
                 >
                     {startingTime}
-                </StartingTimeButton>)
+                </StartingTimeButton>
+            );
         } else {
-            return "";
+            return '';
         }
-    }
+    };
 
     return (
         <div>
@@ -143,7 +145,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                 >
                     {startingTime4}
                 </StartingTimeButton>
-                { CustomStartingTimeButton() }
+                {CustomStartingTimeButton()}
                 <StartingTimeButton
                     data-testid="StartingTimePickerCustom"
                     value={startingTimeCustom}

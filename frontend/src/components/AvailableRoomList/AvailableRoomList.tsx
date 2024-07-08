@@ -48,14 +48,6 @@ function noAvailableRooms(rooms: Room[]) {
     return rooms.length === 0;
 }
 
-function maxDuration(room: Room | undefined, startingTime: String) {
-    const mm = availableForMinutes(room, startingTime);
-
-    return dayjs()
-        .minute(mm % 60)
-        .hour(Math.floor(mm / 60));
-}
-
 function availableForMinutes(room: Room | undefined, startingTime: String) {
     if (room === undefined) {
         return 0;
@@ -135,7 +127,19 @@ const AvailableRoomList = (props: BookingListProps) => {
     const handleAdditionalDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
     };
+    function maxDuration(room: Room | undefined, startingTime: String) {
+        const mm = availableForMinutes(room, startingTime);
 
+        console.log('in maxDuration');
+        console.log(expandDurationTimePickerDrawer);
+        console.log(room);
+        console.log(startingTime);
+        console.log('max duration: ' + mm);
+
+        return dayjs()
+            .minute(mm % 60)
+            .hour(Math.floor(mm / 60));
+    }
     const handleUntilHalf = () => {
         let halfTime =
             startingTime === 'Now'

@@ -23,61 +23,76 @@ type DurationPickerProps = {
 };
 
 const DurationPicker = (props: DurationPickerProps) => {
-    const { onChange, title, bookingDuration, setBookingDuration, setExpandDurationTimePickerDrawer, additionalDuration } = props;
+    const {
+        onChange,
+        title,
+        bookingDuration,
+        setBookingDuration,
+        setExpandDurationTimePickerDrawer,
+        additionalDuration
+    } = props;
 
     let isCustomDuration: boolean = false;
 
     const bookingDurationTotal = bookingDuration + additionalDuration;
-    if (bookingDurationTotal === 15 ||
+    if (
+        bookingDurationTotal === 15 ||
         bookingDurationTotal === 30 ||
         bookingDurationTotal === 60 ||
-        bookingDurationTotal === 120) {
+        bookingDurationTotal === 120
+    ) {
         isCustomDuration = false;
     } else {
         isCustomDuration = true;
     }
     let quickDuration: string = bookingDurationTotal.toString();
-    
+
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newDuration: string
     ) => {
         if (newDuration !== null) {
             if (newDuration === 'Custom') {
-                setExpandDurationTimePickerDrawer(true);        
+                setExpandDurationTimePickerDrawer(true);
                 onChange(-1);
             } else {
                 quickDuration = newDuration;
                 onChange(parseInt(newDuration));
             }
         }
-    }
-    
+    };
+
     function toHourMinuteFormat(quickDuration: string): string | undefined {
         const min = parseInt(quickDuration);
         const h = Math.floor(min / 60);
         const m = min % 60;
-        return (h < 10 ? '0' : '') + h.toString() + ' h ' + (m < 10 ? '0' : '') + m.toString() + ' min';
+        return (
+            (h < 10 ? '0' : '') +
+            h.toString() +
+            ' h ' +
+            (m < 10 ? '0' : '') +
+            m.toString() +
+            ' min'
+        );
     }
 
     function CustomDurationValueButton(): React.ReactNode {
         if (isCustomDuration) {
-            
-            return (<DurationButton
-            data-testid="DurationPickerCustomValue"
-            value={quickDuration}
-            aria-label={toHourMinuteFormat(quickDuration)}
-            >
-                {
-                    toHourMinuteFormat(quickDuration)
-                }
-            </DurationButton>)
+            return (
+                <DurationButton
+                    data-testid="DurationPickerCustomValue"
+                    value={quickDuration}
+                    aria-label={toHourMinuteFormat(quickDuration)}
+                >
+                    {toHourMinuteFormat(quickDuration)}
+                </DurationButton>
+            );
         }
-        return ("")
+        return '';
     }
 
     return (
-        <div>
+        <div style={{ zIndex: 3000 }}>
             <DurationButtonGroup
                 data-testid="DurationPicker"
                 color="primary"
@@ -116,9 +131,7 @@ const DurationPicker = (props: DurationPickerProps) => {
                 >
                     2 h
                 </DurationButton>
-                {
-                    CustomDurationValueButton()
-                }
+                {CustomDurationValueButton()}
                 <DurationButton
                     data-testid="DurationPickerCustom"
                     value={'Custom'}
