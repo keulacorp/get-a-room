@@ -192,7 +192,8 @@ const RoomCardTitleWithDescription = (props: {
                 align={'left'}
                 paddingLeft={DEFAULT_STYLES.smallerSpacer}
             >
-                {getNumberWithOrdinalSuffix(getFloor(props.room))} floor
+                {getNumberWithOrdinalSuffix(parseInt(getFloor(props.room)))}{' '}
+                floor
             </Typography>
         </CenterAlignedStack>
     );
