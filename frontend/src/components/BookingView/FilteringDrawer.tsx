@@ -111,11 +111,11 @@ const FilteringDrawer = (props: Props) => {
     const handleCustomDuration = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const value = event.target.value;
-
-        if (!isNaN(parseInt(value)) && typeof value === 'string') {
-            setDuration(parseInt(value));
-            onChange(parseInt(value));
+        let value = parseInt(event.target.value);
+        if (!isNaN(value)) {
+            value = Math.max(0, value);
+            setDuration(value);
+            onChange(value);
         } else {
             setDuration(NaN);
         }
