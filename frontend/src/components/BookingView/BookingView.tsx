@@ -27,6 +27,7 @@ import {
     UserIcon
 } from '../../theme_2024';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { sortByFavoritedAndName } from '../../util/arrayUtils';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;

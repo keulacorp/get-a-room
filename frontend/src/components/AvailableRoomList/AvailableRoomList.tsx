@@ -10,6 +10,7 @@ import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import TimePickerDrawer from '../TimePickerDrawer/TimePickerDrawer';
+import { sortByFavoritedAndName } from '../../util/arrayUtils';
 
 const SKIP_CONFIRMATION = true;
 
@@ -317,29 +318,25 @@ const AvailableRoomList = (props: BookingListProps) => {
                 {noAvailableRooms(rooms) ? (
                     <NoRoomsCard />
                 ) : (
-                    rooms
-                        .sort((a, b) => (a.name < b.name ? -1 : 1))
-                        .map((room) =>
-                            isAvailableFor(bookingDuration, room, startingTime)
-                                ? (isFavorited(room, preferences),
-                                  (
-                                      <li key={room.id}>
-                                          <RoomCard
-                                              room={room}
-                                              onClick={handleCardClick}
-                                              bookingLoading={bookingLoading}
-                                              disableBooking={false}
-                                              isSelected={selectedRoom === room}
-                                              expandFeatures={
-                                                  expandedFeaturesAll
-                                              }
-                                              preferences={preferences}
-                                              setPreferences={setPreferences}
-                                          />
-                                      </li>
-                                  ))
-                                : null
-                        )
+                    sortByFavoritedAndName<Room>(rooms).map((room) =>
+                        isAvailableFor(bookingDuration, room, startingTime)
+                            ? (isFavorited(room, preferences),
+                              (
+                                  <li key={room.id}>
+                                      <RoomCard
+                                          room={room}
+                                          onClick={handleCardClick}
+                                          bookingLoading={bookingLoading}
+                                          disableBooking={false}
+                                          isSelected={selectedRoom === room}
+                                          expandFeatures={expandedFeaturesAll}
+                                          preferences={preferences}
+                                          setPreferences={setPreferences}
+                                      />
+                                  </li>
+                              ))
+                            : null
+                    )
                 )}
             </List>
         </Box>
