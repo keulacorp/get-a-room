@@ -432,6 +432,7 @@ function BookingView(props: BookingViewProps) {
                     isOpen={open}
                     toggle={toggle}
                     disableSwipeToOpen={true}
+                    zindex={1200}
                 >
                     <Box
                         style={{
