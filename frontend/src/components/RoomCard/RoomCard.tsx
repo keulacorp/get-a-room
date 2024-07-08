@@ -480,14 +480,6 @@ const RoomCard = (props: RoomCardProps) => {
                                 busy={isBusy}
                                 room={room}
                             />
-                            {/*TODO villep: Not Implemented?*/}
-                            <Typography
-                                variant={'h4'}
-                                align={'left'}
-                                marginTop={'9px'}
-                            >
-                                Test
-                            </Typography>
                         </Stack>
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
@@ -502,7 +494,7 @@ const RoomCard = (props: RoomCardProps) => {
                     </Row>
                     {expandFeatures ? (
                         <Row>
-                            <Typography variant="body1" color="text.disabled">
+                            <Typography variant="h4" color="text.disabled">
                                 {getFeatures(room)}
                             </Typography>
                         </Row>

@@ -8,7 +8,8 @@ export const router = express.Router();
 router.get('/', controller.getPreferences(), (req, res) => {
     res.status(200).json({
         building: res.locals.preferences.building || {},
-        fav_rooms: res.locals.preferences.fav_rooms || []
+        fav_rooms: res.locals.preferences.fav_rooms || [],
+        showRoomResources: res.locals.preferences.showRoomResources || false
     });
 });
 

@@ -15,6 +15,8 @@ import { GarApp } from './components/App';
 import { DoNotDisturbOn } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { RoomCardReservationStatusIndicator } from './components/RoomCard/RoomCard';
+import Person from '@mui/icons-material/Person';
+import FeixenSansWoff2 from './fonts/StudioFeixenVincit-Regular.woff2';
 
 export const COLORS = {
     ACCENT_PINK: '#FFCAFF',
@@ -29,10 +31,26 @@ export const COLORS = {
     ALTERNATE: '#FBFBF6'
 };
 
+export const UserIcon = styled(Person)(({ theme }) => ({
+    display: 'flex',
+    width: '32px',
+    height: ' 32px',
+    padding: '4.5px 4px 3.5px 4px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '24px',
+    fontWeight: '400',
+    border: '1px solid',
+    borderRadius: '50px',
+    borderColor: COLORS.ACCENT_PINK
+}));
+
 export const DEFAULT_STYLES = {
     defaultSpacer: '24px',
-    smallerSpacer: '16px'
+    smallerSpacer: '16px',
+    defaultFont: 'Studio Feixen Sans'
 };
+const { defaultFont } = DEFAULT_STYLES;
 
 export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
     color: COLORS.ACCENT_RED
@@ -46,13 +64,20 @@ export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
     gap: 1
 }));
 
-export const DefaultHorizontalSpacer = styled(Container)(({ theme }) => ({
+export const DefaultVerticalSpacer = styled(Container)(({ theme }) => ({
     height: DEFAULT_STYLES.defaultSpacer,
     minHeight: DEFAULT_STYLES.defaultSpacer
 }));
-export const SmallerHorizontalSpacer = styled(Container)(({ theme }) => ({
+export const SmallerVerticalSpacer = styled(Container)(({ theme }) => ({
     height: DEFAULT_STYLES.smallerSpacer,
     minHeight: DEFAULT_STYLES.smallerSpacer
+}));
+
+export const StretchingHorizontalSpacer = styled(Container)(({ theme }) => ({
+    alignSelf: 'stretch',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    display: 'flex'
 }));
 
 declare module '@mui/material/Button' {
@@ -117,7 +142,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
     typography: {
         h1: {
             color: COLORS.TEXT_PRIMARY,
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontSize: '36px',
             fontStyle: 'normal',
             fontWeight: 4,
@@ -126,7 +151,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         },
         h2: {
             color: COLORS.TEXT_PRIMARY,
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontStyle: 'normal',
             fontWeight: 4,
             fontSize: '24px',
@@ -134,14 +159,14 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         },
         h3: {
             color: COLORS.TEXT_PRIMARY,
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontStyle: 'normal',
             fontWeight: 2,
             fontSize: '16px',
             lineHeight: 'normal'
         },
         body1: {
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontStyle: 'normal',
             fontWeight: 4,
             fontSize: '12px',
@@ -149,7 +174,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         },
         subtitle1: {
             color: COLORS.TEXT_PRIMARY,
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontStyle: 'normal',
             fontWeight: 'bold',
             fontSize: '12px',
@@ -158,18 +183,33 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         },
         h4: {
             color: COLORS.TEXT_DIMGREY,
-            fontFamily: 'Studio Feixen Sans',
+            fontFamily: defaultFont,
             fontStyle: 'normal',
             fontWeight: 2,
             fontSize: '16px',
             lineHeight: 'normal'
         },
-        h5: { color: COLORS.TEXT_PRIMARY, fontWeight: 'bold' }
+        h5: {
+            color: COLORS.TEXT_PRIMARY,
+            fontWeight: 'bold',
+            fontSize: '12px',
+
+            textTransform: 'uppercase'
+        }
     },
     zIndex: {
         snackbar: 1
     },
     components: {
+        MuiCssBaseline: {
+            styleOverrides: `
+        @font-face {
+          font-family: 'Studio Feixen Sans';
+          src: local('Studio Feixen Sans'), local('Studio Feixen Sans'), url(${FeixenSansWoff2}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+      `
+        },
         GarApp: {
             styleOverrides: {
                 root: {
@@ -185,7 +225,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         MuiToggleButton: {
             styleOverrides: {
                 root: {
-                    fontFamily: 'Studio Feixen Sans',
+                    fontFamily: defaultFont,
                     textTransform: 'none',
                     whiteSpace: 'nowrap',
 

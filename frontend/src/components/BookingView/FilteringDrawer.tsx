@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -48,6 +49,7 @@ interface Props {
 
 // Note: Actual filtering of the rooms is done one level up in booking view
 const FilteringDrawer = (props: Props) => {
+    const { showUserSettingsMenu } = useUserSettings();
     const {
         open,
         toggle,
@@ -79,6 +81,13 @@ const FilteringDrawer = (props: Props) => {
                 borderRadius: '50px'
             }
         }
+    }));
+
+    const StyledDrawerWrapper = styled(Box)(({ theme }) => ({
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     }));
 
     const handleRoomSizeChange = (
@@ -120,17 +129,10 @@ const FilteringDrawer = (props: Props) => {
             iconRight={'Expand'}
             isOpen={open}
             toggle={toggle}
-            disableSwipeToOpen={false}
+            disableSwipeToOpen={showUserSettingsMenu}
             mounted={true}
         >
-            <Box
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}
-            >
+            <StyledDrawerWrapper>
                 <DrawerContent>
                     <Row>
                         <SmallText>Custom Filter</SmallText>
@@ -140,12 +142,14 @@ const FilteringDrawer = (props: Props) => {
                         value={customFilter}
                         placeholder="Room name, resource..."
                         size="small"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            )
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                )
+                            }
                         }}
                     />
 
@@ -200,7 +204,7 @@ const FilteringDrawer = (props: Props) => {
                         &nbsp; Only Favourites
                     </ToggleButton>
                 </DrawerContent>
-            </Box>
+            </StyledDrawerWrapper>
         </SwipeableEdgeDrawer>
     );
 };

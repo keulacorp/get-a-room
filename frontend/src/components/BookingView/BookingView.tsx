@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, IconButton, Stack, Grid } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../../services/roomService';
 import { deleteBooking, getBookings } from '../../services/bookingService';
-import { Room, Booking, Preferences } from '../../types';
+import { Booking, Preferences, Room } from '../../types';
 import CurrentBooking from '../CurrentBooking/CurrentBooking';
 import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
@@ -23,9 +22,11 @@ import useCreateNotification from '../../hooks/useCreateNotification';
 import {
     CenterAlignedStack,
     DEFAULT_STYLES,
-    DefaultHorizontalSpacer,
-    SmallerHorizontalSpacer
+    DefaultVerticalSpacer,
+    StretchingHorizontalSpacer,
+    UserIcon
 } from '../../theme_2024';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -68,6 +69,37 @@ type BookingViewProps = {
     name: String | undefined;
 };
 
+const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
+    return (
+        <CenterAlignedStack
+            direction={'row'}
+            sx={{
+                width: '100%'
+            }}
+            onClick={props.onClick}
+        >
+            <Typography variant={'h1'}>
+                ROOMS
+                <IconButton
+                    aria-label="profile menu"
+                    size="small"
+                    sx={{
+                        bgcolor: 'primary.main',
+                        color: '#fff',
+                        position: 'absolute',
+                        right: 50
+                    }}
+                    onClick={props.onClick}
+                    style={{ cursor: 'pointer' }}
+                ></IconButton>
+            </Typography>
+            <StretchingHorizontalSpacer />
+            {/*// TODO: Button not implemented*/}
+            <UserIcon />
+        </CenterAlignedStack>
+    );
+};
+
 function BookingView(props: BookingViewProps) {
     const { preferences, open, toggle, name, setPreferences } = props;
 
@@ -75,12 +107,7 @@ function BookingView(props: BookingViewProps) {
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [expandSettingsDrawer, setExpandSettingsDrawer] = useState(
-        false as boolean
-    );
-    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
-        false as boolean
-    );
+
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 
     const [startingTime, setStartingTime] = useState<string>('Now');
@@ -94,6 +121,13 @@ function BookingView(props: BookingViewProps) {
     const [allFeatures, setAllFeatures] = useState<string[]>([]);
 
     const { createErrorNotification } = useCreateNotification();
+
+    const {
+        showUserSettingsMenu,
+        setShowUserSettingsMenu,
+        expandedFeaturesAll,
+        setExpandedFeaturesAll
+    } = useUserSettings();
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -344,11 +378,11 @@ function BookingView(props: BookingViewProps) {
     };
 
     const openSettingsDrawer = () => {
-        setExpandSettingsDrawer(true);
+        setShowUserSettingsMenu(true);
     };
 
-    const toggleDrawers = (newOpen: boolean) => {
-        setExpandSettingsDrawer(newOpen);
+    const toggleSettingsDrawer = (newOpen: boolean) => {
+        setShowUserSettingsMenu(newOpen);
     };
 
     const updateData = useCallback(() => {
@@ -431,13 +465,13 @@ function BookingView(props: BookingViewProps) {
                 }}
             >
                 <UserDrawer
-                    open={expandSettingsDrawer}
-                    toggle={toggleDrawers}
+                    open={showUserSettingsMenu}
+                    toggle={toggleSettingsDrawer}
                     name={name}
                     expandedFeaturesAll={expandedFeaturesAll}
                     setExpandedFeaturesAll={setExpandedFeaturesAll}
                 />
-                <DefaultHorizontalSpacer />
+                <DefaultVerticalSpacer />
                 <CenterAlignedStack
                     direction={'row'}
                     onClick={moveToChooseOfficePage}
@@ -459,23 +493,7 @@ function BookingView(props: BookingViewProps) {
                     </Box>
                 </CenterAlignedStack>
                 <RowCentered>
-                    <Typography variant={'h1'}>
-                        ROOMS
-                        <IconButton
-                            aria-label="profile menu"
-                            size="small"
-                            sx={{
-                                bgcolor: 'primary.main',
-                                color: '#fff',
-                                position: 'absolute',
-                                right: 50
-                            }}
-                            onClick={openSettingsDrawer}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <Person />
-                        </IconButton>
-                    </Typography>
+                    <RoomsPageHeaderWithUserIcon onClick={openSettingsDrawer} />
                 </RowCentered>
             </Box>
             <StartingTimePicker

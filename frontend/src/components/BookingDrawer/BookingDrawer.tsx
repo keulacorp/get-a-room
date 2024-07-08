@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -11,6 +11,7 @@ import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
 import DurationPicker from './DurationPicker';
+import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 const MIN_DURATION = 15;
 
@@ -205,7 +206,7 @@ const BookingDrawer = (props: Props) => {
         updateHalfHour();
         updateFullHour();
     });
-    
+
     const handleDurationChange = (newDuration: number) => {
         if (newDuration !== -1) {
             setBookingDuration(newDuration);
@@ -267,8 +268,11 @@ const BookingDrawer = (props: Props) => {
                       .plus({ minutes: duration })
                       .toObject();
 
-        if (halfHour.hour === undefined || halfHour.minute === undefined ||
-            Number.isNaN(halfHour.hour) || Number.isNaN(halfHour.minute)
+        if (
+            halfHour.hour === undefined ||
+            halfHour.minute === undefined ||
+            Number.isNaN(halfHour.hour) ||
+            Number.isNaN(halfHour.minute)
         ) {
             throw new Error('Time not set');
         }
@@ -306,7 +310,7 @@ const BookingDrawer = (props: Props) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={getName(room)}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -350,7 +354,9 @@ const BookingDrawer = (props: Props) => {
                         setBookingDuration={setBookingDuration}
                         onChange={handleDurationChange}
                         title="quick duration selection"
-                        setExpandDurationTimePickerDrawer={setExpandDurationTimePickerDrawer}
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
                         additionalDuration={additionalDuration}
                     />
                     <Row>
@@ -411,7 +417,7 @@ const BookingDrawer = (props: Props) => {
                     </Row>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 
