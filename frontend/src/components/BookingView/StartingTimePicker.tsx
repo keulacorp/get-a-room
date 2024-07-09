@@ -9,10 +9,10 @@ const StartingTimeButton = styled(ToggleButton)(() => ({
 }));
 
 type StartingTimePickerProps = {
-    onChange: (startingTime: string) => void;
     startingTime: string;
     title: string;
     setStartingTime: React.Dispatch<React.SetStateAction<string>>;
+    setExpandTimePickerDrawer: (kia: boolean) => void;
 };
 
 const timeFormat = (h: number, m: number) => {
@@ -54,7 +54,8 @@ const formatTimeToHalfAndFullHours = (
 };
 
 const StartingTimePicker = (props: StartingTimePickerProps) => {
-    const { onChange, title, startingTime, setStartingTime } = props;
+    const { title, startingTime, setStartingTime, setExpandTimePickerDrawer } =
+        props;
 
     const now = DateTime.now();
     const startingTimeNow = 'Now';
@@ -76,8 +77,9 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
         if (newStartingTime !== null) {
             if (newStartingTime !== 'Custom') {
                 setStartingTime(newStartingTime);
+            } else {
+                setExpandTimePickerDrawer(true);
             }
-            onChange(newStartingTime);
         }
     };
 

@@ -354,14 +354,6 @@ function BookingView(props: BookingViewProps) {
         setBookingDuration(newDuration);
     };
 
-    const handleStartingTimeChange = (newStartingTime: string) => {
-        if (newStartingTime !== 'Custom') {
-            setStartingTime(newStartingTime);
-        } else {
-            setExpandTimePickerDrawer(true);
-        }
-    };
-
     const updateBookings = useCallback(() => {
         getBookings()
             .then((bookings) =>
@@ -500,8 +492,8 @@ function BookingView(props: BookingViewProps) {
             <StartingTimePicker
                 startingTime={startingTime}
                 setStartingTime={setStartingTime}
-                onChange={handleStartingTimeChange}
                 title="starting time"
+                setExpandTimePickerDrawer={setExpandTimePickerDrawer}
             />
 
             <CurrentBooking
