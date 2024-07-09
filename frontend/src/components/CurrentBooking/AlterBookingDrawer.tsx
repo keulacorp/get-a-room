@@ -117,7 +117,12 @@ const AlterBookingDrawer = (props: Props) => {
     const nextHalfHour = () => {
         const newEndTime = checkStartingTime().toObject();
 
-        if (!newEndTime || !newEndTime.hour || !newEndTime.minute) {
+        if (
+            newEndTime.hour === undefined ||
+            newEndTime.minute === undefined ||
+            Number.isNaN(newEndTime.hour) ||
+            Number.isNaN(newEndTime.minute)
+        ) {
             throw new Error('Time not set');
         }
         if (newEndTime.minute >= 30) {
@@ -133,7 +138,12 @@ const AlterBookingDrawer = (props: Props) => {
     const nextFullHour = () => {
         const newEndTime = checkStartingTime().toObject();
 
-        if (!newEndTime || !newEndTime.hour || !newEndTime.minute) {
+        if (
+            newEndTime.hour === undefined ||
+            newEndTime.minute === undefined ||
+            Number.isNaN(newEndTime.hour) ||
+            Number.isNaN(newEndTime.minute)
+        ) {
             throw new Error('Time not set');
         }
 

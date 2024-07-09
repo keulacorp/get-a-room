@@ -1,19 +1,39 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
 // @ts-nocheck
+import {
+    vi,
+    expect,
+    describe,
+    it,
+    beforeEach,
+    afterEach,
+    beforeAll,
+    afterAll
+} from 'vitest';
+
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
 import { unmountComponentAtNode } from 'react-dom';
 import { updateBooking, endBooking } from '../../services/bookingService';
+import { Window } from 'happy-dom';
 
-jest.mock('../../hooks/useCreateNotification', () => () => {
+vi.mock('../../hooks/useCreateNotification', () => {
     return {
-        createSuccessNotification: jest.fn(),
-        createErrorNotification: jest.fn()
+        default: () => {
+            return {
+                createSuccessNotification: vi.fn(),
+                createErrorNotification: vi.fn()
+            };
+        }
     };
 });
 
-jest.mock('../../services/bookingService');
+vi.mock('../../services/bookingService');
 
 const fakeBooking = [
     {
@@ -31,7 +51,7 @@ const fakeBooking = [
 ];
 
 let container = null;
-describe('CurrentBooking', () => {
+describe.sequential('CurrentBooking', () => {
     beforeEach(() => {
         // setup a DOM element as a render target
         container = document.createElement('div');
@@ -40,7 +60,7 @@ describe('CurrentBooking', () => {
 
     afterEach(() => {
         // cleanup on exiting
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         container.remove();
         container = null;
     });
@@ -48,16 +68,17 @@ describe('CurrentBooking', () => {
     it('renders booking data with correct name', async () => {
         render(<CurrentBooking bookings={fakeBooking} />, container);
 
-        const title = await screen.queryByTestId('BookingRoomTitle');
+        const title = screen.queryByTestId('BookingRoomTitle');
+
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
     });
 
     it('renders alter booking drawer', async () => {
-        (updateBooking as jest.Mock).mockResolvedValueOnce({
+        (updateBooking as vi.Mock).mockResolvedValueOnce({
             timeToAdd: 15
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
         await userEvent.click(bookingCard);
@@ -67,12 +88,12 @@ describe('CurrentBooking', () => {
     });
 
     it('extend booking by 15 min', async () => {
-        (updateBooking as jest.Mock).mockResolvedValueOnce({
+        (updateBooking as vi.Mock).mockResolvedValueOnce({
             timeToAdd: 15,
             bookingId: fakeBooking[0].id
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
         await userEvent.click(bookingCard);
@@ -81,7 +102,7 @@ describe('CurrentBooking', () => {
         await userEvent.click(alterButton);
 
         await waitFor(() =>
-            expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(updateBooking as vi.Mock).toHaveBeenCalledWith(
                 { timeToAdd: 15 },
                 fakeBooking[0].id,
                 true
@@ -90,11 +111,11 @@ describe('CurrentBooking', () => {
     });
 
     it('ends booking', async () => {
-        (endBooking as jest.Mock).mockResolvedValueOnce({
+        (endBooking as vi.Mock).mockResolvedValueOnce({
             bookingId: fakeBooking[0].id
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
         await userEvent.click(bookingCard);
@@ -103,7 +124,7 @@ describe('CurrentBooking', () => {
         await userEvent.click(endBookingButton);
 
         await waitFor(() =>
-            expect(endBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(endBooking as vi.Mock).toHaveBeenCalledWith(
                 fakeBooking[0].id
             )
         );

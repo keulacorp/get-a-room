@@ -152,7 +152,12 @@ const AvailableRoomList = (props: BookingListProps) => {
                       .plus({ minutes: bookingDuration })
                       .toObject();
 
-        if (!halfTime || !halfTime.hour || !halfTime.minute) {
+        if (
+            halfTime.hour === undefined ||
+            halfTime.minute === undefined ||
+            Number.isNaN(halfTime.hour) ||
+            Number.isNaN(halfTime.minute)
+        ) {
             throw new Error('Time not set');
         }
 
@@ -194,7 +199,12 @@ const AvailableRoomList = (props: BookingListProps) => {
                   })
                       .plus({ minutes: bookingDuration })
                       .toObject();
-        if (!fullTime || !fullTime.hour || !fullTime.minute) {
+        if (
+            fullTime.hour === undefined ||
+            fullTime.minute === undefined ||
+            Number.isNaN(fullTime.hour) ||
+            Number.isNaN(fullTime.minute)
+        ) {
             throw new Error('Time not set');
         }
 
