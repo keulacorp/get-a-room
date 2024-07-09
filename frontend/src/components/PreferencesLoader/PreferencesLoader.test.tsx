@@ -52,7 +52,7 @@ const TEST_BUILDINGS = [
     { id: 'b2Id', name: 'b2Name', latitude: 61.4957056, longitude: 23.7993984 }
 ];
 
-describe.only('PreferencesLoader', () => {
+describe('PreferencesLoader', () => {
     beforeEach(() => {
         cleanup();
     });
