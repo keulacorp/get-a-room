@@ -1,3 +1,19 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
+// @ts-nocheck
+import {
+    vi,
+    expect,
+    describe,
+    it,
+    beforeEach,
+    afterEach,
+    beforeAll,
+    afterAll
+} from 'vitest';
+
 // @ts-nocheck
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -17,14 +33,14 @@ describe('UserDrawer', () => {
     });
 
     it('Shows logout button', async () => {
-        const userMock = jest.fn();
+        const userMock = vi.fn();
         render(
             <UserDrawer
                 open={true}
-                toggle={jest.fn()}
+                toggle={vi.fn()}
                 name={'Test user'}
-                expandedFeaturesAll={jest.fn()}
-                setExpandedFeaturesAll={jest.fn()}
+                expandedFeaturesAll={vi.fn()}
+                setExpandedFeaturesAll={vi.fn()}
             />,
             container
         );

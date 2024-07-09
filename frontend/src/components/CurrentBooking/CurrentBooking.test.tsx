@@ -20,7 +20,6 @@ import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
 import { unmountComponentAtNode } from 'react-dom';
 import { updateBooking, endBooking } from '../../services/bookingService';
-import { Window } from 'happy-dom';
 
 vi.mock('../../hooks/useCreateNotification', () => {
     return {
