@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { styled, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 
 const StartingTimeButton = styled(ToggleButton)(() => ({
@@ -100,7 +100,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     };
 
     return (
-        <div>
+        <Box>
             <Typography
                 variant="subtitle1"
                 textAlign="left"
@@ -156,7 +156,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     {startingTimeCustom}
                 </StartingTimeButton>
             </ToggleButtonGroup>
-        </div>
+        </Box>
     );
 };
 

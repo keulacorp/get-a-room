@@ -32,19 +32,13 @@ const DurationPicker = (props: DurationPickerProps) => {
         additionalDuration
     } = props;
 
-    let isCustomDuration: boolean = false;
-
     const bookingDurationTotal = bookingDuration + additionalDuration;
-    if (
-        bookingDurationTotal === 15 ||
-        bookingDurationTotal === 30 ||
-        bookingDurationTotal === 60 ||
-        bookingDurationTotal === 120
-    ) {
-        isCustomDuration = false;
-    } else {
-        isCustomDuration = true;
-    }
+    let isCustomDuration: boolean =
+        bookingDurationTotal !== 15 &&
+        bookingDurationTotal !== 30 &&
+        bookingDurationTotal !== 60 &&
+        bookingDurationTotal !== 120;
+
     let quickDuration: string = bookingDurationTotal.toString();
 
     const handleChange = (
@@ -92,7 +86,7 @@ const DurationPicker = (props: DurationPickerProps) => {
     }
 
     return (
-        <div style={{ zIndex: 3000 }}>
+        <div>
             <DurationButtonGroup
                 data-testid="DurationPicker"
                 color="primary"

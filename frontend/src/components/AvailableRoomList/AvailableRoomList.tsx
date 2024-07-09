@@ -130,12 +130,6 @@ const AvailableRoomList = (props: BookingListProps) => {
     function maxDuration(room: Room | undefined, startingTime: String) {
         const mm = availableForMinutes(room, startingTime);
 
-        console.log('in maxDuration');
-        console.log(expandDurationTimePickerDrawer);
-        console.log(room);
-        console.log(startingTime);
-        console.log('max duration: ' + mm);
-
         return dayjs()
             .minute(mm % 60)
             .hour(Math.floor(mm / 60));

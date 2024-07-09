@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
-import { TextField, Box } from '@mui/material';
+import { TextField, Box, styled } from '@mui/material';
 import { DateTime } from 'luxon';
 
 import {
@@ -12,6 +12,29 @@ import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import dayjs from 'dayjs';
+import GetARoomForm from '../GetARoomForm/GetARoomForm';
+import { getHourMinute, nowDate } from '../util/Time';
+
+const BoxForm = styled(GetARoomForm)(({ theme }) => ({
+    display: 'flex',
+    flexWrap: 'wrap'
+}));
+
+const DurationBox = styled(Box)(({ theme }) => ({
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    zIndex: 2000
+}));
+
+const DurationDrawerContent = styled(DrawerContent)(({ theme }) => ({
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+}));
 
 interface DurationTimePickerDrawerProps {
     open: boolean;
@@ -40,30 +63,6 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         return [(h > 9 ? '' : '0') + h, ':', (m > 9 ? '' : '0') + m].join('');
     };
 
-    const getHourMinute = (v: any) => {
-        let h = v.get('hour').toString();
-        if (v.get('hour') < 10) h = '0' + h;
-
-        let m = v.get('minute').toString();
-        if (v.get('minute') < 10) m = '0' + m;
-
-        return h + ':' + m;
-    };
-
-    function nowDate() {
-        const dt = new Date();
-        const mm = dt.getMonth() + 1;
-        const dd = dt.getDate();
-
-        return [
-            dt.getFullYear(),
-            '-',
-            (mm > 9 ? '' : '0') + mm,
-            '-',
-            (dd > 9 ? '' : '0') + dd
-        ].join('');
-    }
-
     useEffect(() => {
         setTime(
             bookingDuration ? convertDurationToTime(bookingDuration) : '03:00'
@@ -89,31 +88,9 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
             disableSwipeToOpen={true}
             zindex={2000}
         >
-            <Box
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    zIndex: 2000
-                }}
-            >
-                <DrawerContent
-                    style={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}
-                >
-                    <form
-                        noValidate
-                        style={{
-                            display: 'flex',
-                            flexWrap: 'wrap'
-                        }}
-                    >
+            <DurationBox>
+                <DurationDrawerContent>
+                    <BoxForm>
                         <MultiSectionDigitalClock
                             timeSteps={{ hours: 1, minutes: 5 }}
                             views={['hours', 'minutes']}
@@ -124,7 +101,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                             value={dayjs(nowDate() + ' ' + time)}
                             maxTime={maxDuration}
                         />
-                    </form>
+                    </BoxForm>
                     <Row>
                         <DrawerButtonPrimary
                             aria-label="confirm"
@@ -133,8 +110,8 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                             Confirm
                         </DrawerButtonPrimary>
                     </Row>
-                </DrawerContent>
-            </Box>
+                </DurationDrawerContent>
+            </DurationBox>
         </SwipeableEdgeDrawer>
     );
 };
