@@ -9,7 +9,11 @@ import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
-import TimePickerDrawer from '../TimePickerDrawer/TimePickerDrawer';
+import StartingTimePickerDrawer from '../StartingTimePickerDrawer/StartingTimePickerDrawer';
+import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePickerDrawer';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 const SKIP_CONFIRMATION = true;
 
@@ -80,6 +84,12 @@ type BookingListProps = {
     expandedFeaturesAll: boolean;
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
+    startingTime: string;
+    setStartingTime: (newStartingTime: string) => void;
+    setBookingDuration: (minutes: number) => void;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
+    setExpandTimePickerDrawer: (show: boolean) => void;
+    expandTimePickerDrawer: boolean;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
@@ -91,7 +101,13 @@ const AvailableRoomList = (props: BookingListProps) => {
         updateData,
         expandedFeaturesAll,
         preferences,
-        setPreferences
+        setPreferences,
+        startingTime,
+        setStartingTime,
+        setBookingDuration,
+        setDuration,
+        setExpandTimePickerDrawer,
+        expandTimePickerDrawer
     } = props;
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -105,13 +121,19 @@ const AvailableRoomList = (props: BookingListProps) => {
         undefined
     );
 
-    const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
-    const [startingTime, setStartingTime] = useState<string>('Now');
+    const [expandDurationTimePickerDrawer, setExpandDurationTimePickerDrawer] =
+        useState(false);
 
     const handleAdditionalDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
     };
+    function maxDuration(room: Room | undefined, startingTime: String) {
+        const mm = availableForMinutes(room, startingTime);
 
+        return dayjs()
+            .minute(mm % 60)
+            .hour(Math.floor(mm / 60));
+    }
     const handleUntilHalf = () => {
         let halfTime =
             startingTime === 'Now'
@@ -124,7 +146,12 @@ const AvailableRoomList = (props: BookingListProps) => {
                       .plus({ minutes: bookingDuration })
                       .toObject();
 
-        if (!halfTime || !halfTime.hour || !halfTime.minute) {
+        if (
+            halfTime.hour === undefined ||
+            halfTime.minute === undefined ||
+            Number.isNaN(halfTime.hour) ||
+            Number.isNaN(halfTime.minute)
+        ) {
             throw new Error('Time not set');
         }
 
@@ -166,7 +193,12 @@ const AvailableRoomList = (props: BookingListProps) => {
                   })
                       .plus({ minutes: bookingDuration })
                       .toObject();
-        if (!fullTime || !fullTime.hour || !fullTime.minute) {
+        if (
+            fullTime.hour === undefined ||
+            fullTime.minute === undefined ||
+            Number.isNaN(fullTime.hour) ||
+            Number.isNaN(fullTime.minute)
+        ) {
             throw new Error('Time not set');
         }
 
@@ -277,9 +309,15 @@ const AvailableRoomList = (props: BookingListProps) => {
                     onAddTimeUntilFull={handleUntilFull}
                     onAddTimeUntilNext={handleUntilNextDurationChange}
                     startingTime={startingTime}
+                    setBookingDuration={setBookingDuration}
+                    setAdditionalDuration={setAdditionalDuration}
+                    setDuration={setDuration}
+                    setExpandDurationTimePickerDrawer={
+                        setExpandDurationTimePickerDrawer
+                    }
                 />
-                {
-                    <TimePickerDrawer
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <StartingTimePickerDrawer
                         open={expandTimePickerDrawer}
                         toggle={(newOpen: any) =>
                             setExpandTimePickerDrawer(newOpen)
@@ -288,7 +326,19 @@ const AvailableRoomList = (props: BookingListProps) => {
                         setStartingTime={setStartingTime}
                         setExpandTimePickerDrawer={setExpandTimePickerDrawer}
                     />
-                }
+                    <DurationTimePickerDrawer
+                        open={expandDurationTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandDurationTimePickerDrawer(newOpen)
+                        }
+                        bookingDuration={bookingDuration}
+                        setBookingDuration={setBookingDuration}
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
+                        maxDuration={maxDuration(selectedRoom, startingTime)}
+                    />
+                </LocalizationProvider>
             </div>
             <div
                 id="available-booking-typography"

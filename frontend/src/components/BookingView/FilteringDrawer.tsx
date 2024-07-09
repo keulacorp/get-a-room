@@ -131,6 +131,7 @@ const FilteringDrawer = (props: Props) => {
             toggle={toggle}
             disableSwipeToOpen={showUserSettingsMenu}
             mounted={true}
+            zindex={1200}
         >
             <StyledDrawerWrapper>
                 <DrawerContent>

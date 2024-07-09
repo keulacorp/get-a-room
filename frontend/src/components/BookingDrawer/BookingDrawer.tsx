@@ -10,6 +10,7 @@ import SwipeableEdgeDrawer, {
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
+import DurationPicker from './DurationPicker';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 const MIN_DURATION = 15;
@@ -175,6 +176,10 @@ interface Props {
     availableMinutes: number;
     room?: Room;
     startingTime: string;
+    setBookingDuration: (minutes: number) => void;
+    setAdditionalDuration: (minutes: number) => void;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
+    setExpandDurationTimePickerDrawer: (show: boolean) => void;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -190,13 +195,24 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilFull,
         onAddTimeUntilNext,
         availableMinutes,
-        startingTime
+        startingTime,
+        setBookingDuration,
+        setAdditionalDuration,
+        setDuration,
+        setExpandDurationTimePickerDrawer
     } = props;
 
     useEffect(() => {
         updateHalfHour();
         updateFullHour();
     });
+
+    const handleDurationChange = (newDuration: number) => {
+        if (newDuration !== -1) {
+            setBookingDuration(newDuration);
+        }
+        setAdditionalDuration(0);
+    };
 
     // Placeholder values
     const [nextHalfHour, setNextHalfHour] = useState('00:30');
@@ -252,7 +268,12 @@ const BookingDrawer = (props: Props) => {
                       .plus({ minutes: duration })
                       .toObject();
 
-        if (!halfHour || !halfHour.hour || !halfHour.minute) {
+        if (
+            halfHour.hour === undefined ||
+            halfHour.minute === undefined ||
+            Number.isNaN(halfHour.hour) ||
+            Number.isNaN(halfHour.minute)
+        ) {
             throw new Error('Time not set');
         }
         if (halfHour.minute >= 30) {
@@ -277,7 +298,12 @@ const BookingDrawer = (props: Props) => {
                       .plus({ minutes: duration })
                       .toObject();
 
-        if (!fullHour || !fullHour.hour || !fullHour.minute) {
+        if (
+            fullHour.hour === undefined ||
+            fullHour.minute === undefined ||
+            Number.isNaN(fullHour.hour) ||
+            Number.isNaN(fullHour.minute)
+        ) {
             throw new Error('Time not set');
         }
 
@@ -324,6 +350,20 @@ const BookingDrawer = (props: Props) => {
                             Maximum {getTimeAvailable(room)} available
                         </AvailableText>
                     </RowCentered>
+                    <Row>
+                        <SmallText>quick duration selection</SmallText>
+                    </Row>
+
+                    <DurationPicker
+                        bookingDuration={duration}
+                        setBookingDuration={setBookingDuration}
+                        onChange={handleDurationChange}
+                        title="quick duration selection"
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
+                        additionalDuration={additionalDuration}
+                    />
                     <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>
                     </Row>

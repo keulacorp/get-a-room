@@ -1,3 +1,19 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
+// @ts-nocheck
+import {
+    vi,
+    expect,
+    describe,
+    it,
+    beforeEach,
+    afterEach,
+    beforeAll,
+    afterAll
+} from 'vitest';
+
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
@@ -57,14 +73,18 @@ const fakeRooms = [
     }
 ];
 
-jest.mock('../../hooks/useCreateNotification', () => () => {
+vi.mock('../../hooks/useCreateNotification', () => {
     return {
-        createSuccessNotification: jest.fn(),
-        createErrorNotification: jest.fn()
+        default: () => {
+            return {
+                createSuccessNotification: vi.fn(),
+                createErrorNotification: vi.fn()
+            };
+        }
     };
 });
 
-jest.mock('../../services/bookingService');
+vi.mock('../../services/bookingService');
 
 const fakeBookings = [];
 
@@ -94,6 +114,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
+                startingTime="Now"
             />,
             container
         );
@@ -111,6 +132,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
+                startingTime="Now"
             />,
             container
         );
@@ -124,6 +146,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={30}
+                startingTime="Now"
             />,
             container
         );
@@ -138,6 +161,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={60}
+                startingTime="Now"
             />,
             container
         );
@@ -152,6 +176,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={120}
+                startingTime="Now"
             />,
             container
         );
@@ -166,6 +191,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
+                startingTime="Now"
             />,
             container
         );
@@ -181,7 +207,7 @@ describe('AvailableRoomList', () => {
 
     it('default books for a room for 15 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as jest.Mock).mockResolvedValueOnce({
+        (makeBooking as vi.Mock).mockResolvedValueOnce({
             duration: 15,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -193,6 +219,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={15}
+                startingTime="Now"
             />,
             container
         );
@@ -203,7 +230,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
                 {
                     duration: 15,
                     roomId: fakeRooms[0].id,
@@ -217,7 +244,7 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 30 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as jest.Mock).mockResolvedValueOnce({
+        (makeBooking as vi.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -229,6 +256,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={30}
+                startingTime="Now"
             />,
             container
         );
@@ -239,7 +267,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
                 {
                     duration: 30,
                     roomId: fakeRooms[0].id,
@@ -253,7 +281,7 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 60 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as jest.Mock).mockResolvedValueOnce({
+        (makeBooking as vi.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -265,6 +293,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={60}
+                startingTime="Now"
             />,
             container
         );
@@ -275,7 +304,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
                 {
                     duration: 60,
                     roomId: fakeRooms[0].id,
@@ -289,7 +318,7 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 120 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as jest.Mock).mockResolvedValueOnce({
+        (makeBooking as vi.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -301,6 +330,7 @@ describe('AvailableRoomList', () => {
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={120}
+                startingTime="Now"
             />,
             container
         );
@@ -311,7 +341,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
                 {
                     duration: 120,
                     roomId: fakeRooms[0].id,

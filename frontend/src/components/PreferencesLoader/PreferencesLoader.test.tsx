@@ -1,3 +1,19 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
+// @ts-nocheck
+import {
+    vi,
+    expect,
+    describe,
+    it,
+    beforeEach,
+    afterEach,
+    beforeAll,
+    afterAll
+} from 'vitest';
+
 import {
     render,
     cleanup,
@@ -10,39 +26,43 @@ import { updatePreferences } from '../../services/preferencesService';
 
 import PreferencesLoader from './PreferencesLoader';
 
-const mockedHistoryReplace = jest.fn();
+const mockedHistoryReplace = vi.fn();
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
     useHistory: () => ({
         replace: mockedHistoryReplace
     })
 }));
 
-jest.mock('../../hooks/useCreateNotification', () => () => {
+vi.mock('../../hooks/useCreateNotification', () => {
     return {
-        createSuccessNotification: jest.fn(),
-        createErrorNotification: jest.fn()
+        default: () => {
+            return {
+                createSuccessNotification: vi.fn(),
+                createErrorNotification: vi.fn()
+            };
+        }
     };
 });
 
-jest.mock('../../services/preferencesService');
+vi.mock('../../services/preferencesService');
 
 const TEST_BUILDINGS = [
     { id: 'b1Id', name: 'b1Name', latitude: 61.4957056, longitude: 23.7993984 },
     { id: 'b2Id', name: 'b2Name', latitude: 61.4957056, longitude: 23.7993984 }
 ];
 
-describe.only('PreferencesLoader', () => {
+describe('PreferencesLoader', () => {
     beforeEach(() => {
         cleanup();
     });
 
     afterAll(() => {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 
     it('renders progressbar when no preferences given', () => {
-        render(<PreferencesLoader buildings={[]} setPreferences={jest.fn()} />);
+        render(<PreferencesLoader buildings={[]} setPreferences={vi.fn()} />);
 
         expect(screen.getByRole('progressbar')).toBeTruthy();
     });
@@ -53,7 +73,7 @@ describe.only('PreferencesLoader', () => {
                 <PreferencesLoader
                     preferences={{ building: TEST_BUILDINGS[0] }}
                     buildings={TEST_BUILDINGS}
-                    setPreferences={jest.fn()}
+                    setPreferences={vi.fn()}
                 />
             );
         });
@@ -62,8 +82,8 @@ describe.only('PreferencesLoader', () => {
     });
 
     it('updates preferences when submitted', async () => {
-        const mockedSetPreferences = jest.fn();
-        (updatePreferences as jest.Mock).mockResolvedValueOnce({
+        const mockedSetPreferences = vi.fn();
+        (updatePreferences as vi.Mock).mockResolvedValueOnce({
             building: TEST_BUILDINGS[1]
         });
         render(
@@ -79,7 +99,7 @@ describe.only('PreferencesLoader', () => {
 
         fireEvent.click(screen.getByText('Confirm'));
 
-        expect(updatePreferences as jest.Mock).toHaveBeenCalledWith({
+        expect(updatePreferences as vi.Mock).toHaveBeenCalledWith({
             building: TEST_BUILDINGS[1]
         });
         await waitFor(() => {

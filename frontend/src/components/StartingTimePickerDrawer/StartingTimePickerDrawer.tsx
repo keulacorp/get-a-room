@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Box } from '@mui/material';
+import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
+import { TextField, Box, styled } from '@mui/material';
 import { DateTime } from 'luxon';
 
 import {
@@ -10,8 +11,16 @@ import {
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+import dayjs from 'dayjs';
+import GetARoomForm from '../GetARoomForm/GetARoomForm';
+import { getHourMinute, nowDate } from '../util/Time';
 
-interface TimePickerDrawerProps {
+export const BoxForm = styled(GetARoomForm)(({ theme }) => ({
+    display: 'flex',
+    flexWrap: 'wrap'
+}));
+
+interface StartingTimePickerDrawerProps {
     open: boolean;
     toggle: (open: boolean) => void;
     startingTime: string;
@@ -19,7 +28,7 @@ interface TimePickerDrawerProps {
     setExpandTimePickerDrawer: (state: boolean) => void;
 }
 
-const TimePickerDrawer = (props: TimePickerDrawerProps) => {
+const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
     const {
         open,
         toggle,
@@ -48,12 +57,17 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
             (h === currentTime.hour && m <= currentTime.minute)
         ) {
             setStartingTime('Now');
-            setTime(currentTime.toFormat('HH:mm'));
+            setTime(currentTime.toFormat('hh:mm'));
         } else {
             setStartingTime(time);
         }
+
         setExpandTimePickerDrawer(false);
     };
+
+    function getStartingTimeDefaultSelection(): any {
+        dayjs(nowDate() + ' ' + time);
+    }
 
     return (
         <SwipeableEdgeDrawer
@@ -82,33 +96,22 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
                         justifyContent: 'center'
                     }}
                 >
-                    <form
-                        noValidate
-                        style={{
-                            display: 'flex',
-                            flexWrap: 'wrap'
-                        }}
-                    >
-                        <TextField
-                            id="time"
-                            type="time"
-                            value={time}
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            inputProps={{
-                                step: 300 // 5 min
-                            }}
-                            onChange={(e) => {
+                    <BoxForm>
+                        <MultiSectionDigitalClock
+                            timeSteps={{ hours: 1, minutes: 5 }}
+                            views={['hours', 'minutes']}
+                            onChange={(val) => {
                                 setTime(
-                                    e?.target?.value
-                                        ? e?.target?.value
+                                    val
+                                        ? getHourMinute(val)
                                         : DateTime.now().toFormat('HH:mm')
                                 );
                             }}
-                            style={{ width: '150px' }}
+                            ampm={false}
+                            value={getStartingTimeDefaultSelection()}
+                            minTime={dayjs()}
                         />
-                    </form>
+                    </BoxForm>
                     <Row>
                         <DrawerButtonSecondary
                             aria-label="set to now"
@@ -131,4 +134,4 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
     );
 };
 
-export default TimePickerDrawer;
+export default StartingTimePickerDrawer;

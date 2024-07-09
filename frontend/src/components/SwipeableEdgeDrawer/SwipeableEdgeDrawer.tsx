@@ -84,6 +84,7 @@ interface Props {
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
     mounted?: boolean;
+    zindex: number;
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
@@ -95,7 +96,8 @@ const SwipeableEdgeDrawer = (props: Props) => {
         isOpen,
         toggle,
         disableSwipeToOpen,
-        mounted
+        mounted,
+        zindex
     } = props;
 
     const toggleDrawer = (newOpen: boolean) => () => {
@@ -174,7 +176,8 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 style={{
                     position: 'relative',
                     width: '100%',
-                    maxWidth: '1000px'
+                    maxWidth: '1000px',
+                    zIndex: zindex
                 }}
             >
                 {!disableSwipeToOpen ? (

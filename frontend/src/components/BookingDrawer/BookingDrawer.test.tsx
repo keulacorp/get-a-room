@@ -1,3 +1,19 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
+// @ts-nocheck
+import {
+    vi,
+    expect,
+    describe,
+    it,
+    beforeEach,
+    afterEach,
+    beforeAll,
+    afterAll
+} from 'vitest';
+
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
@@ -30,17 +46,17 @@ describe('BookingDrawer', () => {
     });
 
     it('Books a room', async () => {
-        const bookMock = jest.fn();
+        const bookMock = vi.fn();
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
+                toggle={vi.fn()}
                 bookRoom={bookMock}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={0}
                 availableMinutes={30}
-                onAddTime={jest.fn()}
+                onAddTime={vi.fn()}
                 startingTime={'Now'}
             />,
             container
@@ -55,15 +71,15 @@ describe('BookingDrawer', () => {
 
     it('Disable subtract time at duration <=15 min', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={extraTime}
@@ -85,15 +101,15 @@ describe('BookingDrawer', () => {
 
     it('disable add time at max duration', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={30}
                 additionalDuration={extraTime}
@@ -116,15 +132,15 @@ describe('BookingDrawer', () => {
 
     it('Subtract 15 min', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={30}
                 additionalDuration={extraTime}
@@ -144,15 +160,15 @@ describe('BookingDrawer', () => {
 
     it('Add 15 minutes to booking', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={extraTime}

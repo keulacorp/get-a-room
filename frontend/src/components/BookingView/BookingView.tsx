@@ -8,7 +8,7 @@ import { Booking, Preferences, Room } from '../../types';
 import CurrentBooking from '../CurrentBooking/CurrentBooking';
 import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
-import DurationPicker from './DurationPicker';
+import StartingTimePicker from './StartingTimePicker';
 import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
@@ -109,6 +109,8 @@ function BookingView(props: BookingViewProps) {
     const [bookingDuration, setBookingDuration] = useState(15);
 
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
+
+    const [startingTime, setStartingTime] = useState<string>('Now');
 
     // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
@@ -346,6 +348,8 @@ function BookingView(props: BookingViewProps) {
         );
     }, [roomSize, resources, customFilter, onlyFavourites]);
 
+    const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
+
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
     };
@@ -420,6 +424,7 @@ function BookingView(props: BookingViewProps) {
                     isOpen={open}
                     toggle={toggle}
                     disableSwipeToOpen={true}
+                    zindex={1200}
                 >
                     <Box
                         style={{
@@ -484,11 +489,11 @@ function BookingView(props: BookingViewProps) {
                     <RoomsPageHeaderWithUserIcon onClick={openSettingsDrawer} />
                 </RowCentered>
             </Box>
-            <DurationPicker
-                duration={duration}
-                setDuration={setDuration}
-                onChange={handleDurationChange}
-                title="duration"
+            <StartingTimePicker
+                startingTime={startingTime}
+                setStartingTime={setStartingTime}
+                title="starting time"
+                setExpandTimePickerDrawer={setExpandTimePickerDrawer}
             />
 
             <CurrentBooking
@@ -505,6 +510,8 @@ function BookingView(props: BookingViewProps) {
             ) : (
                 <AvailableRoomList
                     bookingDuration={bookingDuration}
+                    startingTime={startingTime}
+                    setStartingTime={setStartingTime}
                     rooms={displayRooms}
                     bookings={bookings}
                     setBookings={setBookings}
@@ -512,6 +519,10 @@ function BookingView(props: BookingViewProps) {
                     expandedFeaturesAll={expandedFeaturesAll}
                     preferences={preferences}
                     setPreferences={setPreferences}
+                    setBookingDuration={setBookingDuration}
+                    setDuration={setDuration}
+                    setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    expandTimePickerDrawer={expandTimePickerDrawer}
                 />
             )}
 
