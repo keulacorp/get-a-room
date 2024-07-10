@@ -1,4 +1,5 @@
 import { sortByFavoritedAndName } from './arrayUtils';
+import { vi, expect, describe, test } from 'vitest';
 
 const testArray = [
     { name: 'a', favorited: false },
