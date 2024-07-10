@@ -5,18 +5,6 @@ import { DateTime } from 'luxon';
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 describe('TimeLeft', () => {
     afterEach(() => {
         cleanup();

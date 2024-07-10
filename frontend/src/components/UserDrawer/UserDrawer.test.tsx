@@ -2,24 +2,11 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
-// @ts-nocheck
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import UserDrawer from './UserDrawer';
 
-let container = null;
+let container: any = null;
 
 describe('UserDrawer', () => {
     beforeEach(() => {
@@ -39,7 +26,7 @@ describe('UserDrawer', () => {
                 open={true}
                 toggle={vi.fn()}
                 name={'Test user'}
-                expandedFeaturesAll={vi.fn()}
+                expandedFeaturesAll={false}
                 setExpandedFeaturesAll={vi.fn()}
             />,
             container

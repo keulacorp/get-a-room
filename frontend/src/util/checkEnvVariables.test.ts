@@ -2,18 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 const valueMock = vi.fn();
 
 vi.mock('./getARoomEnv', () => {

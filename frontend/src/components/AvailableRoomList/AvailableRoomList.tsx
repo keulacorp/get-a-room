@@ -14,6 +14,7 @@ import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePi
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import { sortByFavoritedAndName } from '../../util/arrayUtils';
 
 const SKIP_CONFIRMATION = true;
 
@@ -367,29 +368,25 @@ const AvailableRoomList = (props: BookingListProps) => {
                 {noAvailableRooms(rooms) ? (
                     <NoRoomsCard />
                 ) : (
-                    rooms
-                        .sort((a, b) => (a.name < b.name ? -1 : 1))
-                        .map((room) =>
-                            isAvailableFor(bookingDuration, room, startingTime)
-                                ? (isFavorited(room, preferences),
-                                  (
-                                      <li key={room.id}>
-                                          <RoomCard
-                                              room={room}
-                                              onClick={handleCardClick}
-                                              bookingLoading={bookingLoading}
-                                              disableBooking={false}
-                                              isSelected={selectedRoom === room}
-                                              expandFeatures={
-                                                  expandedFeaturesAll
-                                              }
-                                              preferences={preferences}
-                                              setPreferences={setPreferences}
-                                          />
-                                      </li>
-                                  ))
-                                : null
-                        )
+                    sortByFavoritedAndName<Room>(rooms).map((room) =>
+                        isAvailableFor(bookingDuration, room, startingTime)
+                            ? (isFavorited(room, preferences),
+                              (
+                                  <li key={room.id}>
+                                      <RoomCard
+                                          room={room}
+                                          onClick={handleCardClick}
+                                          bookingLoading={bookingLoading}
+                                          disableBooking={false}
+                                          isSelected={selectedRoom === room}
+                                          expandFeatures={expandedFeaturesAll}
+                                          preferences={preferences}
+                                          setPreferences={setPreferences}
+                                      />
+                                  </li>
+                              ))
+                            : null
+                    )
                 )}
             </List>
         </Box>
