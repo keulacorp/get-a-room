@@ -6,11 +6,19 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
-import { endBooking, updateBooking } from '../../services/bookingService';
-import { Booking } from '../../types';
+import {
+    endBooking,
+    makeBooking,
+    updateBooking
+} from '../../services/bookingService';
+import { Booking, Preferences } from '../../types';
+import { vi } from 'vitest';
 
 vi.mock('../../services/bookingService');
-vi.mock('../../services/bookingService');
+
+const mockedMakeBooking = vi.mocked(makeBooking, true);
+const mockedEndBooking = vi.mocked(endBooking, true);
+const mockedUpdateBooking = vi.mocked(updateBooking, true);
 vi.mock('../../hooks/useCreateNotification', () => {
     return {
         default: () => {
@@ -65,13 +73,25 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('renders alter booking drawer', async () => {
-        updateBooking.mockResolvedValueOnce({
+        mockedUpdateBooking.mockResolvedValueOnce({
             timeToAdd: 15
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />, container);
+        render(
+            <CurrentBooking
+                bookings={fakeBooking}
+                setBookings={vi.fn()}
+                updateRooms={vi.fn()}
+                setPreferences={vi.fn()}
+                updateBookings={vi.fn()}
+            />,
+            container
+        );
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
+        if (!bookingCard) {
+            throw new Error('No bookingCard');
+        }
         await userEvent.click(bookingCard);
 
         const drawer = screen.queryByTestId('BookingDrawer');
@@ -79,7 +99,7 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('extend booking by 15 min', async () => {
-        updateBooking.mockResolvedValueOnce({
+        mockedUpdateBooking.mockResolvedValueOnce({
             timeToAdd: 15,
             bookingId: fakeBooking[0].id
         });
@@ -88,13 +108,19 @@ describe.sequential('CurrentBooking', () => {
         render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
+        if (!bookingCard) {
+            throw new Error('No booking card');
+        }
         await userEvent.click(bookingCard);
 
         const alterButton = await screen.queryByTestId('add15');
+        if (!alterButton) {
+            throw new Error('No booking card');
+        }
         await userEvent.click(alterButton);
 
         await waitFor(() =>
-            expect(updateBooking as vi.Mock).toHaveBeenCalledWith(
+            expect(mockedUpdateBooking).toHaveBeenCalledWith(
                 { timeToAdd: 15 },
                 fakeBooking[0].id,
                 true
@@ -103,22 +129,35 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('ends booking', async () => {
-        (endBooking as Mock).mockResolvedValueOnce({
+        mockedEndBooking.mockResolvedValueOnce({
             bookingId: fakeBooking[0].id
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />, container);
+        render(
+            <CurrentBooking
+                bookings={fakeBooking}
+                setBookings={vi.fn()}
+                setPreferences={vi.fn()}
+                updateBookings={vi.fn()}
+                updateRooms={vi.fn()}
+            />,
+            container
+        );
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
+        if (!bookingCard) {
+            throw new Error('No booking card');
+        }
         await userEvent.click(bookingCard);
 
         const endBookingButton = await screen.queryByTestId('EndBookingButton');
+        if (!endBookingButton) {
+            throw new Error('No endBookingButton');
+        }
         await userEvent.click(endBookingButton);
 
         await waitFor(() =>
-            expect(endBooking as vi.Mock).toHaveBeenCalledWith(
-                fakeBooking[0].id
-            )
+            expect(mockedEndBooking).toHaveBeenCalledWith(fakeBooking[0].id)
         );
     });
 });

@@ -3,62 +3,65 @@
  */
 
 import React from 'react';
-import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime, Settings } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
+import { Booking, Room } from '../../types';
+import { expect, vi } from 'vitest';
+import { HTMLInputElement } from 'happy-dom';
 import { makeBooking } from '../../services/bookingService';
-import { an } from 'vitest/dist/reporters-yx5ZTtEV';
-import { Booking } from '../../types';
+vi.mock('../../services/bookingService');
 
-const fakeRooms = [
+const mockedMakeBooking = vi.mocked(makeBooking, true);
+
+const roomDefaults = {
+    favorited: false
+};
+const fakeRooms: Room[] = [
     {
+        ...roomDefaults,
         id: '123',
         name: 'Amor',
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now()
-            .plus({ minutes: 121 })
-            .toUTC()
-            .toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: DateTime.now().plus({ minutes: 121 }).toUTC().toISO()
     },
     {
+        ...roomDefaults,
         id: '124',
         name: 'Amor',
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 61 }).toUTC().toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: DateTime.now().plus({ minutes: 61 }).toUTC().toISO()
     },
     {
+        ...roomDefaults,
         id: '125',
         name: 'Amor',
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 31 }).toUTC().toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: DateTime.now().plus({ minutes: 31 }).toUTC().toISO()
     },
     {
+        ...roomDefaults,
         id: '126',
         name: 'Amor',
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 16 }).toUTC().toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: DateTime.now().plus({ minutes: 16 }).toUTC().toISO()
     },
     {
+        ...roomDefaults,
         id: '127',
         name: 'Amor',
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 1 }).toUTC().toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: DateTime.now().plus({ minutes: 1 }).toUTC().toISO()
     }
 ];
 
@@ -73,12 +76,10 @@ vi.mock('../../hooks/useCreateNotification', () => {
     };
 });
 
-vi.mock('../../services/bookingService');
-
 const fakeBookings: Booking[] = [];
 
 let container: any = null;
-let now: DateTime | null = null;
+let now: DateTime = DateTime.now();
 
 describe('AvailableRoomList', () => {
     beforeEach(() => {
@@ -97,6 +98,16 @@ describe('AvailableRoomList', () => {
         container = null;
     });
 
+    const availableRoomDefaultMocks = {
+        expandTimePickerDrawer: false,
+        setBookingDuration: vi.fn(),
+        setBookings: vi.fn(),
+        setDuration: vi.fn(),
+        setExpandTimePickerDrawer: vi.fn(),
+        setPreferences: vi.fn(),
+        setStartingTime: vi.fn(),
+        updateData: vi.fn()
+    };
     it('renders room data', async () => {
         render(
             <AvailableRoomList
@@ -104,6 +115,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -122,6 +135,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -136,6 +151,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={30}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -151,6 +168,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={60}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -166,6 +185,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={120}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -181,6 +202,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -196,7 +219,7 @@ describe('AvailableRoomList', () => {
 
     it('default books for a room for 15 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as vi.Mock).mockResolvedValueOnce({
+        mockedMakeBooking.mockResolvedValueOnce({
             duration: 15,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -209,6 +232,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -216,10 +241,13 @@ describe('AvailableRoomList', () => {
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
+        if (!bookButton) {
+            throw new Error('No book button');
+        }
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
+            expect(mockedMakeBooking).toHaveBeenCalledWith(
                 {
                     duration: 15,
                     roomId: fakeRooms[0].id,
@@ -233,7 +261,7 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 30 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as vi.Mock).mockResolvedValueOnce({
+        mockedMakeBooking.mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -246,6 +274,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={30}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -253,10 +283,13 @@ describe('AvailableRoomList', () => {
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
+        if (!bookButton) {
+            throw new Error('Button not found');
+        }
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
+            expect(makeBooking).toHaveBeenCalledWith(
                 {
                     duration: 30,
                     roomId: fakeRooms[0].id,
@@ -270,19 +303,21 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 60 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as vi.Mock).mockResolvedValueOnce({
+        mockedMakeBooking.mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
-        render(
+        const { container: HTMLElement } = render(
             <AvailableRoomList
                 rooms={fakeRooms}
                 bookings={fakeBookings}
                 bookingDuration={60}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -290,10 +325,13 @@ describe('AvailableRoomList', () => {
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
+        if (!bookButton) {
+            throw new Error('Button not found');
+        }
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
+            expect(mockedMakeBooking).toHaveBeenCalledWith(
                 {
                     duration: 60,
                     roomId: fakeRooms[0].id,
@@ -307,7 +345,7 @@ describe('AvailableRoomList', () => {
 
     it('books for a room for 120 minutes', async () => {
         const startTime = now.toUTC().toISO();
-        (makeBooking as vi.Mock).mockResolvedValueOnce({
+        mockedMakeBooking.mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             startTime: startTime,
@@ -320,6 +358,8 @@ describe('AvailableRoomList', () => {
                 bookings={fakeBookings}
                 bookingDuration={120}
                 startingTime="Now"
+                expandedFeaturesAll
+                {...availableRoomDefaultMocks}
             />,
             container
         );
@@ -327,10 +367,13 @@ describe('AvailableRoomList', () => {
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
+        if (!bookButton) {
+            throw new Error('Button not found');
+        }
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as vi.Mock).toHaveBeenCalledWith(
+            expect(mockedMakeBooking).toHaveBeenCalledWith(
                 {
                     duration: 120,
                     roomId: fakeRooms[0].id,
