@@ -100,6 +100,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                             ampm={false}
                             value={dayjs(nowDate() + ' ' + time)}
                             maxTime={maxDuration}
+                            data-testid="CustomDurationClock"
                         />
                     </BoxForm>
                     <Row>
