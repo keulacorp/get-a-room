@@ -15,9 +15,7 @@ const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
 
 type DurationPickerProps = {
     onChange: (duration: number) => void;
-    title: string;
     bookingDuration: number;
-    setBookingDuration: (dur: number) => void;
     setExpandDurationTimePickerDrawer: (show: boolean) => void;
     additionalDuration: number;
 };
@@ -25,9 +23,7 @@ type DurationPickerProps = {
 const DurationPicker = (props: DurationPickerProps) => {
     const {
         onChange,
-        title,
         bookingDuration,
-        setBookingDuration,
         setExpandDurationTimePickerDrawer,
         additionalDuration
     } = props;
