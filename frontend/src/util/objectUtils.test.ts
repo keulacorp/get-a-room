@@ -3,16 +3,6 @@
  */
 
 // @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
 
 import { isNonEmptyArray } from './objectUtils';
 

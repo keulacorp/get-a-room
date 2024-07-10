@@ -6,17 +6,6 @@ import { DateTime } from 'luxon';
  */
 
 // @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 describe('TimeLeft', () => {
     afterEach(() => {
         cleanup();

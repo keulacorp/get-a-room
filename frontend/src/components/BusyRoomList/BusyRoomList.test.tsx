@@ -3,17 +3,6 @@
  */
 
 // @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';

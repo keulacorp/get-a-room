@@ -3,17 +3,6 @@
  */
 
 // @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import CurrentBooking from './CurrentBooking';

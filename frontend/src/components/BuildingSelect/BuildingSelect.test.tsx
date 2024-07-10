@@ -3,17 +3,6 @@
  */
 
 // @ts-nocheck
-import {
-    vi,
-    expect,
-    describe,
-    it,
-    beforeEach,
-    afterEach,
-    beforeAll,
-    afterAll
-} from 'vitest';
-
 import { render, cleanup, screen, fireEvent } from '@testing-library/react';
 
 import BuildingSelect from './BuildingSelect';
