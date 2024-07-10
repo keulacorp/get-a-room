@@ -356,9 +356,7 @@ const BookingDrawer = (props: Props) => {
 
                     <DurationPicker
                         bookingDuration={duration}
-                        setBookingDuration={setBookingDuration}
                         onChange={handleDurationChange}
-                        title="quick duration selection"
                         setExpandDurationTimePickerDrawer={
                             setExpandDurationTimePickerDrawer
                         }
