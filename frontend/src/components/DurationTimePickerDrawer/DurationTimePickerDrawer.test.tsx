@@ -53,7 +53,7 @@ describe('Duration selection from picker', () => {
         container = null;
     });
 
-    test('test with default value 01:45 is preserved when confirm is clicked', () => {
+    test('test with value 01:45 is selected when confirmed', () => {
         const handleDurationChange = vi.fn();
 
         const spy = vi.spyOn(testObj, 'setExpandDurationTimePickerDrawer');
