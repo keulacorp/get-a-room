@@ -2,10 +2,7 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-// @ts-nocheck
 import React from 'react';
-import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';
 import { render, screen } from '@testing-library/react';
 import BusyRoomList from './BusyRoomList';
@@ -52,7 +49,7 @@ const fakeRooms = [
     }
 ];
 
-let container = null;
+let container: any = null;
 
 describe('BusyRoomList', () => {
     beforeEach(() => {
@@ -68,6 +65,7 @@ describe('BusyRoomList', () => {
     });
 
     it('renders rooms available in 30 minutes', async () => {
+        //@ts-ignore
         render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const items = screen.queryAllByTestId('AvailableRoomListCard');
@@ -76,6 +74,7 @@ describe('BusyRoomList', () => {
     });
 
     it('renders correct room title', async () => {
+        //@ts-ignore
         render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const titles = screen.queryAllByTestId('BookingRoomTitle');

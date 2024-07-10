@@ -1,5 +1,9 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
 import { sortByFavoritedAndName } from './arrayUtils';
-import { vi, expect, describe, test } from 'vitest';
+import { expect } from 'vitest';
 
 const testArray = [
     { name: 'a', favorited: false },

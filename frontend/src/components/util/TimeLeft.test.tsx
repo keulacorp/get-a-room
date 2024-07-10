@@ -5,7 +5,6 @@ import { DateTime } from 'luxon';
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
 describe('TimeLeft', () => {
     afterEach(() => {
         cleanup();

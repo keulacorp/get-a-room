@@ -2,8 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-// @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';

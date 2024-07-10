@@ -2,7 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
 import {
     render,
     cleanup,
@@ -15,6 +14,7 @@ import {
 import { updatePreferences } from '../../services/preferencesService';
 
 import ChooseOfficeView from './ChooseOfficeView';
+import { Mock } from 'vitest';
 
 const mockedHistoryPush = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -118,7 +118,7 @@ describe('ChooseOfficeView', () => {
 
     it('updates preferences when clicking a building name', async () => {
         const mockedSetPreferences = vi.fn();
-        (updatePreferences as vi.Mock).mockResolvedValueOnce({
+        (updatePreferences as Mock).mockResolvedValueOnce({
             building: TEST_BUILDINGS[1]
         });
         render(
@@ -133,7 +133,7 @@ describe('ChooseOfficeView', () => {
 
         fireEvent.click(screen.getByText(TEST_BUILDINGS[1].name));
 
-        expect(updatePreferences as vi.Mock).toHaveBeenCalledWith({
+        expect(updatePreferences as Mock).toHaveBeenCalledWith({
             building: TEST_BUILDINGS[1],
             showRoomResources: false
         });

@@ -2,7 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
 import {
     render,
     cleanup,
@@ -14,6 +13,7 @@ import {
 import { updatePreferences } from '../../services/preferencesService';
 
 import PreferencesLoader from './PreferencesLoader';
+import { Preferences } from '../../types';
 
 const mockedHistoryReplace = vi.fn();
 
@@ -33,8 +33,6 @@ vi.mock('../../hooks/useCreateNotification', () => {
         }
     };
 });
-
-vi.mock('../../services/preferencesService');
 
 const TEST_BUILDINGS = [
     { id: 'b1Id', name: 'b1Name', latitude: 61.4957056, longitude: 23.7993984 },
@@ -71,10 +69,16 @@ describe('PreferencesLoader', () => {
     });
 
     it('updates preferences when submitted', async () => {
-        const mockedSetPreferences = vi.fn();
-        (updatePreferences as vi.Mock).mockResolvedValueOnce({
+        const mockedSetPreferences = vi.fn(async () => ({
             building: TEST_BUILDINGS[1]
-        });
+        }));
+
+        vi.mock('../../services/preferencesService', () => ({
+            updatePreferences: vi.fn(async () => ({
+                building: TEST_BUILDINGS[1]
+            }))
+        }));
+
         render(
             <PreferencesLoader
                 preferences={{}}
@@ -88,7 +92,7 @@ describe('PreferencesLoader', () => {
 
         fireEvent.click(screen.getByText('Confirm'));
 
-        expect(updatePreferences as vi.Mock).toHaveBeenCalledWith({
+        expect(updatePreferences).toHaveBeenCalledWith({
             building: TEST_BUILDINGS[1]
         });
         await waitFor(() => {

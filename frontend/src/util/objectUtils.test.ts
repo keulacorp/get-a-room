@@ -2,8 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-
 import { isNonEmptyArray } from './objectUtils';
 
 describe('isNonEmptyArray', () => {

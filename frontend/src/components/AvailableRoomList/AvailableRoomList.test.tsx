@@ -2,14 +2,14 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-// @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime, Settings } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
 import { makeBooking } from '../../services/bookingService';
+import { an } from 'vitest/dist/reporters-yx5ZTtEV';
+import { Booking } from '../../types';
 
 const fakeRooms = [
     {
@@ -75,10 +75,10 @@ vi.mock('../../hooks/useCreateNotification', () => {
 
 vi.mock('../../services/bookingService');
 
-const fakeBookings = [];
+const fakeBookings: Booking[] = [];
 
-let container = null;
-let now: DateTime = null;
+let container: any = null;
+let now: DateTime | null = null;
 
 describe('AvailableRoomList', () => {
     beforeEach(() => {

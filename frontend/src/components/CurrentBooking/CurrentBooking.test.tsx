@@ -2,14 +2,15 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
-import { unmountComponentAtNode } from 'react-dom';
-import { updateBooking, endBooking } from '../../services/bookingService';
+import { endBooking, updateBooking } from '../../services/bookingService';
+import { Booking } from '../../types';
 
+vi.mock('../../services/bookingService');
+vi.mock('../../services/bookingService');
 vi.mock('../../hooks/useCreateNotification', () => {
     return {
         default: () => {
@@ -23,11 +24,12 @@ vi.mock('../../hooks/useCreateNotification', () => {
 
 vi.mock('../../services/bookingService');
 
-const fakeBooking = [
+const fakeBooking: Booking[] = [
     {
         id: '123',
         startTime: '2021-10-21T17:32:28Z',
         endTime: '2021-10-21T19:32:28Z',
+        //@ts-ignore
         room: {
             id: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com',
             name: 'Amor',
@@ -38,7 +40,7 @@ const fakeBooking = [
     }
 ];
 
-let container = null;
+let container: any = null;
 describe.sequential('CurrentBooking', () => {
     beforeEach(() => {
         // setup a DOM element as a render target
@@ -54,6 +56,7 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('renders booking data with correct name', async () => {
+        //@ts-ignore
         render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const title = screen.queryByTestId('BookingRoomTitle');
@@ -62,7 +65,7 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('renders alter booking drawer', async () => {
-        (updateBooking as vi.Mock).mockResolvedValueOnce({
+        updateBooking.mockResolvedValueOnce({
             timeToAdd: 15
         });
 
@@ -76,11 +79,12 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('extend booking by 15 min', async () => {
-        (updateBooking as vi.Mock).mockResolvedValueOnce({
+        updateBooking.mockResolvedValueOnce({
             timeToAdd: 15,
             bookingId: fakeBooking[0].id
         });
 
+        //@ts-ignore
         render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
@@ -99,7 +103,7 @@ describe.sequential('CurrentBooking', () => {
     });
 
     it('ends booking', async () => {
-        (endBooking as vi.Mock).mockResolvedValueOnce({
+        (endBooking as Mock).mockResolvedValueOnce({
             bookingId: fakeBooking[0].id
         });
 

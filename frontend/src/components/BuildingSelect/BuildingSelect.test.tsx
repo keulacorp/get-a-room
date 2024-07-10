@@ -2,8 +2,7 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
-import { render, cleanup, screen, fireEvent } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 import BuildingSelect from './BuildingSelect';
 

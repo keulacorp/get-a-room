@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+
 import {
     vi,
     expect,
@@ -7,5 +8,6 @@ import {
     beforeEach,
     afterEach,
     beforeAll,
-    afterAll
+    afterAll,
+    Mock
 } from 'vitest';

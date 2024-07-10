@@ -2,7 +2,6 @@
  * @vitest-environment happy-dom
  */
 
-// @ts-nocheck
 const valueMock = vi.fn();
 
 vi.mock('./getARoomEnv', () => {
