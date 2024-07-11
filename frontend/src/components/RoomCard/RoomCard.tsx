@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Booking, Preferences, Room } from '../../types';
 import { updatePreferences } from '../../services/preferencesService';
+import { getNumberWithOrdinalSuffix } from '../../util/commonUtils';
 
 import TimeLeft, {
     getTimeDiff,
@@ -41,6 +42,10 @@ import {
 
 function getName(room: Room) {
     return room.name;
+}
+
+function getFloor(room: Room) {
+    return room.floor;
 }
 
 function getCapacity(room: Room) {
@@ -182,13 +187,13 @@ const RoomCardTitleWithDescription = (props: {
             >
                 {getName(props.room)}
             </Typography>
-            {/*TODO villep: Not Implemented?*/}
             <Typography
                 variant={'h4'}
                 align={'left'}
                 paddingLeft={DEFAULT_STYLES.smallerSpacer}
             >
-                Test
+                {getNumberWithOrdinalSuffix(parseInt(getFloor(props.room)))}{' '}
+                floor
             </Typography>
         </CenterAlignedStack>
     );
