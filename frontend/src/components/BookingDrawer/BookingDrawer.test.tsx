@@ -13,6 +13,7 @@ const fakeRoom: Room = {
     id: '123',
     name: 'Amor',
     building: 'Hermia 5',
+    floor: '1',
     capacity: 15,
     features: ['TV', 'Whiteboard'],
     nextCalendarEvent: DateTime.now().plus({ minutes: 30 }).toUTC().toISO(),

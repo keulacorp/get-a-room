@@ -23,6 +23,7 @@ const fakeRooms: Room[] = [
         id: '123',
         name: 'Amor',
         building: 'Hermia 5',
+        floor: '1',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
         nextCalendarEvent: DateTime.now().plus({ minutes: 121 }).toUTC().toISO()
@@ -32,6 +33,7 @@ const fakeRooms: Room[] = [
         id: '124',
         name: 'Amor',
         building: 'Hermia 5',
+        floor: '1',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
         nextCalendarEvent: DateTime.now().plus({ minutes: 61 }).toUTC().toISO()
@@ -41,6 +43,7 @@ const fakeRooms: Room[] = [
         id: '125',
         name: 'Amor',
         building: 'Hermia 5',
+        floor: '1',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
         nextCalendarEvent: DateTime.now().plus({ minutes: 31 }).toUTC().toISO()
@@ -50,6 +53,7 @@ const fakeRooms: Room[] = [
         id: '126',
         name: 'Amor',
         building: 'Hermia 5',
+        floor: '1',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
         nextCalendarEvent: DateTime.now().plus({ minutes: 16 }).toUTC().toISO()
@@ -59,6 +63,7 @@ const fakeRooms: Room[] = [
         id: '127',
         name: 'Amor',
         building: 'Hermia 5',
+        floor: '1',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
         nextCalendarEvent: DateTime.now().plus({ minutes: 1 }).toUTC().toISO()
