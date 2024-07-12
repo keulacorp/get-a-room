@@ -401,12 +401,12 @@ const BookingDrawer = (props: Props) => {
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
-                            aria-label="until next meeting"
+                            aria-label="Book the whole free slot"
                             onClick={() =>
                                 handleUntilNext(getTimeAvailableMinutes(room))
                             }
                         >
-                            Until next meeting
+                            Book the whole free slot
                         </DrawerButtonSecondary>
                     </Row>
                     <Row>
