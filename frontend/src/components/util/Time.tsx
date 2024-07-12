@@ -25,7 +25,11 @@ export const getHourMinute = (v: any) => {
 };
 
 export const timeFormat = (h: number, m: number) => {
-    return h.toString() + ':' + (m < 10 ? '0' + m.toString() : m.toString());
+    return (
+        (h < 10 ? '0' + h.toString() : h.toString()) +
+        ':' +
+        (m < 10 ? '0' + m.toString() : m.toString())
+    );
 };
 
 export const timeToHalfAndFullHours = (
