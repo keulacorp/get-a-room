@@ -14,6 +14,10 @@ import {
     getTimeAvailableMinutes,
     getBookingTimeLeft
 } from '../RoomCard/RoomCard';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
+import { EndBookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 const NO_CONFIRMATION = true;
 
@@ -127,6 +131,9 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 updateRooms();
                 createNotificationWithType('Booking ended', 'success');
                 window.scrollTo(0, 0);
+
+                triggerGoogleAnalyticsEvent(new EndBookingEvent(booking.room));
+                triggerClarityEvent(AnalyticsEventEnum.END_BOOKING);
             })
             .catch(() => {
                 setBookingProcessing('false');
