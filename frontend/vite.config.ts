@@ -7,7 +7,20 @@ import { VitePluginRadar } from 'vite-plugin-radar';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
-    return {
+    const googleAnalyticsId = env.VITE_GOOGLE_ANALYTICS_ID;
+
+    const googleAnalyticsPlugin =
+        googleAnalyticsId !== null && googleAnalyticsId !== ''
+            ? VitePluginRadar({
+                  enableDev: true,
+                  // Google Analytics tag injection
+                  analytics: {
+                      id: env.VITE_GOOGLE_ANALYTICS_ID as string
+                  }
+              })
+            : null;
+
+    let config = {
         // depending on your application, base can also be "/"
         base: './',
         plugins: [
@@ -23,13 +36,6 @@ export default defineConfig(({ mode }) => {
             svgr({
                 svgrOptions: { exportType: 'named' },
                 include: '/**/*.svg'
-            }),
-            VitePluginRadar({
-                enableDev: true,
-                // Google Analytics tag injection
-                analytics: {
-                    id: env.VITE_GOOGLE_ANALYTICS_ID as string
-                }
             })
         ],
         optimizeDeps: {
@@ -57,4 +63,12 @@ export default defineConfig(({ mode }) => {
             }
         }
     };
+
+    if (googleAnalyticsPlugin) {
+        config.plugins.push(googleAnalyticsPlugin);
+    } else {
+        console.log('Google Analytics ID not defined!');
+    }
+
+    return config;
 });

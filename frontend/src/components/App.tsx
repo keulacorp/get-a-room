@@ -16,6 +16,9 @@ const App = () => {
     if (GETAROOM_ENV().VITE_CLARITY_ID != null) {
         // Start seeing data on the Clarity dashboard with your id
         clarity.init(GETAROOM_ENV().VITE_CLARITY_ID as string);
+
+        clarity.consent();
+
         // Check if Clarity has been initialized before calling its methods
         if (clarity.hasStarted()) {
             clarity.identify('USER_ID', { userProperty: 'value' });
