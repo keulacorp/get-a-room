@@ -15,6 +15,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { sortByFavoritedAndName } from '../../util/arrayUtils';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalyticsService';
 
 const SKIP_CONFIRMATION = true;
 
@@ -288,6 +291,8 @@ const AvailableRoomList = (props: BookingListProps) => {
                 createSuccessNotification('Booking was successful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
+                triggerGoogleAnalyticsEvent(AnalyticsEventEnum.BOOKING);
+                triggerClarityEvent(AnalyticsEventEnum.BOOKING);
             })
             .catch(() => {
                 createErrorNotification('Could not create booking');
