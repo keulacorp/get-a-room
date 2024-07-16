@@ -10,6 +10,7 @@ import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
 import StartingTimePicker from './StartingTimePicker';
 import FilteringDrawer from './FilteringDrawer';
+import { DateTime } from 'luxon';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -135,7 +136,27 @@ function BookingView(props: BookingViewProps) {
             const buildingPreference = preferences.building?.id;
             getRooms(buildingPreference, GET_RESERVED)
                 .then((allRooms) => {
-                    setRooms(allRooms);
+                    const dt = DateTime.now();
+                    if (startingTime !== 'Now') {
+                        const h = Number(startingTime.split(':')[0]);
+                        const m = Number(startingTime.split(':')[1]);
+                        dt.set({ hour: h, minute: m });
+                    }
+
+                    const availableRooms = allRooms.filter(
+                        (room) =>
+                            DateTime.fromISO(room.nextCalendarEvent) >
+                            startingTime
+                    );
+                    const reservedRooms = allRooms.filter(
+                        (room) =>
+                            DateTime.fromISO(room.nextCalendarEvent) <=
+                            startingTime
+                    );
+                    const allRoomsInOrder =
+                        availableRooms.concat(reservedRooms);
+
+                    setRooms(allRoomsInOrder);
                 })
                 .catch((error) => console.log(error));
         }
