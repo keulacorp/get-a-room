@@ -45,6 +45,19 @@ export class BookingAddTimeEvent implements GoogleAnalyticsEvent {
     }
 }
 
+export class BookingDeductTimeEvent implements GoogleAnalyticsEvent {
+    eventType: AnalyticsEventEnum = AnalyticsEventEnum.BOOKING_DEDUCT_TIME;
+    eventObject: object;
+
+    constructor(booking: Booking) {
+        this.eventObject = {
+            roomName: booking.room.name,
+            building: booking.room.building,
+            bookingResources: booking.resourceStatus
+        };
+    }
+}
+
 export class ChooseBuildingEvent implements GoogleAnalyticsEvent {
     eventType: AnalyticsEventEnum = AnalyticsEventEnum.BUILDING_SELECT;
     eventObject: object;
