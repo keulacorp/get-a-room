@@ -17,7 +17,10 @@ import {
 import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
 import { triggerClarityEvent } from '../../analytics/clarityService';
 import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
-import { EndBookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
+import {
+    BookingAddTimeEvent,
+    BookingEndEvent
+} from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 const NO_CONFIRMATION = true;
 
@@ -111,6 +114,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 updateBookings();
                 createSuccessNotification('Time added to booking');
                 window.scrollTo(0, 0);
+                triggerGoogleAnalyticsEvent(new BookingAddTimeEvent(booking));
             })
             .catch(() => {
                 setBookingProcessing('false');
@@ -131,9 +135,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 updateRooms();
                 createNotificationWithType('Booking ended', 'success');
                 window.scrollTo(0, 0);
-
-                triggerGoogleAnalyticsEvent(new EndBookingEvent(booking.room));
-                triggerClarityEvent(AnalyticsEventEnum.END_BOOKING);
+                triggerGoogleAnalyticsEvent(new BookingEndEvent(booking.room));
             })
             .catch(() => {
                 setBookingProcessing('false');

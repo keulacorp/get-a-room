@@ -293,7 +293,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
 
-                triggerGoogleAnalyticsEvent(new BookingEvent(room));
+                triggerGoogleAnalyticsEvent(new BookingEvent(room, duration));
                 triggerClarityEvent(AnalyticsEventEnum.BOOKING);
             })
             .catch(() => {

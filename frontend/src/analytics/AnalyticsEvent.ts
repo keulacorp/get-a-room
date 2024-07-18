@@ -1,11 +1,15 @@
 // Defines the common enum to use for event names across all analytics services
 export enum AnalyticsEventEnum {
     BOOKING,
-    END_BOOKING
+    BOOKING_END,
+    BOOKING_ADD_TIME,
+    BUILDING_SELECT
 }
 
 // Defines the common event names to use across all analytics services
 export const analyticsEventMap: { [key in AnalyticsEventEnum]: string } = {
     [AnalyticsEventEnum.BOOKING]: 'booking',
-    [AnalyticsEventEnum.END_BOOKING]: 'endBooking'
+    [AnalyticsEventEnum.BOOKING_END]: 'bookingEnd',
+    [AnalyticsEventEnum.BOOKING_ADD_TIME]: 'bookingAddTime',
+    [AnalyticsEventEnum.BUILDING_SELECT]: 'buildingSelect'
 };
