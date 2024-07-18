@@ -87,8 +87,8 @@ const AlterBookingDrawer = (props: Props) => {
     const text: string = 'Hello World! I shared this content via Web Share';
     const url: string | undefined = booking?.meetingLink;
 
-    const handleAdditionalTime = (minutes: number) => {
-        if (booking === undefined) {
+    const handleAlterTime = (minutes: number) => {
+        if (booking === undefined || minutes == 0) {
             return;
         }
         onAlterTime(booking, minutes);
@@ -111,7 +111,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextHalfHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAlterTime(minutes - duration);
     };
 
     const nextHalfHour = () => {
@@ -175,7 +175,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextFullHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAlterTime(minutes - duration);
     };
 
     const disableNextFullHour = () => {
@@ -208,20 +208,20 @@ const AlterBookingDrawer = (props: Props) => {
             return;
         }
         if (timeNow.hour >= LAST_HOUR) {
-            handleAdditionalTime(availableMinutes - 1);
+            handleAlterTime(availableMinutes - 1);
         } else {
             const time1700 = DateTime.fromObject({ hour: LAST_HOUR });
             const endTime = checkStartingTime().plus({
                 minutes: availableMinutes
             });
             if (endTime < time1700) {
-                return handleAdditionalTime(availableMinutes);
+                return handleAlterTime(availableMinutes);
             }
             const minutes = time1700.diff(
                 DateTime.fromISO(booking?.endTime),
                 'minutes'
             ).minutes;
-            handleAdditionalTime(Math.floor(minutes));
+            handleAlterTime(Math.floor(minutes));
         }
     };
 
@@ -315,7 +315,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="subtract 15 minutes"
                             data-testid="subtract15"
-                            onClick={() => handleAdditionalTime(-15)}
+                            onClick={() => handleAlterTime(-15)}
                             disabled={disableSubtractTime()}
                         >
                             <RemoveIcon /> 15 min
@@ -324,7 +324,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="add 15 minutes"
                             data-testid="add15"
-                            onClick={() => handleAdditionalTime(15)}
+                            onClick={() => handleAlterTime(15)}
                             disabled={disableAddTime()}
                         >
                             <AddIcon /> 15 min
