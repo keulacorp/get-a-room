@@ -356,9 +356,7 @@ const BookingDrawer = (props: Props) => {
 
                     <DurationPicker
                         bookingDuration={duration}
-                        setBookingDuration={setBookingDuration}
                         onChange={handleDurationChange}
-                        title="quick duration selection"
                         setExpandDurationTimePickerDrawer={
                             setExpandDurationTimePickerDrawer
                         }
@@ -403,12 +401,12 @@ const BookingDrawer = (props: Props) => {
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
-                            aria-label="until next meeting"
+                            aria-label="Book the whole free slot"
                             onClick={() =>
                                 handleUntilNext(getTimeAvailableMinutes(room))
                             }
                         >
-                            Until next meeting
+                            Book the whole free slot
                         </DrawerButtonSecondary>
                     </Row>
                     <Row>

@@ -97,8 +97,9 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setSelectedId(room.id);
         toggleDrawer(true);
     };
-    // Add extra time for the reserved room
-    const handleAddExtraTime = (booking: Booking, minutes: number) => {
+
+    // Add or subtract time from the current booking
+    const handleAlterTime = (booking: Booking, minutes: number) => {
         let addTimeDetails: AddTimeDetails = {
             timeToAdd: minutes
         };
@@ -112,7 +113,11 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
-                createSuccessNotification('Time added to booking');
+                const timeAlterNotification =
+                    minutes > 0
+                        ? 'Time added to booking'
+                        : 'Time deducted from booking';
+                createSuccessNotification(timeAlterNotification);
                 window.scrollTo(0, 0);
                 triggerGoogleAnalyticsEvent(new BookingAddTimeEvent(booking));
             })
@@ -172,7 +177,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                     open={isOpenDrawer}
                     toggle={toggleDrawer}
                     duration={timeLeft(selectedBooking)}
-                    onAlterTime={handleAddExtraTime}
+                    onAlterTime={handleAlterTime}
                     availableMinutes={getTimeAvailableMinutes(selectedBooking)}
                     booking={selectedBooking}
                     endBooking={handleEndBooking}

@@ -110,6 +110,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                             ampm={false}
                             value={getStartingTimeDefaultSelection()}
                             minTime={dayjs()}
+                            data-testid="CustomStartingTimeClock"
                         />
                     </BoxForm>
                     <Row>
@@ -124,6 +125,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                         <DrawerButtonPrimary
                             aria-label="confirm"
                             onClick={() => handleSetTime(false)}
+                            data-testid="ConfirmStartingTimeButton"
                         >
                             Confirm
                         </DrawerButtonPrimary>
