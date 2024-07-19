@@ -20,6 +20,8 @@ import {
     Spacer,
     TimeTextBold
 } from '../BookingDrawer/BookingDrawer';
+import ShareMenu from './ShareMenu';
+import { useState } from 'react';
 
 const MIN_DURATION = 15;
 const LAST_HOUR = 17;
@@ -87,11 +89,19 @@ const AlterBookingDrawer = (props: Props) => {
     const text: string = 'Hello World! I shared this content via Web Share';
     const url: string | undefined = booking?.meetingLink;
 
+    const [shareMenuOpen, setShareMenuOpen] = useState(false);
+    const [shareAnchorEl, setShareAnchorEl] =
+        React.useState<null | HTMLElement>(null);
+
     const handleAlterTime = (minutes: number) => {
         if (booking === undefined || minutes == 0) {
             return;
         }
         onAlterTime(booking, minutes);
+    };
+
+    const shareMenuOnClose = (open: Boolean) => {
+        setShareMenuOpen(!shareMenuOpen);
     };
 
     const checkStartingTime = () => {
@@ -239,11 +249,18 @@ const AlterBookingDrawer = (props: Props) => {
         cancelBooking(booking);
     };
 
-    const handleOnShareClick = (shareDetails: ShareData) => {
+    const handleOnShareClick = (
+        event: HTMLElement | null,
+        shareDetails: ShareData
+    ) => {
         if (navigator.share) {
             navigator.share(shareDetails).catch((error) => {
                 console.error('Something went wrong sharing the link', error);
             });
+        } else if (event != null) {
+            console.log('Web Share API not enabled!');
+            setShareAnchorEl(event);
+            setShareMenuOpen(!shareMenuOpen);
         }
     };
 
@@ -294,16 +311,25 @@ const AlterBookingDrawer = (props: Props) => {
                     </RowCentered>
                     <Row>
                         <DrawerButtonSecondary
-                            onClick={() =>
-                                handleOnShareClick({
+                            id="shareButton"
+                            onClick={(
+                                event: React.MouseEvent<HTMLButtonElement>
+                            ) => {
+                                handleOnShareClick(event.currentTarget, {
                                     url,
                                     title,
                                     text
-                                })
-                            }
+                                });
+                            }}
                         >
                             <ShareIcon /> <Spacer /> Share meeting
                         </DrawerButtonSecondary>
+                        <ShareMenu
+                            anchorEl={shareAnchorEl}
+                            open={shareMenuOpen}
+                            onClose={shareMenuOnClose}
+                            url={url ? url : 'no link'}
+                        ></ShareMenu>
                     </Row>
 
                     <Row>
