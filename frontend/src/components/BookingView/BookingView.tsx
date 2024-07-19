@@ -39,6 +39,7 @@ import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import { availableForMinutes } from '../util/AvailableTime';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import useBookingDurationState from './BookingDurationState';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -119,7 +120,7 @@ function BookingView(props: BookingViewProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [bookingDuration, setBookingDuration] = useState(15);
+    const [bookingDuration, setBookingDuration] = useBookingDurationState();
 
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 

@@ -14,6 +14,8 @@ import {
     makeBooking
 } from '../../services/bookingService';
 import { getRooms } from '../../services/roomService';
+import React from 'react';
+import useBookingDurationState from './BookingDurationState';
 
 const mocks = vi.hoisted(() => {
     return {
@@ -28,7 +30,9 @@ const mocks = vi.hoisted(() => {
             return new Promise((resolve) => {
                 resolve(fakeRooms);
             });
-        }
+        },
+        bookingDuration: vi.fn(),
+        usestate: () => [30, vi.fn()]
     };
 });
 
@@ -41,6 +45,21 @@ vi.mock('../../services/bookingService', () => ({
 vi.mock('../../services/roomService', () => ({
     getRooms: mocks.getRooms
 }));
+
+/*vi.mock('./BookingDurationState', () => {
+    return {
+        default: () => {
+            return {
+                useBookingDurationState: vi.fn()
+            };
+        }
+    };
+});*/
+vi.mock('./BookingDurationState', () => {
+    return {
+        default: mocks.usestate
+    };
+});
 
 let preferences = {};
 const setPreferences = (pref: any) => {
@@ -184,8 +203,11 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryAllByTestId('CardActiveArea');
-        fireEvent.click(card[0]);
+        await waitFor(() => {
+            const card = screen.queryAllByTestId('CardActiveArea');
+            expect(card.length).toBeGreaterThan(0);
+            fireEvent.click(card[0]);
+        });
         const bookButton = screen.queryByTestId('BookNowButton');
         if (!bookButton) {
             throw new Error('No book button');
@@ -213,6 +235,7 @@ describe('AvailableRoomList', () => {
             startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
+        //        vi.mocked(useBookingDurationState).mockResolvedValue([30, vi.fn()]);
 
         render(
             <BookingView
@@ -225,8 +248,12 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryAllByTestId('CardActiveArea');
-        fireEvent.click(card[0]);
+        await waitFor(() => {
+            const card = screen.queryAllByTestId('CardActiveArea');
+            expect(card.length).toBeGreaterThan(0);
+            fireEvent.click(card[0]);
+        });
+
         const bookButton = screen.queryByTestId('BookNowButton');
         if (!bookButton) {
             throw new Error('Button not found');
@@ -249,7 +276,7 @@ describe('AvailableRoomList', () => {
     it('books for a room for 60 minutes', async () => {
         const startTime = now.toUTC().toISO();
         vi.mocked(makeBooking).mockResolvedValueOnce({
-            duration: 30,
+            duration: 60,
             roomId: fakeRooms[0].id,
             startTime: startTime,
             title: 'Reservation from Get a Room!'
@@ -266,8 +293,11 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryAllByTestId('CardActiveArea');
-        fireEvent.click(card[0]);
+        await waitFor(() => {
+            const card = screen.queryAllByTestId('CardActiveArea');
+            expect(card.length).toBeGreaterThan(0);
+            fireEvent.click(card[0]);
+        });
         const bookButton = screen.queryByTestId('BookNowButton');
         if (!bookButton) {
             throw new Error('Button not found');
@@ -290,7 +320,7 @@ describe('AvailableRoomList', () => {
     it('books for a room for 120 minutes', async () => {
         const startTime = now.toUTC().toISO();
         vi.mocked(makeBooking).mockResolvedValueOnce({
-            duration: 30,
+            duration: 120,
             roomId: fakeRooms[0].id,
             startTime: startTime,
             title: 'Reservation from Get a Room!'
@@ -307,8 +337,11 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryAllByTestId('CardActiveArea');
-        fireEvent.click(card[0]);
+        await waitFor(() => {
+            const card = screen.queryAllByTestId('CardActiveArea');
+            expect(card.length).toBeGreaterThan(0);
+            fireEvent.click(card[0]);
+        });
         const bookButton = screen.queryByTestId('BookNowButton');
         if (!bookButton) {
             throw new Error('Button not found');
