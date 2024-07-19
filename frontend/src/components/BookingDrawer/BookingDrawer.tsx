@@ -92,6 +92,80 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
+export const RowAlert = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: '0px',
+    borderStyle: 'solid',
+    borderColor: '#F2BB32',
+    borderWidth: '1px',
+    borderRadius: '8px'
+}));
+
+export const ColAlertIcon = styled(Box)(({ theme }) => ({
+    width: '40px',
+    display: 'flex',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: '8px',
+    padding: '0px',
+    background: '#F2BB32',
+    borderRadius: '0px'
+}));
+
+export const ColAlertMessage = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flex: '1 1 0%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: '8px',
+    paddingTop: '8px',
+    paddingBottom: '8px',
+    paddingRight: '24px',
+    paddingLeft: '24px',
+    borderRadius: '0px'
+}));
+
+export const Alert = () => {
+    return (
+        <RowAlert>
+            <ColAlertIcon>
+                <span
+                    style={{
+                        color: '#FBFBF6',
+                        fontSize: '20px',
+                        fontFamily: 'Material Icons',
+                        textAlign: 'center',
+                        fontWeight: '400'
+                    }}
+                >
+                    not_interested
+                </span>
+            </ColAlertIcon>
+            <ColAlertMessage>
+                <p
+                    style={{
+                        flex: '1 1 0%',
+                        color: '#1D1D1D',
+                        fontSize: '16px',
+                        fontFamily: 'Studio Feixen Sans',
+                        textAlign: 'left',
+                        fontWeight: '2'
+                    }}
+                >
+                    Room is currently unavailable for 14 minutes. You may book
+                    the room in advance.{' '}
+                </p>
+            </ColAlertMessage>
+        </RowAlert>
+    );
+};
+
 export const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
@@ -332,6 +406,7 @@ const BookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
+                    <Alert />
                     <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(

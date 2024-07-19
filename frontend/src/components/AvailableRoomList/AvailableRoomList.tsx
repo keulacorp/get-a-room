@@ -1,22 +1,11 @@
-import { useState } from 'react';
 import { Box, List, ToggleButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { makeBooking } from '../../services/bookingService';
-import { Booking, BookingDetails, Preferences, Room } from '../../types';
-import { DateTime, Duration } from 'luxon';
-import useCreateNotification from '../../hooks/useCreateNotification';
+import { Booking, Preferences, Room } from '../../types';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
-import BookingDrawer from '../BookingDrawer/BookingDrawer';
-import StartingTimePickerDrawer from '../StartingTimePickerDrawer/StartingTimePickerDrawer';
-import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePickerDrawer';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
 import { sortByFavoritedAndName } from '../../util/arrayUtils';
-
-const SKIP_CONFIRMATION = true;
+import { isAvailableFor } from '../util/AvailableTime';
 
 const TimePickerButton = styled(ToggleButton)(() => ({
     padding: '8px 16px',
@@ -49,33 +38,6 @@ function noAvailableRooms(rooms: Room[]) {
     return rooms.length === 0;
 }
 
-function availableForMinutes(room: Room | undefined, startingTime: String) {
-    if (room === undefined) {
-        return 0;
-    }
-
-    let availableUntil = DateTime.fromISO(room.nextCalendarEvent).toUTC();
-    let duration;
-
-    if (startingTime === 'Now') {
-        duration = Duration.fromObject(
-            availableUntil.diffNow('minutes').toObject()
-        );
-    } else {
-        const h = Number(startingTime.split(':')[0]);
-        const m = Number(startingTime.split(':')[1]);
-        const dt = DateTime.now().set({ hour: h, minute: m });
-        duration = Duration.fromObject(
-            availableUntil.diff(dt, 'minutes').toObject()
-        );
-    }
-    return Math.ceil(duration.minutes);
-}
-
-function isAvailableFor(minutes: number, room: Room, startingTime: String) {
-    return minutes <= availableForMinutes(room, startingTime);
-}
-
 type BookingListProps = {
     bookingDuration: number;
     rooms: Room[];
@@ -91,6 +53,9 @@ type BookingListProps = {
     setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandTimePickerDrawer: (show: boolean) => void;
     expandTimePickerDrawer: boolean;
+    bookingLoading: string;
+    handleCardClick: (room: Room) => void;
+    selectedRoom: Room | undefined;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
@@ -108,239 +73,14 @@ const AvailableRoomList = (props: BookingListProps) => {
         setBookingDuration,
         setDuration,
         setExpandTimePickerDrawer,
-        expandTimePickerDrawer
+        expandTimePickerDrawer,
+        bookingLoading,
+        handleCardClick,
+        selectedRoom
     } = props;
-    const { createSuccessNotification, createErrorNotification } =
-        useCreateNotification();
 
-    const [bookingLoading, setBookingLoading] = useState('false');
-
-    const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
-    const [additionalDuration, setAdditionalDuration] = useState(0);
-    const [availableMinutes, setAvailableMinutes] = useState(0);
-    const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
-        undefined
-    );
-
-    const [expandDurationTimePickerDrawer, setExpandDurationTimePickerDrawer] =
-        useState(false);
-
-    const handleAdditionalDurationChange = (additionalMinutes: number) => {
-        setAdditionalDuration(additionalDuration + additionalMinutes);
-    };
-    function maxDuration(room: Room | undefined, startingTime: String) {
-        const mm = availableForMinutes(room, startingTime);
-
-        return dayjs()
-            .minute(mm % 60)
-            .hour(Math.floor(mm / 60));
-    }
-    const handleUntilHalf = () => {
-        let halfTime =
-            startingTime === 'Now'
-                ? DateTime.now().toObject()
-                : DateTime.fromObject({
-                      hour: Number(startingTime.split(':')[0]),
-                      minute: Number(startingTime.split(':')[1]),
-                      second: 0
-                  })
-                      .plus({ minutes: bookingDuration })
-                      .toObject();
-
-        if (
-            halfTime.hour === undefined ||
-            halfTime.minute === undefined ||
-            Number.isNaN(halfTime.hour) ||
-            Number.isNaN(halfTime.minute)
-        ) {
-            throw new Error('Time not set');
-        }
-
-        if (halfTime.minute >= 30) {
-            halfTime.hour = halfTime.hour + 1;
-        }
-        halfTime.minute = 30;
-        halfTime.second = 0;
-        halfTime.millisecond = 0;
-        let bookUntil = DateTime.fromObject(halfTime);
-        let durationToBookUntil =
-            startingTime === 'Now'
-                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
-                : Duration.fromObject(
-                      bookUntil
-                          .diff(
-                              DateTime.fromObject({
-                                  hour: Number(startingTime.split(':')[0]),
-                                  minute: Number(startingTime.split(':')[1]),
-                                  second: 0
-                              }),
-                              ['minutes']
-                          )
-                          .toObject()
-                  );
-        setAdditionalDuration(
-            Math.ceil(durationToBookUntil.minutes) - bookingDuration
-        );
-    };
-
-    const handleUntilFull = () => {
-        let fullTime =
-            startingTime === 'Now'
-                ? DateTime.now().toObject()
-                : DateTime.fromObject({
-                      hour: Number(startingTime.split(':')[0]),
-                      minute: Number(startingTime.split(':')[1]),
-                      second: 0
-                  })
-                      .plus({ minutes: bookingDuration })
-                      .toObject();
-        if (
-            fullTime.hour === undefined ||
-            fullTime.minute === undefined ||
-            Number.isNaN(fullTime.hour) ||
-            Number.isNaN(fullTime.minute)
-        ) {
-            throw new Error('Time not set');
-        }
-
-        fullTime.hour = fullTime.hour + 1;
-        fullTime.minute = 0;
-        fullTime.second = 0;
-        fullTime.millisecond = 0;
-        let bookUntil = DateTime.fromObject(fullTime);
-        let durationToBookUntil =
-            startingTime === 'Now'
-                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
-                : Duration.fromObject(
-                      bookUntil
-                          .diff(
-                              DateTime.fromObject({
-                                  hour: Number(startingTime.split(':')[0]),
-                                  minute: Number(startingTime.split(':')[1]),
-                                  second: 0
-                              }),
-                              ['minutes']
-                          )
-                          .toObject()
-                  );
-        setAdditionalDuration(
-            Math.ceil(durationToBookUntil.minutes) - bookingDuration
-        );
-    };
-
-    const handleUntilNextDurationChange = (additionalMinutes: number) => {
-        setAdditionalDuration(additionalMinutes - bookingDuration);
-    };
-
-    const handleReservation = () => {
-        book(selectedRoom, bookingDuration + additionalDuration);
-        setAdditionalDuration(0);
-        toggleDrawn(false);
-    };
-
-    const handleCardClick = (room: Room) => {
-        setExpandBookingDrawer(true);
-        setSelectedRoom(room);
-        setAvailableMinutes(availableForMinutes(room, startingTime));
-    };
-
-    const toggleDrawn = (newOpen: boolean) => {
-        if (newOpen === false) {
-            setSelectedRoom(undefined);
-            setAdditionalDuration(0);
-            setAvailableMinutes(0);
-        }
-        setExpandBookingDrawer(newOpen);
-    };
-
-    const book = (room: Room | undefined, duration: number) => {
-        if (room === undefined) {
-            return;
-        }
-
-        const bookingStartTime: string =
-            startingTime === 'Now'
-                ? DateTime.utc().toISO()
-                : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO() ||
-                  '';
-
-        if (startingTime === '') {
-            throw new Error('Time not set');
-        }
-        let bookingDetails: BookingDetails = {
-            duration: duration,
-            title: 'Reservation from Get a Room!',
-            roomId: room.id,
-            startTime: bookingStartTime
-        };
-
-        setBookingLoading(room.id);
-
-        makeBooking(bookingDetails, SKIP_CONFIRMATION)
-            .then((madeBooking) => {
-                setBookings([...bookings, madeBooking]);
-                updateData();
-                // update data after 2.5s, waits Google Calendar to
-                // accept the booking.
-                setTimeout(() => {
-                    updateData();
-                }, 2500);
-                createSuccessNotification('Booking was successful');
-                setBookingLoading('false');
-                document.getElementById('main-view-content')?.scrollTo(0, 0);
-            })
-            .catch(() => {
-                createErrorNotification('Could not create booking');
-                setBookingLoading('false');
-            });
-    };
     return (
         <Box id="available-room-list">
-            <div id="drawer-container">
-                <BookingDrawer
-                    open={expandBookingDrawer}
-                    toggle={toggleDrawn}
-                    bookRoom={handleReservation}
-                    room={selectedRoom}
-                    duration={bookingDuration}
-                    additionalDuration={additionalDuration}
-                    availableMinutes={availableMinutes}
-                    onAddTime={handleAdditionalDurationChange}
-                    onAddTimeUntilHalf={handleUntilHalf}
-                    onAddTimeUntilFull={handleUntilFull}
-                    onAddTimeUntilNext={handleUntilNextDurationChange}
-                    startingTime={startingTime}
-                    setBookingDuration={setBookingDuration}
-                    setAdditionalDuration={setAdditionalDuration}
-                    setDuration={setDuration}
-                    setExpandDurationTimePickerDrawer={
-                        setExpandDurationTimePickerDrawer
-                    }
-                />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StartingTimePickerDrawer
-                        open={expandTimePickerDrawer}
-                        toggle={(newOpen: any) =>
-                            setExpandTimePickerDrawer(newOpen)
-                        }
-                        startingTime={startingTime}
-                        setStartingTime={setStartingTime}
-                        setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                    />
-                    <DurationTimePickerDrawer
-                        open={expandDurationTimePickerDrawer}
-                        toggle={(newOpen: any) =>
-                            setExpandDurationTimePickerDrawer(newOpen)
-                        }
-                        bookingDuration={bookingDuration}
-                        setBookingDuration={setBookingDuration}
-                        setExpandDurationTimePickerDrawer={
-                            setExpandDurationTimePickerDrawer
-                        }
-                        maxDuration={maxDuration(selectedRoom, startingTime)}
-                    />
-                </LocalizationProvider>
-            </div>
             <div
                 id="available-booking-typography"
                 style={{

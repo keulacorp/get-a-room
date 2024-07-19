@@ -3,6 +3,7 @@ import { List, Typography, Box } from '@mui/material';
 import { DateTime } from 'luxon';
 import RoomCard from '../RoomCard/RoomCard';
 import { Booking, Preferences, Room } from '../../types';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 export function roomFreeIn(room: Room) {
     let end;
@@ -15,14 +16,7 @@ export function roomFreeIn(room: Room) {
 }
 
 function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
-    // filter if room booked for the user
-    for (let i = 0; i < bookings.length; i++) {
-        const booking = bookings[i];
-        if (booking.room.id === room.id) {
-            return false;
-        }
-    }
-    if (Array.isArray(room.busy) && roomFreeIn(room) <= 30) {
+    if (Array.isArray(room.busy)) {
         return true;
     }
     return false;
@@ -37,6 +31,12 @@ type BusyRoomListProps = {
 
 const BusyRoomList = (props: BusyRoomListProps) => {
     const { rooms, bookings, preferences, setPreferences } = props;
+    const {
+        showUserSettingsMenu,
+        setShowUserSettingsMenu,
+        expandedFeaturesAll,
+        setExpandedFeaturesAll
+    } = useUserSettings();
 
     return (
         <Box id="available-in-30-min-room-list">
@@ -48,9 +48,8 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                         textAlign="left"
                         marginLeft="24px"
                     >
-                        rooms available in the next 30 min
+                        rooms available in later time
                     </Typography>
-
                     <List>
                         {rooms
                             .sort((a, b) => (a.name < b.name ? -1 : 1))
@@ -59,21 +58,15 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                                 <li key={room.id}>
                                     <RoomCard
                                         room={room}
-                                        onClick={function (
-                                            room: Room,
-                                            booking?: Booking
-                                        ): void {
-                                            throw new Error(
-                                                'Function not implemented.'
-                                            );
-                                        }}
-                                        bookingLoading={''}
-                                        disableBooking={true}
+                                        onClick={() => {}}
+                                        disableBooking={false}
                                         isSelected={false}
-                                        isBusy={true}
-                                        expandFeatures={false}
+                                        isBusy={false}
+                                        expandFeatures={expandedFeaturesAll}
+                                        bookingLoading={'false'}
                                         setPreferences={setPreferences}
                                         preferences={preferences}
+                                        isReserved={true}
                                     />
                                 </li>
                             ))}
@@ -84,4 +77,15 @@ const BusyRoomList = (props: BusyRoomListProps) => {
     );
 };
 
+/*<RoomCard
+                                        room={room}
+                                        onClick={handleCardClick}
+                                        bookingLoading={bookingLoading}
+                                        disableBooking={false}
+                                        isSelected={selectedRoom === room}
+                                        isBusy={false}
+                                        expandFeatures={expandedFeaturesAll}
+                                        setPreferences={setPreferences}
+                                        preferences={preferences}
+                                    /> */
 export default BusyRoomList;
