@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, DurationLike } from 'luxon';
 
 export const dateTimeToTimeString = (dt: DateTime) => {
     const h = dt.hour;

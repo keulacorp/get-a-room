@@ -633,6 +633,7 @@ function BookingView(props: BookingViewProps) {
                     setExpandDurationTimePickerDrawer={
                         setExpandDurationTimePickerDrawer
                     }
+                    setStartingTime={setStartingTime}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StartingTimePickerDrawer

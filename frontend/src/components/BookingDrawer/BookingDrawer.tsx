@@ -12,6 +12,7 @@ import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
 import DurationPicker from './DurationPicker';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import { dateTimeToTimeString } from '../util/Time';
 
 const MIN_DURATION = 15;
 
@@ -52,6 +53,30 @@ export function minutesToSimpleString(minutes: number) {
     }
     return hours + ' h ' + min + ' min';
 }
+
+const getNextAvailableTime = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const nextAvailableTime = DateTime.fromISO(nextEvent!.end!).plus({
+        minutes: 1
+    });
+
+    return dateTimeToTimeString(nextAvailableTime);
+};
+
+const getUnavailableTimeInMinutes = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const end = DateTime.fromISO(nextEvent!.end!);
+
+    console.log(end, 'end');
+    console.log(getNextCalendarEvent(room), 'etNextCalendarEvent(room)');
+
+    const now = DateTime.now();
+    const substraction = end.minus({ hours: now.hour, minutes: now.minute });
+
+    return substraction.minute + substraction.hour * 60;
+};
 
 /**
  *
@@ -131,7 +156,14 @@ export const ColAlertMessage = styled(Box)(({ theme }) => ({
     borderRadius: '0px'
 }));
 
-export const Alert = () => {
+export const Alert = (props: {
+    startingTime: string;
+    showAlert: boolean;
+    unavailable: number;
+}) => {
+    if (!props.showAlert) {
+        return <></>;
+    }
     return (
         <RowAlert>
             <ColAlertIcon>
@@ -158,8 +190,9 @@ export const Alert = () => {
                         fontWeight: '2'
                     }}
                 >
-                    Room is currently unavailable for 14 minutes. You may book
-                    the room in advance.{' '}
+                    Room is currently unavailable for {props.unavailable}
+                    minutes. You may book the room in advance. Your starting
+                    time was adjusted to {props.startingTime}.
                 </p>
             </ColAlertMessage>
         </RowAlert>
@@ -254,6 +287,7 @@ interface Props {
     setAdditionalDuration: (minutes: number) => void;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandDurationTimePickerDrawer: (show: boolean) => void;
+    setStartingTime: (s: string) => void;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -273,7 +307,8 @@ const BookingDrawer = (props: Props) => {
         setBookingDuration,
         setAdditionalDuration,
         setDuration,
-        setExpandDurationTimePickerDrawer
+        setExpandDurationTimePickerDrawer,
+        setStartingTime
     } = props;
 
     useEffect(() => {
@@ -388,6 +423,13 @@ const BookingDrawer = (props: Props) => {
         setNextFullHour(fullHourString);
     };
 
+    let showAlert = false;
+    let unavailable = 0;
+    if (room && DateTime.fromISO(room.nextCalendarEvent) < DateTime.now()) {
+        setStartingTime(getNextAvailableTime(room));
+        showAlert = true;
+        unavailable = getUnavailableTimeInMinutes(room);
+    }
     return (
         <BottomDrawer
             headerTitle={getName(room)}
@@ -406,7 +448,11 @@ const BookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
-                    <Alert />
+                    <Alert
+                        startingTime={startingTime}
+                        showAlert={showAlert}
+                        unavailable={unavailable}
+                    />
                     <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(
