@@ -27,7 +27,8 @@ const bookingDrawerDefault = {
     setAdditionalDuration: vi.fn(),
     setBookingDuration: vi.fn(),
     setDuration: vi.fn(),
-    setExpandDurationTimePickerDrawer: vi.fn()
+    setExpandDurationTimePickerDrawer: vi.fn(),
+    setStartingTime: vi.fn()
 };
 
 describe('BookingDrawer', () => {
