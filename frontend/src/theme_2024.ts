@@ -53,7 +53,8 @@ export const DEFAULT_STYLES = {
 const { defaultFont } = DEFAULT_STYLES;
 
 export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
-    color: COLORS.ACCENT_RED
+    color: COLORS.ACCENT_RED,
+    fontSize: 16
 }));
 export const CheckCircle = styled(CheckCircleIcon)(({ theme }) => ({
     color: COLORS.ACCENT_GREEN

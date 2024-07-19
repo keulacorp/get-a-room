@@ -788,6 +788,9 @@ function BookingView(props: BookingViewProps) {
                         bookings={bookings}
                         preferences={preferences}
                         setPreferences={setPreferences}
+                        bookingLoading={bookingLoading}
+                        handleCardClick={handleCardClick}
+                        selectedRoom={selectedRoom}
                     />
                 ) : null}
 

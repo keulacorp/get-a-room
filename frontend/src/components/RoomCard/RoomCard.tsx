@@ -39,6 +39,7 @@ import {
     BookmarkBorder,
     BookmarksOutlined
 } from '@mui/icons-material';
+import { dateTimeToTimeString } from '../util/Time';
 
 function getName(room: Room) {
     return room.name;
@@ -183,7 +184,7 @@ const RoomCardTitleWithDescription = (props: {
             <Typography
                 data-testid="BookingRoomTitle"
                 variant="h2"
-                color={props.isBusy ? 'text.disabled' : 'text.main'}
+                color="text.main"
             >
                 {getName(props.room)}
             </Typography>
@@ -227,10 +228,10 @@ class RoomCardCapacityBox extends React.Component<{
     render() {
         return (
             <EndBox>
-                <Group color={this.props.busy ? 'disabled' : 'inherit'} />
+                <Group color="inherit" />
                 <Typography
                     fontWeight="bold"
-                    color={this.props.busy ? 'text.disabled' : 'text.main'}
+                    color="text.main"
                     marginLeft={'8px'}
                 >
                     {getCapacity(this.props.room)}
@@ -239,32 +240,73 @@ class RoomCardCapacityBox extends React.Component<{
         );
     }
 }
-/*TODO villep : Not implemented*/
+
+export const BusyRoomCardReservationStatusIndicator = (props: {
+    room: Room;
+}) => {
+    return (
+        <div
+            style={{
+                alignSelf: 'stretch',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                gap: 5,
+                display: 'inline-flex'
+            }}
+        >
+            <div
+                style={{
+                    textAlign: 'center',
+                    color: '#E83520',
+                    fontSize: 16,
+                    fontFamily: 'Material Icons',
+                    fontWeight: '400',
+                    wordWrap: 'break-word'
+                }}
+            >
+                <DoNotDisturb />
+            </div>
+            <div
+                style={{
+                    flex: '1 1 0',
+                    color: '#1D1D1D',
+                    fontSize: 12,
+                    fontFamily: 'Studio Feixen Sans',
+                    fontWeight: '4',
+                    textTransform: 'uppercase',
+                    wordWrap: 'break-word'
+                }}
+            >
+                Occupied for {roomFreeIn(props.room)} minutes
+            </div>
+        </div>
+    );
+};
+
+export const getNextCalendarEventTimeString = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const start = DateTime.fromISO(nextEvent!.start!);
+    let end = '';
+    if (nextEvent!.end) {
+        end = dateTimeToTimeString(DateTime.fromISO(nextEvent!.end!));
+    }
+    return dateTimeToTimeString(start) + '–' + end;
+};
+
 export const RoomCardReservationStatusIndicator = (props: {
     reserved?: boolean;
-    busy?: boolean;
     myBookingAccepted?: boolean;
 }) => {
     if (props.reserved === true) {
-        if (props.busy === true) {
-            return (
-                <CenterAlignedStack direction={'row'}>
-                    <DoNotDisturb />
-                    <Typography variant={'subtitle1'} marginLeft={'5px'}>
-                        Occupied for (TEST) minutes
-                    </Typography>
-                </CenterAlignedStack>
-            );
-        } else {
-            return (
-                <CenterAlignedStack direction={'row'}>
-                    <CheckCircle />
-                    <Typography marginLeft={'5px'} variant={'subtitle1'}>
-                        Reserved To you FOR (TEST) minutes.
-                    </Typography>
-                </CenterAlignedStack>
-            );
-        }
+        return (
+            <CenterAlignedStack direction={'row'}>
+                <CheckCircle />
+                <Typography marginLeft={'5px'} variant={'subtitle1'}>
+                    Reserved To you FOR (TEST) minutes.
+                </Typography>
+            </CenterAlignedStack>
+        );
     } else {
         return <></>;
     }
@@ -287,7 +329,6 @@ const ReservationStatusText = (props: {
                     <Stack direction={'row'}>
                         <RoomCardReservationStatusIndicator
                             reserved={props.reserved}
-                            busy={props.busy}
                         />
                     </Stack>
                     <Typography>
@@ -302,28 +343,33 @@ const ReservationStatusText = (props: {
                 </>
             ) : props.busy ? (
                 <>
-                    <RoomCardReservationStatusIndicator
-                        reserved={props.reserved}
-                        busy={props.busy}
-                    />
-                    <Typography
-                        variant="body1"
-                        color="text.disabled"
-                        align="left"
+                    <BusyRoomCardReservationStatusIndicator room={props.room} />
+
+                    <div
+                        style={{
+                            alignSelf: 'stretch',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            display: 'inline-flex'
+                        }}
                     >
-                        Available in <b>{roomFreeIn(props.room)} minutes</b> for{' '}
-                        {minutesToSimpleString(busyAvailableFor(props.room))}
-                    </Typography>
+                        <div
+                            style={{
+                                width: 283,
+                                color: '#1D1D1D',
+                                fontSize: 16,
+                                fontFamily: 'Studio Feixen Sans',
+                                fontWeight: '2',
+                                wordWrap: 'break-word'
+                            }}
+                        >
+                            Next available slot:{' '}
+                            {getNextCalendarEventTimeString(props.room)}
+                        </div>
+                    </div>
                 </>
             ) : (
                 <>
-                    {/*                    /!*FIXME villep : remove when done testing*!/
-                    (() => {
-                        const reserved = Math.floor(Math.random() * 3) + 1 === 1;
-                        const busy = Math.floor(Math.random() * 3) + 1 === 1;
-                        return (<RoomCardReservationStatusIndicator reserved={reserved} busy={busy} />);
-                    })()*/}
-
                     <TimeLeft
                         timeLeftText="Available for "
                         endTime={getNextCalendarEvent(props.room)}

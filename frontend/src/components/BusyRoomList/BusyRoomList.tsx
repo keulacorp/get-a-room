@@ -16,6 +16,13 @@ export function roomFreeIn(room: Room) {
 }
 
 function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
+    // filter if room booked for the current user
+    for (let i = 0; i < bookings.length; i++) {
+        const booking = bookings[i];
+        if (booking.room.id === room.id) {
+            return false;
+        }
+    }
     if (Array.isArray(room.busy)) {
         return true;
     }
@@ -27,10 +34,21 @@ type BusyRoomListProps = {
     bookings: Booking[];
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
+    bookingLoading: string;
+    handleCardClick: (room: Room) => void;
+    selectedRoom: Room | undefined;
 };
 
 const BusyRoomList = (props: BusyRoomListProps) => {
-    const { rooms, bookings, preferences, setPreferences } = props;
+    const {
+        rooms,
+        bookings,
+        preferences,
+        setPreferences,
+        bookingLoading,
+        handleCardClick,
+        selectedRoom
+    } = props;
     const {
         showUserSettingsMenu,
         setShowUserSettingsMenu,
@@ -58,15 +76,15 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                                 <li key={room.id}>
                                     <RoomCard
                                         room={room}
-                                        onClick={() => {}}
+                                        onClick={handleCardClick}
                                         disableBooking={false}
-                                        isSelected={false}
-                                        isBusy={false}
+                                        isSelected={selectedRoom === room}
                                         expandFeatures={expandedFeaturesAll}
-                                        bookingLoading={'false'}
+                                        bookingLoading={bookingLoading}
                                         setPreferences={setPreferences}
                                         preferences={preferences}
-                                        isReserved={true}
+                                        isReserved={false}
+                                        isBusy={true}
                                     />
                                 </li>
                             ))}
@@ -77,15 +95,4 @@ const BusyRoomList = (props: BusyRoomListProps) => {
     );
 };
 
-/*<RoomCard
-                                        room={room}
-                                        onClick={handleCardClick}
-                                        bookingLoading={bookingLoading}
-                                        disableBooking={false}
-                                        isSelected={selectedRoom === room}
-                                        isBusy={false}
-                                        expandFeatures={expandedFeaturesAll}
-                                        setPreferences={setPreferences}
-                                        preferences={preferences}
-                                    /> */
 export default BusyRoomList;
