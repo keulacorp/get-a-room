@@ -3,7 +3,13 @@
  */
 
 import { DateTime, Settings } from 'luxon';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+    fireEvent,
+    render,
+    renderHook,
+    screen,
+    waitFor
+} from '@testing-library/react';
 import BookingView from './BookingView';
 import { Booking, Room } from '../../types';
 import { expect, vi } from 'vitest';
@@ -14,8 +20,8 @@ import {
     makeBooking
 } from '../../services/bookingService';
 import { getRooms } from '../../services/roomService';
-import React from 'react';
-import useBookingDurationState from './BookingDurationState';
+import React, { act } from 'react';
+import { useBookingDurationState } from './BookingDurationState';
 
 const mocks = vi.hoisted(() => {
     return {
@@ -31,8 +37,7 @@ const mocks = vi.hoisted(() => {
                 resolve(fakeRooms);
             });
         },
-        bookingDuration: vi.fn(),
-        usestate: () => [30, vi.fn()]
+        bookingDuration: vi.fn()
     };
 });
 
@@ -45,21 +50,6 @@ vi.mock('../../services/bookingService', () => ({
 vi.mock('../../services/roomService', () => ({
     getRooms: mocks.getRooms
 }));
-
-/*vi.mock('./BookingDurationState', () => {
-    return {
-        default: () => {
-            return {
-                useBookingDurationState: vi.fn()
-            };
-        }
-    };
-});*/
-vi.mock('./BookingDurationState', () => {
-    return {
-        default: mocks.usestate
-    };
-});
 
 let preferences = {};
 const setPreferences = (pref: any) => {
@@ -163,6 +153,8 @@ describe('AvailableRoomList', () => {
     });
 
     it('renders booking drawer', async () => {
+        const { result } = renderHook(() => useBookingDurationState());
+
         render(
             <BookingView
                 preferences={preferences}
@@ -170,14 +162,17 @@ describe('AvailableRoomList', () => {
                 open={expandBookingDrawer}
                 toggle={toggleDrawn}
                 name={'test'}
+                getBookingDuration={result.current.getBookingDuration}
+                setBookingDuration={result.current.setBookingDuration}
             />,
             container
         );
 
-        const card = screen.queryAllByTestId('CardActiveArea')[0];
-        await waitFor(() => expect(card).toBeTruthy());
-
-        fireEvent.click(card);
+        await waitFor(() => {
+            const card = screen.queryAllByTestId('CardActiveArea')[0];
+            expect(card).toBeTruthy();
+            fireEvent.click(card);
+        });
 
         const drawer = screen.queryAllByTestId('BottomDrawer')[0];
         await waitFor(() => expect(drawer).toBeTruthy());
@@ -192,6 +187,10 @@ describe('AvailableRoomList', () => {
             title: 'Reservation from Get a Room!'
         });
 
+        const { result } = renderHook(() => useBookingDurationState());
+
+        expect(result.current.getBookingDuration()).toBe(15);
+
         render(
             <BookingView
                 preferences={preferences}
@@ -199,6 +198,8 @@ describe('AvailableRoomList', () => {
                 open={expandBookingDrawer}
                 toggle={toggleDrawn}
                 name={'test'}
+                getBookingDuration={result.current.getBookingDuration}
+                setBookingDuration={result.current.setBookingDuration}
             />,
             container
         );
@@ -227,7 +228,7 @@ describe('AvailableRoomList', () => {
         );
     });
 
-    it.only('books for a room for 30 minutes', async () => {
+    it('books for a room for 30 minutes', async () => {
         const startTime = now.toUTC().toISO();
         vi.mocked(makeBooking).mockResolvedValueOnce({
             duration: 30,
@@ -235,7 +236,13 @@ describe('AvailableRoomList', () => {
             startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
-        //        vi.mocked(useBookingDurationState).mockResolvedValue([30, vi.fn()]);
+
+        const { result } = renderHook(() => useBookingDurationState());
+        act(() => {
+            result.current.setBookingDuration(30);
+        });
+
+        expect(result.current.getBookingDuration()).toBe(30);
 
         render(
             <BookingView
@@ -244,6 +251,8 @@ describe('AvailableRoomList', () => {
                 open={expandBookingDrawer}
                 toggle={toggleDrawn}
                 name={'test'}
+                getBookingDuration={result.current.getBookingDuration}
+                setBookingDuration={result.current.setBookingDuration}
             />,
             container
         );
@@ -282,13 +291,22 @@ describe('AvailableRoomList', () => {
             title: 'Reservation from Get a Room!'
         });
 
-        const { container: HTMLElement } = render(
+        const { result } = renderHook(() => useBookingDurationState());
+        act(() => {
+            result.current.setBookingDuration(60);
+        });
+
+        expect(result.current.getBookingDuration()).toBe(60);
+
+        render(
             <BookingView
                 preferences={preferences}
                 setPreferences={setPreferences}
                 open={expandBookingDrawer}
                 toggle={toggleDrawn}
                 name={'test'}
+                getBookingDuration={result.current.getBookingDuration}
+                setBookingDuration={result.current.setBookingDuration}
             />,
             container
         );
@@ -326,6 +344,13 @@ describe('AvailableRoomList', () => {
             title: 'Reservation from Get a Room!'
         });
 
+        const { result } = renderHook(() => useBookingDurationState());
+        act(() => {
+            result.current.setBookingDuration(120);
+        });
+
+        expect(result.current.getBookingDuration()).toBe(120);
+
         render(
             <BookingView
                 preferences={preferences}
@@ -333,6 +358,8 @@ describe('AvailableRoomList', () => {
                 open={expandBookingDrawer}
                 toggle={toggleDrawn}
                 name={'test'}
+                getBookingDuration={result.current.getBookingDuration}
+                setBookingDuration={result.current.setBookingDuration}
             />,
             container
         );

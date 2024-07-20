@@ -39,7 +39,6 @@ import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import { availableForMinutes } from '../util/AvailableTime';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import useBookingDurationState from './BookingDurationState';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -81,6 +80,8 @@ type BookingViewProps = {
     open: boolean;
     toggle: (open: boolean) => void;
     name: String | undefined;
+    getBookingDuration: () => number;
+    setBookingDuration: (min: number) => void;
 };
 
 const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
@@ -115,12 +116,19 @@ const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle, name, setPreferences } = props;
+    const {
+        preferences,
+        open,
+        toggle,
+        name,
+        setPreferences,
+        getBookingDuration,
+        setBookingDuration
+    } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [bookingDuration, setBookingDuration] = useBookingDurationState();
 
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 
@@ -504,7 +512,7 @@ function BookingView(props: BookingViewProps) {
                       minute: Number(startingTime.split(':')[1]),
                       second: 0
                   })
-                      .plus({ minutes: bookingDuration })
+                      .plus({ minutes: getBookingDuration() })
                       .toObject();
 
         if (
@@ -539,7 +547,7 @@ function BookingView(props: BookingViewProps) {
                           .toObject()
                   );
         setAdditionalDuration(
-            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+            Math.ceil(durationToBookUntil.minutes) - getBookingDuration()
         );
     };
 
@@ -552,7 +560,7 @@ function BookingView(props: BookingViewProps) {
                       minute: Number(startingTime.split(':')[1]),
                       second: 0
                   })
-                      .plus({ minutes: bookingDuration })
+                      .plus({ minutes: getBookingDuration() })
                       .toObject();
         if (
             fullTime.hour === undefined ||
@@ -584,16 +592,16 @@ function BookingView(props: BookingViewProps) {
                           .toObject()
                   );
         setAdditionalDuration(
-            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+            Math.ceil(durationToBookUntil.minutes) - getBookingDuration()
         );
     };
 
     const handleUntilNextDurationChange = (additionalMinutes: number) => {
-        setAdditionalDuration(additionalMinutes - bookingDuration);
+        setAdditionalDuration(additionalMinutes - getBookingDuration());
     };
 
     const handleReservation = () => {
-        book(selectedRoom, bookingDuration + additionalDuration);
+        book(selectedRoom, getBookingDuration() + additionalDuration);
         setAdditionalDuration(0);
         toggleDrawn(false);
     };
@@ -620,7 +628,7 @@ function BookingView(props: BookingViewProps) {
                     toggle={toggleDrawn}
                     bookRoom={handleReservation}
                     room={selectedRoom}
-                    duration={bookingDuration}
+                    duration={getBookingDuration()}
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionalDurationChange}
@@ -651,7 +659,7 @@ function BookingView(props: BookingViewProps) {
                         toggle={(newOpen: any) =>
                             setExpandDurationTimePickerDrawer(newOpen)
                         }
-                        bookingDuration={bookingDuration}
+                        bookingDuration={getBookingDuration()}
                         setBookingDuration={setBookingDuration}
                         setExpandDurationTimePickerDrawer={
                             setExpandDurationTimePickerDrawer
@@ -764,7 +772,7 @@ function BookingView(props: BookingViewProps) {
                     <CenteredProgress />
                 ) : (
                     <AvailableRoomList
-                        bookingDuration={bookingDuration}
+                        bookingDuration={getBookingDuration()}
                         startingTime={startingTime}
                         setStartingTime={setStartingTime}
                         rooms={displayRooms}

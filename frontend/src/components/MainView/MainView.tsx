@@ -16,6 +16,7 @@ import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
 import usePushNotificationRegistration from '../../hooks/usePushNotificationRegistration';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { useBookingDurationState } from '../BookingView/BookingDurationState';
 
 const MainView = () => {
     const { preferences, setPreferences } = useUserSettings();
@@ -26,6 +27,9 @@ const MainView = () => {
     const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
 
     const history = useHistory();
+
+    const { getBookingDuration, setBookingDuration } =
+        useBookingDurationState();
 
     usePushNotificationRegistration();
 
@@ -131,6 +135,8 @@ const MainView = () => {
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
                             name={name}
+                            getBookingDuration={getBookingDuration}
+                            setBookingDuration={setBookingDuration}
                         />
                     </Route>
                 </Switch>
