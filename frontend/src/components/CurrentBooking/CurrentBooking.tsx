@@ -14,6 +14,15 @@ import {
     getTimeAvailableMinutes,
     getBookingTimeLeft
 } from '../RoomCard/RoomCard';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
+import {
+    BookingAddTimeEvent,
+    BookingDeductTimeEvent,
+    BookingEndEvent,
+    GoogleAnalyticsEvent
+} from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 const NO_CONFIRMATION = true;
 
@@ -106,12 +115,18 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
-                const timeAlterNotification =
-                    minutes > 0
-                        ? 'Time added to booking'
-                        : 'Time deducted from booking';
+                let timeAlterNotification: string;
+                let bookingTimeEvent: GoogleAnalyticsEvent;
+                if (minutes > 0) {
+                    timeAlterNotification = 'Time added to booking';
+                    bookingTimeEvent = new BookingAddTimeEvent(booking);
+                } else {
+                    timeAlterNotification = 'Time deducted from booking';
+                    bookingTimeEvent = new BookingDeductTimeEvent(booking);
+                }
                 createSuccessNotification(timeAlterNotification);
                 window.scrollTo(0, 0);
+                triggerGoogleAnalyticsEvent(bookingTimeEvent);
             })
             .catch(() => {
                 setBookingProcessing('false');
@@ -132,6 +147,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 updateRooms();
                 createNotificationWithType('Booking ended', 'success');
                 window.scrollTo(0, 0);
+                triggerGoogleAnalyticsEvent(new BookingEndEvent(booking.room));
             })
             .catch(() => {
                 setBookingProcessing('false');
