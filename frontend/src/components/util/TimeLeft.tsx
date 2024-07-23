@@ -86,7 +86,11 @@ const TimeLeft = (props: TimeLeftProps) => {
 
     return (
         <Box>
-            <TimeLeftTypography variant={'h3'} data-testid="TimeLeftTest">
+            <TimeLeftTypography
+                variant={'h3'}
+                data-testid="TimeLeftTest"
+                aria-label={'Time left text'}
+            >
                 {timeLeftText} {getTimeLeft(endTime)}
             </TimeLeftTypography>
         </Box>
