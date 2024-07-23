@@ -88,7 +88,11 @@ export function getBookingTimeLeft(booking: Booking | undefined) {
     if (booking === undefined) {
         return 0;
     }
-    return Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2;
+    // If the booking is ongoing, i.e start time is before "now", then do getTimeLeftMinutes
+    // Otherwise just get the total duration of the booking
+    return DateTime.fromISO(booking.startTime) <= DateTime.now()
+        ? Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2
+        : getTimeDiff(booking.startTime, booking.endTime);
 }
 
 export function getTimeAvailableMinutes(booking: Booking | undefined) {
@@ -330,10 +334,7 @@ const ReservationStatusText = (props: {
                     <Stack direction={'row'}>
                         <RoomCardReservationStatusIndicator
                             reserved={props.reserved}
-                            reservationTime={getTimeDiff(
-                                props.booking?.startTime!,
-                                props.booking?.endTime!
-                            )}
+                            reservationTime={getBookingTimeLeft(props.booking)}
                         />
                     </Stack>
                     <Typography>
@@ -456,60 +457,6 @@ const RoomCard = (props: RoomCardProps) => {
         return defaultVars;
     };
 
-    const bookingTime = () => {
-        if (isReserved) {
-            if (booking?.resourceStatus === 'accepted') {
-                if (DateTime.fromISO(booking.startTime) <= DateTime.now()) {
-                    return (
-                        <StartBox>
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography
-                                variant="subtitle1"
-                                color="success.main"
-                                margin={'0 0 0 5px'}
-                            >
-                                Booked to you for {getBookingTimeLeft(booking)}{' '}
-                                minutes.
-                            </Typography>
-                        </StartBox>
-                    );
-                } else {
-                    return (
-                        <StartBox>
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography
-                                variant="subtitle1"
-                                color="success.main"
-                                margin={'0 0 0 5px'}
-                            >
-                                Booked to you for{' '}
-                                {getTimeDiff(
-                                    booking.startTime,
-                                    booking.endTime
-                                )}{' '}
-                                minutes.
-                            </Typography>
-                        </StartBox>
-                    );
-                }
-            } else {
-                return (
-                    <StartBox>
-                        <PendingIcon color="warning" fontSize="small" />
-                        <Typography
-                            variant="subtitle1"
-                            color="warning.main"
-                            margin={'0 0 0 5px'}
-                        >
-                            Waiting Google calendar confirmation.
-                        </Typography>
-                    </StartBox>
-                );
-            }
-        }
-        return null;
-    };
-
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea
@@ -525,9 +472,6 @@ const RoomCard = (props: RoomCardProps) => {
                         />
                         <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
-
-                    {bookingTime()}
-
                     <Row>
                         <Stack direction={'column'}>
                             <ReservationStatusText
