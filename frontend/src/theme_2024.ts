@@ -57,7 +57,8 @@ export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
     fontSize: 16
 }));
 export const CheckCircle = styled(CheckCircleIcon)(({ theme }) => ({
-    color: COLORS.ACCENT_GREEN
+    color: COLORS.ACCENT_GREEN,
+    ariaLabel: 'Check circle'
 }));
 
 export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
