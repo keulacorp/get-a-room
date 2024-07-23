@@ -7,6 +7,8 @@ import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import { sortByFavoritedAndName } from '../../util/arrayUtils';
 import { isAvailableFor } from '../util/AvailableTime';
 
+const SKIP_CONFIRMATION = true;
+
 const TimePickerButton = styled(ToggleButton)(() => ({
     padding: '8px 16px',
     backgroundColor: '#ce3b20',

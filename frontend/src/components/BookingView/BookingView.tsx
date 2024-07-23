@@ -39,6 +39,10 @@ import BookingDrawer from '../BookingDrawer/BookingDrawer';
 import { availableForMinutes } from '../util/AvailableTime';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -209,6 +213,9 @@ function BookingView(props: BookingViewProps) {
                 createSuccessNotification('Booking was successful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
+
+                triggerGoogleAnalyticsEvent(new BookingEvent(room, duration));
+                triggerClarityEvent(AnalyticsEventEnum.BOOKING);
             })
             .catch(() => {
                 createErrorNotification('Could not create booking');
