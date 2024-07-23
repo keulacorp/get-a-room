@@ -468,6 +468,8 @@ const RoomCard = (props: RoomCardProps) => {
                         <StartBox>
                             <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
+                                id={'booked-to-you-label'}
+                                aria-label={'Booked to you'}
                                 variant="subtitle1"
                                 color="success.main"
                                 margin={'0 0 0 5px'}
@@ -482,6 +484,8 @@ const RoomCard = (props: RoomCardProps) => {
                         <StartBox>
                             <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
+                                id={'booked-to-you-label'}
+                                aria-label={'Booked to you'}
                                 variant="subtitle1"
                                 color="success.main"
                                 margin={'0 0 0 5px'}
@@ -530,7 +534,9 @@ const RoomCard = (props: RoomCardProps) => {
                         <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
 
-                    {bookingTime()}
+                    <Typography aria-labelledby={'booked-to-you-label'}>
+                        {bookingTime()}
+                    </Typography>
 
                     <Row>
                         <Stack direction={'column'}>
