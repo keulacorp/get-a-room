@@ -3,6 +3,7 @@ import { List, Typography, Box } from '@mui/material';
 import { DateTime } from 'luxon';
 import RoomCard from '../RoomCard/RoomCard';
 import { Booking, Preferences, Room } from '../../types';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
 
 export function roomFreeIn(room: Room) {
     let end;
@@ -15,14 +16,14 @@ export function roomFreeIn(room: Room) {
 }
 
 function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
-    // filter if room booked for the user
+    // filter if room booked for the current user
     for (let i = 0; i < bookings.length; i++) {
         const booking = bookings[i];
         if (booking.room.id === room.id) {
             return false;
         }
     }
-    if (Array.isArray(room.busy) && roomFreeIn(room) <= 30) {
+    if (Array.isArray(room.busy)) {
         return true;
     }
     return false;
@@ -33,10 +34,27 @@ type BusyRoomListProps = {
     bookings: Booking[];
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
+    bookingLoading: string;
+    handleCardClick: (room: Room) => void;
+    selectedRoom: Room | undefined;
 };
 
 const BusyRoomList = (props: BusyRoomListProps) => {
-    const { rooms, bookings, preferences, setPreferences } = props;
+    const {
+        rooms,
+        bookings,
+        preferences,
+        setPreferences,
+        bookingLoading,
+        handleCardClick,
+        selectedRoom
+    } = props;
+    const {
+        showUserSettingsMenu,
+        setShowUserSettingsMenu,
+        expandedFeaturesAll,
+        setExpandedFeaturesAll
+    } = useUserSettings();
 
     return (
         <Box id="available-in-30-min-room-list">
@@ -48,9 +66,8 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                         textAlign="left"
                         marginLeft="24px"
                     >
-                        rooms available in the next 30 min
+                        rooms available in later time
                     </Typography>
-
                     <List>
                         {rooms
                             .sort((a, b) => (a.name < b.name ? -1 : 1))
@@ -59,21 +76,15 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                                 <li key={room.id}>
                                     <RoomCard
                                         room={room}
-                                        onClick={function (
-                                            room: Room,
-                                            booking?: Booking
-                                        ): void {
-                                            throw new Error(
-                                                'Function not implemented.'
-                                            );
-                                        }}
-                                        bookingLoading={''}
-                                        disableBooking={true}
-                                        isSelected={false}
-                                        isBusy={true}
-                                        expandFeatures={false}
+                                        onClick={handleCardClick}
+                                        disableBooking={false}
+                                        isSelected={selectedRoom === room}
+                                        expandFeatures={expandedFeaturesAll}
+                                        bookingLoading={bookingLoading}
                                         setPreferences={setPreferences}
                                         preferences={preferences}
+                                        isReserved={false}
+                                        isBusy={true}
                                     />
                                 </li>
                             ))}

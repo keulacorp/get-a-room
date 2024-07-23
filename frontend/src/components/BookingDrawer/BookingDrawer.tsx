@@ -12,6 +12,7 @@ import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
 import DurationPicker from './DurationPicker';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import { dateTimeToTimeString } from '../util/Time';
 
 const MIN_DURATION = 15;
 
@@ -53,6 +54,30 @@ export function minutesToSimpleString(minutes: number) {
     return hours + ' h ' + min + ' min';
 }
 
+const getNextAvailableTime = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const nextAvailableTime = DateTime.fromISO(nextEvent!.end!).plus({
+        minutes: 1
+    });
+
+    return dateTimeToTimeString(nextAvailableTime);
+};
+
+const getUnavailableTimeInMinutes = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const end = DateTime.fromISO(nextEvent!.end!);
+
+    console.log(end, 'end');
+    console.log(getNextCalendarEvent(room), 'etNextCalendarEvent(room)');
+
+    const now = DateTime.now();
+    const substraction = end.minus({ hours: now.hour, minutes: now.minute });
+
+    return substraction.minute + substraction.hour * 60;
+};
+
 /**
  *
  * @param minutes
@@ -91,6 +116,88 @@ export const Row = styled(Box)(({ theme }) => ({
     padding: '0px',
     width: '100%'
 }));
+
+export const RowAlert = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: '0px',
+    borderStyle: 'solid',
+    borderColor: '#F2BB32',
+    borderWidth: '1px',
+    borderRadius: '8px'
+}));
+
+export const ColAlertIcon = styled(Box)(({ theme }) => ({
+    width: '40px',
+    display: 'flex',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: '8px',
+    padding: '0px',
+    background: '#F2BB32',
+    borderRadius: '0px'
+}));
+
+export const ColAlertMessage = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flex: '1 1 0%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: '8px',
+    paddingTop: '8px',
+    paddingBottom: '8px',
+    paddingRight: '24px',
+    paddingLeft: '24px',
+    borderRadius: '0px'
+}));
+
+export const Alert = (props: {
+    startingTime: string;
+    showAlert: boolean;
+    unavailable: number;
+}) => {
+    if (!props.showAlert) {
+        return <></>;
+    }
+    return (
+        <RowAlert>
+            <ColAlertIcon>
+                <span
+                    style={{
+                        color: '#FBFBF6',
+                        fontSize: '20px',
+                        fontFamily: 'Material Icons',
+                        textAlign: 'center',
+                        fontWeight: '400'
+                    }}
+                >
+                    not_interested
+                </span>
+            </ColAlertIcon>
+            <ColAlertMessage>
+                <p
+                    style={{
+                        flex: '1 1 0%',
+                        color: '#1D1D1D',
+                        fontSize: '16px',
+                        fontFamily: 'Studio Feixen Sans',
+                        textAlign: 'left',
+                        fontWeight: '2'
+                    }}
+                >
+                    Room is currently unavailable for {props.unavailable}
+                    minutes. You may book the room in advance. Your starting
+                    time was adjusted to {props.startingTime}.
+                </p>
+            </ColAlertMessage>
+        </RowAlert>
+    );
+};
 
 export const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -180,6 +287,7 @@ interface Props {
     setAdditionalDuration: (minutes: number) => void;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandDurationTimePickerDrawer: (show: boolean) => void;
+    setStartingTime: (s: string) => void;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -199,7 +307,8 @@ const BookingDrawer = (props: Props) => {
         setBookingDuration,
         setAdditionalDuration,
         setDuration,
-        setExpandDurationTimePickerDrawer
+        setExpandDurationTimePickerDrawer,
+        setStartingTime
     } = props;
 
     useEffect(() => {
@@ -314,6 +423,13 @@ const BookingDrawer = (props: Props) => {
         setNextFullHour(fullHourString);
     };
 
+    let showAlert = false;
+    let unavailable = 0;
+    if (room && DateTime.fromISO(room.nextCalendarEvent) < DateTime.now()) {
+        setStartingTime(getNextAvailableTime(room));
+        showAlert = true;
+        unavailable = getUnavailableTimeInMinutes(room);
+    }
     return (
         <BottomDrawer
             headerTitle={getName(room)}
@@ -332,6 +448,11 @@ const BookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
+                    <Alert
+                        startingTime={startingTime}
+                        showAlert={showAlert}
+                        unavailable={unavailable}
+                    />
                     <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(

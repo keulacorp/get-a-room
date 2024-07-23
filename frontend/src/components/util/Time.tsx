@@ -1,4 +1,10 @@
-import { DateTime } from 'luxon';
+import { DateTime, DurationLike } from 'luxon';
+
+export const dateTimeToTimeString = (dt: DateTime) => {
+    const h = dt.hour;
+    const m = dt.minute;
+    return [h > 9 ? '' : '0', h, ':', m > 9 ? '' : '0', m].join('');
+};
 
 export const nowDate = () => {
     const dt = new Date();

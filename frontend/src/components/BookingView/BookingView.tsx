@@ -2,9 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { DateTime, Duration } from 'luxon';
 import { getRooms } from '../../services/roomService';
-import { deleteBooking, getBookings } from '../../services/bookingService';
-import { Booking, Preferences, Room } from '../../types';
+import {
+    deleteBooking,
+    getBookings,
+    makeBooking
+} from '../../services/bookingService';
+import { Booking, BookingDetails, Preferences, Room } from '../../types';
 import CurrentBooking from '../CurrentBooking/CurrentBooking';
 import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
 import CenteredProgress from '../util/CenteredProgress';
@@ -27,10 +32,21 @@ import {
     UserIcon
 } from '../../theme_2024';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
-import { sortByFavoritedAndName } from '../../util/arrayUtils';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import DurationTimePickerDrawer from '../DurationTimePickerDrawer/DurationTimePickerDrawer';
+import StartingTimePickerDrawer from '../StartingTimePickerDrawer/StartingTimePickerDrawer';
+import BookingDrawer from '../BookingDrawer/BookingDrawer';
+import { availableForMinutes } from '../util/AvailableTime';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
+const SKIP_CONFIRMATION = true;
 
 // Check if rooms are fetched
 function areRoomsFetched(rooms: Room[]) {
@@ -68,6 +84,8 @@ type BookingViewProps = {
     open: boolean;
     toggle: (open: boolean) => void;
     name: String | undefined;
+    getBookingDuration: () => number;
+    setBookingDuration: (min: number) => void;
 };
 
 const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
@@ -102,12 +120,19 @@ const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle, name, setPreferences } = props;
+    const {
+        preferences,
+        open,
+        toggle,
+        name,
+        setPreferences,
+        getBookingDuration,
+        setBookingDuration
+    } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [bookingDuration, setBookingDuration] = useState(15);
 
     const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 
@@ -121,14 +146,20 @@ function BookingView(props: BookingViewProps) {
     const [filterCount, setFilterCount] = useState(0);
     const [allFeatures, setAllFeatures] = useState<string[]>([]);
 
-    const { createErrorNotification } = useCreateNotification();
-
     const {
         showUserSettingsMenu,
         setShowUserSettingsMenu,
         expandedFeaturesAll,
         setExpandedFeaturesAll
     } = useUserSettings();
+
+    const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
+        undefined
+    );
+
+    const handleAdditionalDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalDuration + additionalMinutes);
+    };
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -140,6 +171,57 @@ function BookingView(props: BookingViewProps) {
                 .catch((error) => console.log(error));
         }
     }, [preferences]);
+
+    const { createSuccessNotification, createErrorNotification } =
+        useCreateNotification();
+
+    const [bookingLoading, setBookingLoading] = useState('false');
+    const [additionalDuration, setAdditionalDuration] = useState(0);
+
+    const book = (room: Room | undefined, duration: number) => {
+        if (room === undefined) {
+            return;
+        }
+
+        const bookingStartTime: string =
+            startingTime === 'Now'
+                ? DateTime.utc().toISO()
+                : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO() ||
+                  '';
+
+        if (startingTime === '') {
+            throw new Error('Time not set');
+        }
+        let bookingDetails: BookingDetails = {
+            duration: duration,
+            title: 'Reservation from Get a Room!',
+            roomId: room.id,
+            startTime: bookingStartTime
+        };
+
+        setBookingLoading(room.id);
+
+        makeBooking(bookingDetails, SKIP_CONFIRMATION)
+            .then((madeBooking) => {
+                setBookings([...bookings, madeBooking]);
+                updateData();
+                // update data after 2.5s, waits Google Calendar to
+                // accept the booking.
+                setTimeout(() => {
+                    updateData();
+                }, 2500);
+                createSuccessNotification('Booking was successful');
+                setBookingLoading('false');
+                document.getElementById('main-view-content')?.scrollTo(0, 0);
+
+                triggerGoogleAnalyticsEvent(new BookingEvent(room, duration));
+                triggerClarityEvent(AnalyticsEventEnum.BOOKING);
+            })
+            .catch(() => {
+                createErrorNotification('Could not create booking');
+                setBookingLoading('false');
+            });
+    };
 
     /**
      * Filters rooms and sets displayRooms to include matching rooms only
@@ -383,7 +465,7 @@ function BookingView(props: BookingViewProps) {
         updateBookings();
     }, [updateRooms, updateBookings]);
 
-    const toggleDrawn = (newOpen: boolean) => {
+    const toggleFilteringDrawn = (newOpen: boolean) => {
         setExpandFilteringDrawer(newOpen);
     };
 
@@ -415,146 +497,340 @@ function BookingView(props: BookingViewProps) {
 
     const [duration, setDuration] = React.useState(15);
 
+    const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
+    const [availableMinutes, setAvailableMinutes] = useState(0);
+
+    const [expandDurationTimePickerDrawer, setExpandDurationTimePickerDrawer] =
+        useState(false);
+
+    function maxDuration(room: Room | undefined, startingTime: String) {
+        const mm = availableForMinutes(room, startingTime);
+
+        return dayjs()
+            .minute(mm % 60)
+            .hour(Math.floor(mm / 60));
+    }
+    const handleUntilHalf = () => {
+        let halfTime =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: getBookingDuration() })
+                      .toObject();
+
+        if (
+            halfTime.hour === undefined ||
+            halfTime.minute === undefined ||
+            Number.isNaN(halfTime.hour) ||
+            Number.isNaN(halfTime.minute)
+        ) {
+            throw new Error('Time not set');
+        }
+
+        if (halfTime.minute >= 30) {
+            halfTime.hour = halfTime.hour + 1;
+        }
+        halfTime.minute = 30;
+        halfTime.second = 0;
+        halfTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(halfTime);
+        let durationToBookUntil =
+            startingTime === 'Now'
+                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
+                : Duration.fromObject(
+                      bookUntil
+                          .diff(
+                              DateTime.fromObject({
+                                  hour: Number(startingTime.split(':')[0]),
+                                  minute: Number(startingTime.split(':')[1]),
+                                  second: 0
+                              }),
+                              ['minutes']
+                          )
+                          .toObject()
+                  );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - getBookingDuration()
+        );
+    };
+
+    const handleUntilFull = () => {
+        let fullTime =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: getBookingDuration() })
+                      .toObject();
+        if (
+            fullTime.hour === undefined ||
+            fullTime.minute === undefined ||
+            Number.isNaN(fullTime.hour) ||
+            Number.isNaN(fullTime.minute)
+        ) {
+            throw new Error('Time not set');
+        }
+
+        fullTime.hour = fullTime.hour + 1;
+        fullTime.minute = 0;
+        fullTime.second = 0;
+        fullTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(fullTime);
+        let durationToBookUntil =
+            startingTime === 'Now'
+                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
+                : Duration.fromObject(
+                      bookUntil
+                          .diff(
+                              DateTime.fromObject({
+                                  hour: Number(startingTime.split(':')[0]),
+                                  minute: Number(startingTime.split(':')[1]),
+                                  second: 0
+                              }),
+                              ['minutes']
+                          )
+                          .toObject()
+                  );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - getBookingDuration()
+        );
+    };
+
+    const handleUntilNextDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalMinutes - getBookingDuration());
+    };
+
+    const handleReservation = () => {
+        book(selectedRoom, getBookingDuration() + additionalDuration);
+        setAdditionalDuration(0);
+        toggleDrawn(false);
+    };
+    const toggleDrawn = (newOpen: boolean) => {
+        if (newOpen === false) {
+            setSelectedRoom(undefined);
+            setAdditionalDuration(0);
+            setAvailableMinutes(0);
+        }
+        setExpandBookingDrawer(newOpen);
+    };
+
+    const handleCardClick = (room: Room) => {
+        setExpandBookingDrawer(true);
+        setSelectedRoom(room);
+        setAvailableMinutes(availableForMinutes(room, startingTime));
+    };
+
     return (
-        <Box id="current booking" textAlign="center" px={'16px'} pb={'120px'}>
-            <div id="gps-container">
-                <SwipeableEdgeDrawer
-                    headerTitle={'GPS has your back!'}
-                    iconLeft={'Map'}
-                    iconRight={'Close'}
-                    isOpen={open}
-                    toggle={toggle}
-                    disableSwipeToOpen={true}
-                    zindex={1200}
-                >
-                    <Box
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <DrawerContent>
-                            <RowCentered>
-                                <Typography
-                                    variant="body1"
-                                    sx={{
-                                        color: '#000000',
-                                        font: 'Roboto Mono'
-                                    }}
-                                >
-                                    {preferences?.building?.name} was selected
-                                    as your office based on your GPS location
-                                </Typography>
-                            </RowCentered>
-                        </DrawerContent>
-                    </Box>
-                </SwipeableEdgeDrawer>
+        <Box>
+            <div id="drawer-container">
+                <BookingDrawer
+                    open={expandBookingDrawer}
+                    toggle={toggleDrawn}
+                    bookRoom={handleReservation}
+                    room={selectedRoom}
+                    duration={getBookingDuration()}
+                    additionalDuration={additionalDuration}
+                    availableMinutes={availableMinutes}
+                    onAddTime={handleAdditionalDurationChange}
+                    onAddTimeUntilHalf={handleUntilHalf}
+                    onAddTimeUntilFull={handleUntilFull}
+                    onAddTimeUntilNext={handleUntilNextDurationChange}
+                    startingTime={startingTime}
+                    setBookingDuration={setBookingDuration}
+                    setAdditionalDuration={setAdditionalDuration}
+                    setDuration={setDuration}
+                    setExpandDurationTimePickerDrawer={
+                        setExpandDurationTimePickerDrawer
+                    }
+                    setStartingTime={setStartingTime}
+                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <StartingTimePickerDrawer
+                        open={expandTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandTimePickerDrawer(newOpen)
+                        }
+                        startingTime={startingTime}
+                        setStartingTime={setStartingTime}
+                        setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                    />
+                    <DurationTimePickerDrawer
+                        open={expandDurationTimePickerDrawer}
+                        toggle={(newOpen: any) =>
+                            setExpandDurationTimePickerDrawer(newOpen)
+                        }
+                        bookingDuration={getBookingDuration()}
+                        setBookingDuration={setBookingDuration}
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
+                        maxDuration={maxDuration(selectedRoom, startingTime)}
+                    />
+                </LocalizationProvider>
             </div>
             <Box
-                sx={{
-                    paddingLeft: '16px',
-                    marginBottom: DEFAULT_STYLES.defaultSpacer
-                }}
+                id="current booking"
+                textAlign="center"
+                px={'16px'}
+                pb={'120px'}
             >
-                <UserDrawer
-                    open={showUserSettingsMenu}
-                    toggle={toggleSettingsDrawer}
-                    name={name}
-                    expandedFeaturesAll={expandedFeaturesAll}
-                    setExpandedFeaturesAll={setExpandedFeaturesAll}
-                />
-                <DefaultVerticalSpacer />
-                <CenterAlignedStack
-                    direction={'row'}
-                    onClick={moveToChooseOfficePage}
+                <div id="gps-container">
+                    <SwipeableEdgeDrawer
+                        headerTitle={'GPS has your back!'}
+                        iconLeft={'Map'}
+                        iconRight={'Close'}
+                        isOpen={open}
+                        toggle={toggle}
+                        disableSwipeToOpen={true}
+                        zindex={1200}
+                    >
+                        <Box
+                            style={{
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <DrawerContent>
+                                <RowCentered>
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            color: '#000000',
+                                            font: 'Roboto Mono'
+                                        }}
+                                    >
+                                        {preferences?.building?.name} was
+                                        selected as your office based on your
+                                        GPS location
+                                    </Typography>
+                                </RowCentered>
+                            </DrawerContent>
+                        </Box>
+                    </SwipeableEdgeDrawer>
+                </div>
+                <Box
+                    sx={{
+                        paddingLeft: '16px',
+                        marginBottom: DEFAULT_STYLES.defaultSpacer
+                    }}
                 >
-                    <Typography
-                        textAlign="left"
-                        variant="subtitle1"
-                        color={'#ce3b20'}
-                        style={{ cursor: 'pointer' }}
-                        display="flex"
+                    <UserDrawer
+                        open={showUserSettingsMenu}
+                        toggle={toggleSettingsDrawer}
+                        name={name}
+                        expandedFeaturesAll={expandedFeaturesAll}
+                        setExpandedFeaturesAll={setExpandedFeaturesAll}
                     />
-                    <ArrowBackIcon sx={{ fontSize: '20px' }}></ArrowBackIcon>
-                    <Box>
-                        <Typography variant={'subtitle1'}>
-                            {preferences?.building
-                                ? preferences.building.name
-                                : 'Back'}
-                        </Typography>
-                    </Box>
-                </CenterAlignedStack>
-                <RowCentered>
-                    <RoomsPageHeaderWithUserIcon onClick={openSettingsDrawer} />
-                </RowCentered>
-            </Box>
-            <StartingTimePicker
-                startingTime={startingTime}
-                setStartingTime={setStartingTime}
-                title="starting time"
-                setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-            />
-
-            <CurrentBooking
-                bookings={bookings}
-                updateRooms={updateRooms}
-                updateBookings={updateBookings}
-                setBookings={setBookings}
-                preferences={preferences}
-                setPreferences={setPreferences}
-            />
-
-            {!areRoomsFetched(rooms) ? (
-                <CenteredProgress />
-            ) : (
-                <AvailableRoomList
-                    bookingDuration={bookingDuration}
+                    <DefaultVerticalSpacer />
+                    <CenterAlignedStack
+                        direction={'row'}
+                        onClick={moveToChooseOfficePage}
+                    >
+                        <Typography
+                            textAlign="left"
+                            variant="subtitle1"
+                            color={'#ce3b20'}
+                            style={{ cursor: 'pointer' }}
+                            display="flex"
+                        />
+                        <ArrowBackIcon
+                            sx={{ fontSize: '20px' }}
+                        ></ArrowBackIcon>
+                        <Box>
+                            <Typography variant={'subtitle1'}>
+                                {preferences?.building
+                                    ? preferences.building.name
+                                    : 'Back'}
+                            </Typography>
+                        </Box>
+                    </CenterAlignedStack>
+                    <RowCentered>
+                        <RoomsPageHeaderWithUserIcon
+                            onClick={openSettingsDrawer}
+                        />
+                    </RowCentered>
+                </Box>
+                <StartingTimePicker
                     startingTime={startingTime}
                     setStartingTime={setStartingTime}
-                    rooms={displayRooms}
-                    bookings={bookings}
-                    setBookings={setBookings}
-                    updateData={updateData}
-                    expandedFeaturesAll={expandedFeaturesAll}
-                    preferences={preferences}
-                    setPreferences={setPreferences}
-                    setBookingDuration={setBookingDuration}
-                    setDuration={setDuration}
+                    title="starting time"
                     setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                    expandTimePickerDrawer={expandTimePickerDrawer}
                 />
-            )}
 
-            {areRoomsFetched(rooms) ? (
-                <BusyRoomList
-                    rooms={rooms}
+                <CurrentBooking
                     bookings={bookings}
+                    updateRooms={updateRooms}
+                    updateBookings={updateBookings}
+                    setBookings={setBookings}
                     preferences={preferences}
                     setPreferences={setPreferences}
                 />
-            ) : null}
 
-            <div id="filtering-container" onClick={openFiltering}>
-                <FilteringDrawer
-                    open={expandFilteringDrawer}
-                    toggle={toggleDrawn}
-                    roomSize={roomSize}
-                    setRoomSize={setRoomSize}
-                    resources={resources}
-                    setResources={setResources}
-                    customFilter={customFilter}
-                    setCustomFilter={setCustomFilter}
-                    onlyFavourites={onlyFavourites}
-                    setOnlyFavourites={setOnlyFavourites}
-                    filterCount={filterCount}
-                    allFeatures={allFeatures}
-                    duration={duration}
-                    setDuration={setDuration}
-                    onChange={handleDurationChange}
-                />
-            </div>
+                {!areRoomsFetched(rooms) ? (
+                    <CenteredProgress />
+                ) : (
+                    <AvailableRoomList
+                        bookingDuration={getBookingDuration()}
+                        startingTime={startingTime}
+                        setStartingTime={setStartingTime}
+                        rooms={displayRooms}
+                        bookings={bookings}
+                        setBookings={setBookings}
+                        updateData={updateData}
+                        expandedFeaturesAll={expandedFeaturesAll}
+                        preferences={preferences}
+                        setPreferences={setPreferences}
+                        setBookingDuration={setBookingDuration}
+                        setDuration={setDuration}
+                        setExpandTimePickerDrawer={setExpandTimePickerDrawer}
+                        expandTimePickerDrawer={expandTimePickerDrawer}
+                        bookingLoading={bookingLoading}
+                        handleCardClick={handleCardClick}
+                        selectedRoom={selectedRoom}
+                    />
+                )}
+
+                {areRoomsFetched(rooms) ? (
+                    <BusyRoomList
+                        rooms={rooms}
+                        bookings={bookings}
+                        preferences={preferences}
+                        setPreferences={setPreferences}
+                        bookingLoading={bookingLoading}
+                        handleCardClick={handleCardClick}
+                        selectedRoom={selectedRoom}
+                    />
+                ) : null}
+
+                <div id="filtering-container" onClick={openFiltering}>
+                    <FilteringDrawer
+                        open={expandFilteringDrawer}
+                        toggle={toggleFilteringDrawn}
+                        roomSize={roomSize}
+                        setRoomSize={setRoomSize}
+                        resources={resources}
+                        setResources={setResources}
+                        customFilter={customFilter}
+                        setCustomFilter={setCustomFilter}
+                        onlyFavourites={onlyFavourites}
+                        setOnlyFavourites={setOnlyFavourites}
+                        filterCount={filterCount}
+                        allFeatures={allFeatures}
+                        duration={duration}
+                        setDuration={setDuration}
+                        onChange={handleDurationChange}
+                    />
+                </div>
+            </Box>
         </Box>
     );
 }

@@ -162,7 +162,7 @@ const BottomDrawer = (props: Props) => {
                 }}
             />
             <Drawer
-                data-testid="BookingDrawer"
+                data-testid="BottomDrawer"
                 anchor="bottom"
                 open={isOpen}
                 onClose={toggleDrawer(false)}
