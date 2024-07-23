@@ -77,7 +77,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={true}
-            zindex={1200}
+            zindex={1201}
         >
             <Box
                 style={{
