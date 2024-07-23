@@ -297,13 +297,14 @@ export const getNextCalendarEventTimeString = (room: Room) => {
 export const RoomCardReservationStatusIndicator = (props: {
     reserved?: boolean;
     myBookingAccepted?: boolean;
+    reservationTime: number;
 }) => {
     if (props.reserved === true) {
         return (
             <CenterAlignedStack direction={'row'}>
                 <CheckCircle />
                 <Typography marginLeft={'5px'} variant={'subtitle1'}>
-                    Reserved To you FOR (TEST) minutes.
+                    Reserved To you for {props.reservationTime} minutes.
                 </Typography>
             </CenterAlignedStack>
         );
@@ -329,6 +330,10 @@ const ReservationStatusText = (props: {
                     <Stack direction={'row'}>
                         <RoomCardReservationStatusIndicator
                             reserved={props.reserved}
+                            reservationTime={getTimeDiff(
+                                props.booking?.startTime!,
+                                props.booking?.endTime!
+                            )}
                         />
                     </Stack>
                     <Typography>

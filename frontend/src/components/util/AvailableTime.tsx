@@ -9,7 +9,13 @@ export function availableForMinutes(
         return 0;
     }
 
-    let availableUntil = DateTime.fromISO(room.nextCalendarEvent).toUTC();
+    let availableUntil: DateTime<true> | DateTime<false> = DateTime.now()
+        .set({ hour: 23, minute: 59 })
+        .toUTC();
+    if (room.nextCalendarEvent) {
+        availableUntil = DateTime.fromISO(room.nextCalendarEvent).toUTC();
+    }
+
     let duration;
 
     if (startingTime === 'Now') {
