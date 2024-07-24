@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
-import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
+import { AddTimeDetails, Booking, Preferences, Room } from '../../types';
 import {
-    updateBooking,
+    deleteBooking,
     endBooking,
-    deleteBooking
+    updateBooking
 } from '../../services/bookingService';
 import useCreateNotification from '../../hooks/useCreateNotification';
-import RoomCard from '../RoomCard/RoomCard';
-import AlterBookingDrawer from './AlterBookingDrawer';
-import {
-    getTimeAvailableMinutes,
-    getBookingTimeLeft
+import RoomCard, {
+    getBookingTimeLeft,
+    getTimeAvailableMinutes
 } from '../RoomCard/RoomCard';
+import AlterBookingDrawer from './AlterBookingDrawer';
 import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
-import { triggerClarityEvent } from '../../analytics/clarityService';
-import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 import {
     BookingAddTimeEvent,
     BookingDeductTimeEvent,
     BookingEndEvent,
     GoogleAnalyticsEvent
 } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
+import { ReservationStatus } from '../../enums';
 
 const NO_CONFIRMATION = true;
 
@@ -211,7 +209,11 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                             bookingLoading={bookingProcessing}
                             disableBooking={false}
                             isSelected={booking.room.id === selectedId}
-                            isReserved={true}
+                            reservationStatus={
+                                hasBookingStarted(booking)
+                                    ? ReservationStatus.RESERVED
+                                    : ReservationStatus.RESERVED_LATER
+                            }
                             expandFeatures={true}
                             preferences={preferences}
                             setPreferences={setPreferences}
