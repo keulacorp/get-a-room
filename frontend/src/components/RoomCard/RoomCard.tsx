@@ -241,45 +241,59 @@ class RoomCardCapacityBox extends React.Component<{
     }
 }
 
+const BusyRoomStatusContent = styled('div')(({ theme }) => ({
+    alignSelf: 'stretch',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 5,
+    display: 'inline-flex'
+}));
+
+const BusyRoomStatusIcon = styled('div')(({ theme }) => ({
+    textAlign: 'center',
+    color: '#E83520',
+    fontSize: 16,
+    fontFamily: 'Material Icons',
+    fontWeight: '400',
+    wordWrap: 'break-word'
+}));
+
+type BusyRoomStatusTextContentProps = {
+    props?: {
+        flex?: string;
+        width?: number;
+        fontSize?: number;
+        fontWeight?: string | number;
+    };
+};
+const BusyRoomStatusTextContent = styled('div')<BusyRoomStatusTextContentProps>(
+    ({ theme, props }) => ({
+        color: '#1D1D1D',
+        fontSize: 12,
+        fontFamily: 'Studio Feixen Sans',
+        fontWeight: '4',
+        textTransform: 'uppercase',
+        wordWrap: 'break-word',
+        ...props
+    })
+);
 export const BusyRoomCardReservationStatusIndicator = (props: {
     room: Room;
 }) => {
     return (
-        <div
-            style={{
-                alignSelf: 'stretch',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                gap: 5,
-                display: 'inline-flex'
-            }}
-        >
-            <div
-                style={{
-                    textAlign: 'center',
-                    color: '#E83520',
-                    fontSize: 16,
-                    fontFamily: 'Material Icons',
-                    fontWeight: '400',
-                    wordWrap: 'break-word'
-                }}
-            >
+        <BusyRoomStatusContent>
+            <BusyRoomStatusIcon>
                 <DoNotDisturb />
-            </div>
-            <div
-                style={{
+            </BusyRoomStatusIcon>
+            <BusyRoomStatusTextContent
+                props={{
                     flex: '1 1 0',
-                    color: '#1D1D1D',
-                    fontSize: 12,
-                    fontFamily: 'Studio Feixen Sans',
-                    fontWeight: '4',
-                    textTransform: 'uppercase',
-                    wordWrap: 'break-word'
+                    fontSize: 12
                 }}
             >
                 Occupied for {roomFreeIn(props.room)} minutes
-            </div>
-        </div>
+            </BusyRoomStatusTextContent>
+        </BusyRoomStatusContent>
     );
 };
 
@@ -350,28 +364,18 @@ const ReservationStatusText = (props: {
                 <>
                     <BusyRoomCardReservationStatusIndicator room={props.room} />
 
-                    <div
-                        style={{
-                            alignSelf: 'stretch',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
-                            display: 'inline-flex'
-                        }}
-                    >
-                        <div
-                            style={{
+                    <BusyRoomStatusTextContent>
+                        <BusyRoomStatusTextContent
+                            props={{
                                 width: 283,
-                                color: '#1D1D1D',
                                 fontSize: 16,
-                                fontFamily: 'Studio Feixen Sans',
-                                fontWeight: '2',
-                                wordWrap: 'break-word'
+                                fontWeight: '2'
                             }}
                         >
                             Next available slot:{' '}
                             {getNextCalendarEventTimeString(props.room)}
-                        </div>
-                    </div>
+                        </BusyRoomStatusTextContent>
+                    </BusyRoomStatusTextContent>
                 </>
             ) : (
                 <>
@@ -464,6 +468,8 @@ const RoomCard = (props: RoomCardProps) => {
                         <StartBox>
                             <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
+                                id={'booked-to-you-label'}
+                                aria-label={'Booked to you'}
                                 variant="subtitle1"
                                 color="success.main"
                                 margin={'0 0 0 5px'}
@@ -478,6 +484,8 @@ const RoomCard = (props: RoomCardProps) => {
                         <StartBox>
                             <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
+                                id={'booked-to-you-label'}
+                                aria-label={'Booked to you'}
                                 variant="subtitle1"
                                 color="success.main"
                                 margin={'0 0 0 5px'}
@@ -526,7 +534,9 @@ const RoomCard = (props: RoomCardProps) => {
                         <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
 
-                    {bookingTime()}
+                    <Typography aria-labelledby={'booked-to-you-label'}>
+                        {bookingTime()}
+                    </Typography>
 
                     <Row>
                         <Stack direction={'column'}>
