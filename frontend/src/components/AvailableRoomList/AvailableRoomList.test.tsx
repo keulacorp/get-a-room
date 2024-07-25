@@ -123,7 +123,6 @@ describe('AvailableRoomList', () => {
         render(
             <AvailableRoomList
                 rooms={fakeRooms}
-                bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
                 expandedFeaturesAll
@@ -143,7 +142,6 @@ describe('AvailableRoomList', () => {
         render(
             <AvailableRoomList
                 rooms={fakeRooms}
-                bookings={fakeBookings}
                 bookingDuration={15}
                 startingTime="Now"
                 expandedFeaturesAll
@@ -159,7 +157,6 @@ describe('AvailableRoomList', () => {
         render(
             <AvailableRoomList
                 rooms={fakeRooms}
-                bookings={fakeBookings}
                 bookingDuration={30}
                 startingTime="Now"
                 expandedFeaturesAll
@@ -176,7 +173,6 @@ describe('AvailableRoomList', () => {
         render(
             <AvailableRoomList
                 rooms={fakeRooms}
-                bookings={fakeBookings}
                 bookingDuration={60}
                 startingTime="Now"
                 expandedFeaturesAll
@@ -193,7 +189,6 @@ describe('AvailableRoomList', () => {
         render(
             <AvailableRoomList
                 rooms={fakeRooms}
-                bookings={fakeBookings}
                 bookingDuration={120}
                 startingTime="Now"
                 expandedFeaturesAll
