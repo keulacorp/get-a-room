@@ -204,7 +204,6 @@ function BookingView(props: BookingViewProps) {
 
         makeBooking(bookingDetails, SKIP_CONFIRMATION)
             .then((response) => {
-                console.log(response);
                 updateData();
                 createSuccessNotification('Booking was successful');
                 setBookingLoading('false');
