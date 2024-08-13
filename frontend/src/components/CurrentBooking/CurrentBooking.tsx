@@ -108,8 +108,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         toggleDrawer(false);
 
         updateBooking(addTimeDetails, booking.id, NO_CONFIRMATION)
-            .then((updatedBooking) => {
-                setBookings([updatedBooking]);
+            .then(() => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
@@ -138,7 +137,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         toggleDrawer(false);
 
         endBooking(booking.id)
-            .then((endBooking) => {
+            .then(() => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();

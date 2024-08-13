@@ -166,6 +166,7 @@ function BookingView(props: BookingViewProps) {
             const buildingPreference = preferences.building?.id;
             getRooms(buildingPreference, GET_RESERVED)
                 .then((allRooms) => {
+                    console.log('Setting rooms at update');
                     setRooms(allRooms);
                 })
                 .catch((error) => console.log(error));
@@ -202,18 +203,11 @@ function BookingView(props: BookingViewProps) {
         setBookingLoading(room.id);
 
         makeBooking(bookingDetails, SKIP_CONFIRMATION)
-            .then((madeBooking) => {
-                setBookings([...bookings, madeBooking]);
+            .then((response) => {
                 updateData();
-                // update data after 2.5s, waits Google Calendar to
-                // accept the booking.
-                setTimeout(() => {
-                    updateData();
-                }, 2500);
                 createSuccessNotification('Booking was successful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
-
                 triggerGoogleAnalyticsEvent(new BookingEvent(room, duration));
                 triggerClarityEvent(AnalyticsEventEnum.BOOKING);
             })
@@ -403,8 +397,7 @@ function BookingView(props: BookingViewProps) {
         rooms,
         customFilter,
         onlyFavourites,
-        preferences?.fav_rooms,
-        filterRooms
+        preferences?.fav_rooms
     ]);
 
     useEffect(() => {
