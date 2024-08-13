@@ -12,7 +12,7 @@ import {
     styled
 } from '@mui/material';
 import { GarApp } from './components/App';
-import { DoNotDisturbOn } from '@mui/icons-material';
+import { DoNotDisturbOn, Schedule, WatchLater } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { RoomCardReservationStatusIndicator } from './components/RoomCard/RoomCard';
 import Person from '@mui/icons-material/Person';
@@ -59,6 +59,10 @@ export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
 export const CheckCircle = styled(CheckCircleIcon)(({ theme }) => ({
     color: COLORS.ACCENT_GREEN,
     ariaLabel: 'Check circle'
+}));
+
+export const ScheduleCircle = styled(WatchLater)(({ theme }) => ({
+    color: '#F2BB32'
 }));
 
 export const CenterAlignedStack = styled(Stack)(({ theme }) => ({

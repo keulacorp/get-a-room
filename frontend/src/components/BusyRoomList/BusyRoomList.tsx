@@ -1,9 +1,10 @@
 import React from 'react';
-import { List, Typography, Box } from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 import RoomCard from '../RoomCard/RoomCard';
 import { Booking, Preferences, Room } from '../../types';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { ReservationStatus } from '../../enums';
 
 export function roomFreeIn(room: Room) {
     let end;
@@ -17,16 +18,13 @@ export function roomFreeIn(room: Room) {
 
 function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
     // filter if room booked for the current user
-    for (let i = 0; i < bookings.length; i++) {
-        const booking = bookings[i];
+    for (const booking of bookings) {
         if (booking.room.id === room.id) {
             return false;
         }
     }
-    if (Array.isArray(room.busy)) {
-        return true;
-    }
-    return false;
+
+    return room.busy != undefined;
 }
 
 type BusyRoomListProps = {
@@ -83,7 +81,9 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                                         bookingLoading={bookingLoading}
                                         setPreferences={setPreferences}
                                         preferences={preferences}
-                                        isReserved={false}
+                                        reservationStatus={
+                                            ReservationStatus.BUSY
+                                        }
                                         isBusy={true}
                                     />
                                 </li>

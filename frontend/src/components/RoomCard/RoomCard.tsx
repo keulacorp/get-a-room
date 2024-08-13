@@ -12,11 +12,6 @@ import TimeLeft, {
 } from '../util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import Favorite from '@mui/icons-material/Favorite';
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PendingIcon from '@mui/icons-material/Pending';
 import {
     Card,
     CardActionArea,
@@ -32,14 +27,12 @@ import {
     CenterAlignedStack,
     CheckCircle,
     DEFAULT_STYLES,
-    DoNotDisturb
+    DoNotDisturb,
+    ScheduleCircle
 } from '../../theme_2024';
-import {
-    Bookmark,
-    BookmarkBorder,
-    BookmarksOutlined
-} from '@mui/icons-material';
+import { Bookmark, BookmarkBorder } from '@mui/icons-material';
 import { dateTimeToTimeString } from '../util/Time';
+import { ReservationStatus } from '../../enums';
 
 function getName(room: Room) {
     return room.name;
@@ -173,7 +166,7 @@ type RoomCardProps = {
     setPreferences: (pref: Preferences) => void;
     bookingLoading: string;
     disableBooking: boolean;
-    isReserved?: boolean;
+    reservationStatus?: ReservationStatus;
     isSelected: boolean;
     expandFeatures: boolean;
     isBusy?: boolean;
@@ -313,26 +306,34 @@ export const getNextCalendarEventTimeString = (room: Room) => {
 };
 
 export const RoomCardReservationStatusIndicator = (props: {
-    reserved?: boolean;
+    reserved: ReservationStatus;
     myBookingAccepted?: boolean;
     reservationTime: number;
 }) => {
-    if (props.reserved === true) {
-        return (
-            <CenterAlignedStack direction={'row'}>
-                <CheckCircle />
-                <Typography marginLeft={'5px'} variant={'subtitle1'}>
-                    Reserved To you for {props.reservationTime} minutes.
-                </Typography>
-            </CenterAlignedStack>
+    const statusIcon =
+        props.reserved === ReservationStatus.RESERVED ? (
+            <CheckCircle />
+        ) : (
+            <ScheduleCircle />
         );
-    } else {
-        return <></>;
-    }
+    const textColor =
+        props.reserved === ReservationStatus.RESERVED ? '#388641' : '#F2BB32';
+    return (
+        <CenterAlignedStack direction={'row'}>
+            {statusIcon}
+            <Typography
+                color={textColor}
+                marginLeft={'5px'}
+                variant={'subtitle1'}
+            >
+                Reserved To you for {props.reservationTime} minutes.
+            </Typography>
+        </CenterAlignedStack>
+    );
 };
 
 const ReservationStatusText = (props: {
-    reserved: boolean | undefined;
+    reservationStatus: ReservationStatus | undefined;
     booking: Booking | undefined;
     busy: boolean | undefined;
     room: Room;
@@ -340,14 +341,13 @@ const ReservationStatusText = (props: {
     const myBookingAccepted =
         props.booking?.resourceStatus === 'accepted' &&
         DateTime.fromISO(props.booking.startTime) > DateTime.now();
-
     return (
         <>
-            {props.reserved ? (
+            {props.reservationStatus !== undefined ? (
                 <>
                     <Stack direction={'row'}>
                         <RoomCardReservationStatusIndicator
-                            reserved={props.reserved}
+                            reserved={props.reservationStatus}
                             reservationTime={getBookingTimeLeft(props.booking)}
                         />
                     </Stack>
@@ -397,7 +397,7 @@ const RoomCard = (props: RoomCardProps) => {
         onClick,
         bookingLoading,
         disableBooking,
-        isReserved,
+        reservationStatus,
         isSelected,
         expandFeatures,
         preferences,
@@ -451,7 +451,7 @@ const RoomCard = (props: RoomCardProps) => {
     };
 
     const cardStyle = () => {
-        if (isSelected && isReserved) {
+        if (isSelected && reservationStatus) {
             return selectedReservedVars;
         }
         if (isSelected) {
@@ -479,7 +479,7 @@ const RoomCard = (props: RoomCardProps) => {
                     <Row>
                         <Stack direction={'column'}>
                             <ReservationStatusText
-                                reserved={isReserved}
+                                reservationStatus={reservationStatus}
                                 booking={booking}
                                 busy={isBusy}
                                 room={room}
