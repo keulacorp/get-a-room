@@ -43,18 +43,11 @@ function noAvailableRooms(rooms: Room[]) {
 type BookingListProps = {
     bookingDuration: number;
     rooms: Room[];
-    bookings: Booking[];
-    setBookings: (bookings: Booking[]) => void;
-    updateData: () => void;
     expandedFeaturesAll: boolean;
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
     startingTime: string;
-    setStartingTime: (newStartingTime: string) => void;
-    setBookingDuration: (minutes: number) => void;
-    setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandTimePickerDrawer: (show: boolean) => void;
-    expandTimePickerDrawer: boolean;
     bookingLoading: string;
     handleCardClick: (room: Room) => void;
     selectedRoom: Room | undefined;
@@ -64,18 +57,11 @@ const AvailableRoomList = (props: BookingListProps) => {
     const {
         bookingDuration,
         rooms,
-        bookings,
-        setBookings,
-        updateData,
         expandedFeaturesAll,
         preferences,
         setPreferences,
         startingTime,
-        setStartingTime,
-        setBookingDuration,
-        setDuration,
         setExpandTimePickerDrawer,
-        expandTimePickerDrawer,
         bookingLoading,
         handleCardClick,
         selectedRoom

@@ -774,18 +774,11 @@ function BookingView(props: BookingViewProps) {
                     <AvailableRoomList
                         bookingDuration={getBookingDuration()}
                         startingTime={startingTime}
-                        setStartingTime={setStartingTime}
                         rooms={displayRooms}
-                        bookings={bookings}
-                        setBookings={setBookings}
-                        updateData={updateData}
                         expandedFeaturesAll={expandedFeaturesAll}
                         preferences={preferences}
                         setPreferences={setPreferences}
-                        setBookingDuration={setBookingDuration}
-                        setDuration={setDuration}
                         setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                        expandTimePickerDrawer={expandTimePickerDrawer}
                         bookingLoading={bookingLoading}
                         handleCardClick={handleCardClick}
                         selectedRoom={selectedRoom}
