@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
 import {
     render,
     cleanup,
@@ -10,23 +14,28 @@ import {
 import { updatePreferences } from '../../services/preferencesService';
 
 import ChooseOfficeView from './ChooseOfficeView';
+import { Mock } from 'vitest';
 
-const mockedHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
+const mockedHistoryPush = vi.fn();
+vi.mock('react-router-dom', async () => ({
+    ...(await vi.importActual('react-router-dom')),
     useHistory: () => ({
         push: mockedHistoryPush
     })
 }));
 
-jest.mock('../../hooks/useCreateNotification', () => () => {
+vi.mock('../../hooks/useCreateNotification', () => {
     return {
-        createSuccessNotification: jest.fn(),
-        createErrorNotification: jest.fn()
+        default: () => {
+            return {
+                createSuccessNotification: vi.fn(),
+                createErrorNotification: vi.fn()
+            };
+        }
     };
 });
 
-jest.mock('../../services/preferencesService');
+vi.mock('../../services/preferencesService');
 
 const TEST_BUILDINGS = [
     { id: 'b1Id', name: 'b1Name', latitude: 61.4957056, longitude: 23.7993984 },
@@ -38,16 +47,16 @@ describe('ChooseOfficeView', () => {
         cleanup();
     });
     afterAll(() => {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 
     it('renders progressbar when gps gives location (goes straight to room choosing page', () => {
         render(
             <ChooseOfficeView
                 buildings={[]}
-                setPreferences={jest.fn()}
+                setPreferences={vi.fn()}
                 name="testname"
-                setBuildings={jest.fn()}
+                setBuildings={vi.fn()}
             />
         );
 
@@ -60,9 +69,9 @@ describe('ChooseOfficeView', () => {
                 <ChooseOfficeView
                     preferences={{ building: TEST_BUILDINGS[0] }}
                     buildings={TEST_BUILDINGS}
-                    setPreferences={jest.fn()}
+                    setPreferences={vi.fn()}
                     name="testname"
-                    setBuildings={jest.fn()}
+                    setBuildings={vi.fn()}
                 />
             );
         });
@@ -82,9 +91,9 @@ describe('ChooseOfficeView', () => {
                     }
                 }}
                 buildings={TEST_BUILDINGS}
-                setPreferences={jest.fn()}
+                setPreferences={vi.fn()}
                 name="testname"
-                setBuildings={jest.fn()}
+                setBuildings={vi.fn()}
             />
         );
 
@@ -97,19 +106,19 @@ describe('ChooseOfficeView', () => {
                 <ChooseOfficeView
                     preferences={{ building: TEST_BUILDINGS[0] }}
                     buildings={TEST_BUILDINGS}
-                    setPreferences={jest.fn()}
+                    setPreferences={vi.fn()}
                     name="testname"
-                    setBuildings={jest.fn()}
+                    setBuildings={vi.fn()}
                 />
             );
         });
 
-        expect(screen.getByText('Welcome, testname')).toBeTruthy();
+        expect(screen.getByText('Welcome, testname!')).toBeTruthy();
     });
 
     it('updates preferences when clicking a building name', async () => {
-        const mockedSetPreferences = jest.fn();
-        (updatePreferences as jest.Mock).mockResolvedValueOnce({
+        const mockedSetPreferences = vi.fn();
+        (updatePreferences as Mock).mockResolvedValueOnce({
             building: TEST_BUILDINGS[1]
         });
         render(
@@ -118,14 +127,15 @@ describe('ChooseOfficeView', () => {
                 buildings={TEST_BUILDINGS}
                 setPreferences={mockedSetPreferences}
                 name="testname"
-                setBuildings={jest.fn()}
+                setBuildings={vi.fn()}
             />
         );
 
         fireEvent.click(screen.getByText(TEST_BUILDINGS[1].name));
 
-        expect(updatePreferences as jest.Mock).toHaveBeenCalledWith({
-            building: TEST_BUILDINGS[1]
+        expect(updatePreferences as Mock).toHaveBeenCalledWith({
+            building: TEST_BUILDINGS[1],
+            showRoomResources: false
         });
         await waitFor(() => {
             expect(mockedSetPreferences).toHaveBeenCalledWith({

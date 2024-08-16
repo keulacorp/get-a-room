@@ -16,7 +16,6 @@ export const createToken = () => {
     ) => {
         try {
             const payload = res.locals.payload as TokenPayload | undefined;
-
             const jwtPayload: jwtTokenPayload = {
                 sub: payload?.sub as string,
                 name: payload?.name as string,

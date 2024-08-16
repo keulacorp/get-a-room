@@ -16,6 +16,7 @@ type PreferencesLoaderProps = {
 };
 
 /**
+ * FIXME Not in use?
  * After preferences loaded, either asks the user for building preference.
  * If the building is already set (in earlier session), forwards straight to the booking view
  */
@@ -46,7 +47,7 @@ const PreferencesLoader = (props: PreferencesLoaderProps) => {
             createErrorNotification('Invalid office');
             return;
         }
-        updatePreferences({ building: foundBuilding })
+        updatePreferences({ ...preferences, building: foundBuilding })
             .then((savedPreferences) => {
                 setPreferences(savedPreferences);
                 goToMainView();

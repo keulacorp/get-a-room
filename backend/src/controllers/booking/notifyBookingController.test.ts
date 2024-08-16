@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { badRequest } from '../../utils/responses';
 import {
     getSubscription,
@@ -30,16 +30,20 @@ jest.mock('web-push');
 jest.mock('../../utils/responses');
 jest.mock('../userController');
 
-const mockUpdateSubscription = mocked(updateSubscription, false);
-const mockRemoveSubscription = mocked(removeSubscription, false);
-const mockGetUserWithSubject = mocked(getUserWithSubject, false);
-const mockAddScheduleData = mocked(addScheduleData, false);
-const mockRemoveScheduleData = mocked(removeScheduleData, false);
-const mockRemoveScheduleDataArray = mocked(removeScheduleDataArray, false);
-const mockScheduleJob = mocked(schedule.scheduleJob, false);
-const mockSendNotification = mocked(webpush.sendNotification, false);
+const mockUpdateSubscription = mocked(updateSubscription, { shallow: false });
+const mockRemoveSubscription = mocked(removeSubscription, { shallow: false });
+const mockGetUserWithSubject = mocked(getUserWithSubject, { shallow: false });
+const mockAddScheduleData = mocked(addScheduleData, { shallow: false });
+const mockRemoveScheduleData = mocked(removeScheduleData, { shallow: false });
+const mockRemoveScheduleDataArray = mocked(removeScheduleDataArray, {
+    shallow: false
+});
+const mockScheduleJob = mocked(schedule.scheduleJob, { shallow: false });
+const mockSendNotification = mocked(webpush.sendNotification, {
+    shallow: false
+});
 
-const mockedBadRequest = mocked(badRequest, false);
+const mockedBadRequest = mocked(badRequest, { shallow: false });
 
 const mockSub = 'mockedSub';
 const mockSubscription: Subscription = {

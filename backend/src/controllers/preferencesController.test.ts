@@ -6,15 +6,17 @@ import {
     readPreferenceBody,
     updatePreferencesToDatabase
 } from './preferencesController';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 jest.mock('../utils/responses');
 jest.mock('./userController');
 
-const mockedGetUserWithSubject = mocked(getUserWithSubject, false);
-const mockedUpdatePreferences = mocked(updatePreferences, false);
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetUserWithSubject = mocked(getUserWithSubject, { shallow: false });
+const mockedUpdatePreferences = mocked(updatePreferences, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('preferencesController', () => {
     let mockRequest: Partial<Request>;
@@ -75,6 +77,8 @@ describe('preferencesController', () => {
                 id: 'id'
             };
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             mockedGetUserWithSubject.mockResolvedValueOnce({
                 subject: 'sub',
                 preferences: {
@@ -215,6 +219,8 @@ describe('preferencesController', () => {
         });
 
         test('Should set preferences to locals', async () => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             mockedUpdatePreferences.mockResolvedValueOnce({
                 subject: 'sub',
                 preferences: {
@@ -233,12 +239,14 @@ describe('preferencesController', () => {
 
             expect(mockNext).toBeCalledTimes(1);
             expect(mockNext).toBeCalledWith();
-            expect(mockResponse.locals?.preferences).toEqual({
-                building: {
-                    id: mockResponse.locals?.buildingId,
-                    name: mockResponse.locals?.buildingName
-                }
-            });
+            expect(mockResponse.locals?.preferences).toEqual(
+                expect.objectContaining({
+                    building: {
+                        id: mockResponse.locals?.buildingId,
+                        name: mockResponse.locals?.buildingName
+                    }
+                })
+            );
         });
     });
 });

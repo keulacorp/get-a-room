@@ -1,3 +1,4 @@
+import webpush from 'web-push';
 export const checkEnvVariables = () => {
     const {
         GOOGLE_CLIENT_ID,
@@ -25,6 +26,9 @@ export const checkEnvVariables = () => {
     }
 
     if (!VAPID_PUBLIC_KEY) {
+        const vapidKey = webpush.generateVAPIDKeys();
+        console.log(`Created publickey: ${vapidKey.publicKey}`);
+        console.log(`Created privatekey: ${vapidKey.privateKey}`);
         throw new Error('VAPID public key not set');
     }
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { badRequest, custom, internalServerError } from '../../utils/responses';
 import { query } from 'express-validator';
 import { DateTime } from 'luxon';
@@ -20,14 +20,16 @@ import {
 jest.mock('../../utils/responses');
 jest.mock('../googleAPI/calendarAPI');
 
-const mockedCreateEvent = mocked(createEvent, false);
-const mockedDeleteEvent = mocked(deleteEvent, false);
-const mockedFreeBusyQuery = mocked(freeBusyQuery, false);
-const mockedGetEventData = mocked(getEventData, false);
+const mockedCreateEvent = mocked(createEvent, { shallow: false });
+const mockedDeleteEvent = mocked(deleteEvent, { shallow: false });
+const mockedFreeBusyQuery = mocked(freeBusyQuery, { shallow: false });
+const mockedGetEventData = mocked(getEventData, { shallow: false });
 
-const mockedBadRequest = mocked(badRequest, false);
-const mockedCustomResponse = mocked(custom, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedCustomResponse = mocked(custom, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('makeBookingController', () => {
     let mockRequest: Partial<Request>;

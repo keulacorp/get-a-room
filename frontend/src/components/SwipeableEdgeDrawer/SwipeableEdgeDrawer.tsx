@@ -6,7 +6,7 @@ import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { IconButton } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
@@ -14,6 +14,7 @@ import Person from '@mui/icons-material/Person';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { COLORS } from '../../theme_2024';
 
 export const drawerBleeding = 88;
 
@@ -23,13 +24,6 @@ const Root = styled('div')(({ theme }) => ({
         theme.palette.mode === 'light'
             ? grey[100]
             : theme.palette.background.default
-}));
-
-const Puller = styled(Box)(({ theme }) => ({
-    width: '30%',
-    height: 4,
-    backgroundColor: theme.palette.mode === 'light' ? '#F6F5F5' : grey[900],
-    borderRadius: 3
 }));
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
@@ -54,13 +48,13 @@ const FilterCounter = styled(Box)(({ theme }) => ({
     height: '20px',
     fontstyle: 'normal',
     fontWeight: 700,
-    fontSize: '14px',
+    fontSize: '16px',
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: '0 4px',
-    color: '#F6F5F5',
-    backgroundColor: '#CE3B20'
+    margin: '0 0 0 8px',
+    color: COLORS.BACKGROUND_PRIMARY,
+    backgroundColor: COLORS.ACCENT_BLUE
 }));
 
 const DrawerTitle = styled(Typography)(({ theme }) => ({
@@ -90,6 +84,7 @@ interface Props {
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
     mounted?: boolean;
+    zindex: number;
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
@@ -101,17 +96,18 @@ const SwipeableEdgeDrawer = (props: Props) => {
         isOpen,
         toggle,
         disableSwipeToOpen,
-        mounted
+        mounted,
+        zindex
     } = props;
 
     const toggleDrawer = (newOpen: boolean) => () => {
         toggle(newOpen);
     };
 
-    var left;
-    var title;
-    var right;
-    var filters;
+    let left;
+    let title;
+    let right;
+    let filters;
 
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
@@ -141,7 +137,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
         right = <CloseIcon />;
     }
 
-    var label;
+    let label;
     if (iconLeft === 'FilterList') {
         if (isOpen) {
             label = 'reduce';
@@ -175,37 +171,42 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 onClose={toggleDrawer(false)}
                 onOpen={toggleDrawer(true)}
                 swipeAreaWidth={drawerBleeding}
-                disableSwipeToOpen={disableSwipeToOpen}
+                disableSwipeToOpen={disableSwipeToOpen && isOpen}
                 keepMounted={mounted}
                 style={{
                     position: 'relative',
                     width: '100%',
-                    maxWidth: '1000px'
+                    maxWidth: '1000px',
+                    zIndex: zindex
                 }}
             >
-                <DrawerHeader onClick={handleHeaderClick}>
-                    <Box
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            width: '100%',
-                            maxWidth: '1000px'
-                        }}
-                    >
-                        {left}
-                        <Puller />
-                        {title}
-                        {filters}
-                        <Puller />
-                        <IconButton
-                            onClick={toggleDrawer(false)}
-                            aria-label={label}
+                {!disableSwipeToOpen ? (
+                    <DrawerHeader onClick={handleHeaderClick}>
+                        <Box
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: '100%',
+                                maxWidth: '1000px'
+                            }}
                         >
-                            {right}
-                        </IconButton>
-                    </Box>
-                </DrawerHeader>
+                            {left}
+                            <Stack direction={'row'}>
+                                {title}
+                                {filters}
+                            </Stack>
+                            <IconButton
+                                onClick={toggleDrawer(false)}
+                                aria-label={label}
+                            >
+                                {right}
+                            </IconButton>
+                        </Box>
+                    </DrawerHeader>
+                ) : (
+                    ''
+                )}
                 {children}
             </SwipeableDrawer>
         </Root>

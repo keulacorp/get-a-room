@@ -15,40 +15,59 @@ import { Box } from '@mui/material';
 import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
 import usePushNotificationRegistration from '../../hooks/usePushNotificationRegistration';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { useBookingDurationState } from '../BookingView/BookingDurationState';
 
 const MainView = () => {
-    const [preferences, setPreferences] = useState<Preferences | undefined>();
-
+    const { preferences, setPreferences } = useUserSettings();
     const [buildings, setBuildings] = useState<Building[]>([]);
-
     const [name, setName] = useState<String>();
-
     const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
+    const [locationAccess, setLocationAccess] = useState<PermissionStatus>();
 
     const history = useHistory();
+
+    const { getBookingDuration, setBookingDuration } =
+        useBookingDurationState();
 
     usePushNotificationRegistration();
 
     useEffect(() => {
-        getPreferences()
-            .then(setPreferences)
-            .catch((e) => {
-                // Redirected to login
-                console.log(e);
+        navigator.permissions
+            .query({ name: 'geolocation' })
+            .then((permissionStatus) => {
+                setLocationAccess(permissionStatus);
+                permissionStatus.onchange = () => {
+                    setLocationAccess(permissionStatus);
+                };
             });
     }, []);
 
     useEffect(() => {
-        getPreferencesWithGPS()
-            .then((preference) => {
-                setPreferences(preference);
-                buildingFromLocalStorage(preference);
-            })
-            .catch((e) => {
-                // Redirected to login
-                console.log(e);
-            });
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        if (!locationAccess) {
+            return;
+        }
+        if (locationAccess.state === 'granted') {
+            getPreferencesWithGPS()
+                .then((preference) => {
+                    setPreferences(preference);
+                    buildingFromLocalStorage(preference);
+                })
+                .catch((e) => {
+                    // Redirected to login
+                    console.log(e);
+                });
+        } else {
+            getPreferences()
+                .then((preferences) => {
+                    setPreferences(preferences);
+                })
+                .catch((e) => {
+                    // Redirected to login
+                    console.log(e);
+                });
+        }
+    }, [locationAccess]);
 
     //check the name of the building stored in the localStorage
     const buildingFromLocalStorage = (preference: {
@@ -129,6 +148,8 @@ const MainView = () => {
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
                             name={name}
+                            getBookingDuration={getBookingDuration}
+                            setBookingDuration={setBookingDuration}
                         />
                     </Route>
                 </Switch>

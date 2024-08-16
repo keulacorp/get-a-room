@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, styled, Typography } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
-
+import { styled } from '@mui/material/styles';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
+import { theme } from '../../theme';
+import DurationPicker from './DurationPicker';
+import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import { dateTimeToTimeString } from '../util/Time';
 
 const MIN_DURATION = 15;
 
@@ -50,6 +54,30 @@ export function minutesToSimpleString(minutes: number) {
     return hours + ' h ' + min + ' min';
 }
 
+const getNextAvailableTime = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const nextAvailableTime = DateTime.fromISO(nextEvent!.end!).plus({
+        minutes: 1
+    });
+
+    return dateTimeToTimeString(nextAvailableTime);
+};
+
+const getUnavailableTimeInMinutes = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const end = DateTime.fromISO(nextEvent!.end!);
+
+    console.log(end, 'end');
+    console.log(getNextCalendarEvent(room), 'etNextCalendarEvent(room)');
+
+    const now = DateTime.now();
+    const substraction = end.minus({ hours: now.hour, minutes: now.minute });
+
+    return substraction.minute + substraction.hour * 60;
+};
+
 /**
  *
  * @param minutes
@@ -89,6 +117,88 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
+export const RowAlert = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: '0px',
+    borderStyle: 'solid',
+    borderColor: '#F2BB32',
+    borderWidth: '1px',
+    borderRadius: '8px'
+}));
+
+export const ColAlertIcon = styled(Box)(({ theme }) => ({
+    width: '40px',
+    display: 'flex',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: '8px',
+    padding: '0px',
+    background: '#F2BB32',
+    borderRadius: '0px'
+}));
+
+export const ColAlertMessage = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flex: '1 1 0%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: '8px',
+    paddingTop: '8px',
+    paddingBottom: '8px',
+    paddingRight: '24px',
+    paddingLeft: '24px',
+    borderRadius: '0px'
+}));
+
+export const Alert = (props: {
+    startingTime: string;
+    showAlert: boolean;
+    unavailable: number;
+}) => {
+    if (!props.showAlert) {
+        return <></>;
+    }
+    return (
+        <RowAlert>
+            <ColAlertIcon>
+                <span
+                    style={{
+                        color: '#FBFBF6',
+                        fontSize: '20px',
+                        fontFamily: 'Material Icons',
+                        textAlign: 'center',
+                        fontWeight: '400'
+                    }}
+                >
+                    not_interested
+                </span>
+            </ColAlertIcon>
+            <ColAlertMessage>
+                <p
+                    style={{
+                        flex: '1 1 0%',
+                        color: '#1D1D1D',
+                        fontSize: '16px',
+                        fontFamily: 'Studio Feixen Sans',
+                        textAlign: 'left',
+                        fontWeight: '2'
+                    }}
+                >
+                    Room is currently unavailable for {props.unavailable}
+                    minutes. You may book the room in advance. Your starting
+                    time was adjusted to {props.startingTime}.
+                </p>
+            </ColAlertMessage>
+        </RowAlert>
+    );
+};
+
 export const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
@@ -121,15 +231,17 @@ export const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     }
 }));
 
-export const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
-    color: theme.palette.text.primary,
-    border: '1px solid',
-    borderColor: theme.palette.text.primary,
-    '&.Mui-disabled': {
-        color: theme.palette.text.disabled,
-        borderColor: theme.palette.text.disabled
-    }
-}));
+export const DrawerButtonSecondary = styled(DrawerButton)(
+    ({ theme: DefaultTheme }) => ({
+        color: theme.palette.text.primary,
+        border: '1px solid',
+        borderColor: theme.palette.text.primary,
+        '&.Mui-disabled': {
+            color: theme.palette.text.disabled,
+            borderColor: theme.palette.text.disabled
+        }
+    })
+);
 
 export const TimeText = styled(Typography)(() => ({
     fontSize: '24px',
@@ -145,7 +257,7 @@ export const AvailableText = styled(Typography)(() => ({
     color: '#82716F'
 }));
 
-export const SmallText = styled(Typography)(() => ({
+export const SmallText = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
     fontSize: '12px',
     lineHeight: '12px',
@@ -155,7 +267,7 @@ export const SmallText = styled(Typography)(() => ({
 }));
 
 export const Spacer = styled('div')(() => ({
-    padding: '8px'
+    padding: '4px'
 }));
 
 interface Props {
@@ -171,7 +283,63 @@ interface Props {
     availableMinutes: number;
     room?: Room;
     startingTime: string;
+    setBookingDuration: (minutes: number) => void;
+    setAdditionalDuration: (minutes: number) => void;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
+    setExpandDurationTimePickerDrawer: (show: boolean) => void;
+    setStartingTime: (s: string) => void;
 }
+
+const FullAndHalfHourButtons = (props: {
+    onClickFull: () => void;
+    disabledFull: boolean;
+    nextFullHour: string;
+    onClickHalf: () => void;
+    disabledHalf: boolean;
+    nextHalfHour: string;
+}) => {
+    const nextIsFull: boolean = useMemo(() => {
+        return parseInt(props.nextHalfHour?.split(':')?.at(1) || '0') < 30;
+    }, [props.nextHalfHour, props.nextFullHour]);
+
+    if (nextIsFull) {
+        return (
+            <>
+                <DrawerButtonSecondary
+                    onClick={props.onClickFull}
+                    disabled={props.disabledFull}
+                >
+                    Until {props.nextFullHour}
+                </DrawerButtonSecondary>
+                <Spacer />
+                <DrawerButtonSecondary
+                    onClick={props.onClickHalf}
+                    disabled={props.disabledHalf}
+                >
+                    Until {props.nextHalfHour}
+                </DrawerButtonSecondary>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <DrawerButtonSecondary
+                    onClick={props.onClickHalf}
+                    disabled={props.disabledHalf}
+                >
+                    Until {props.nextHalfHour}
+                </DrawerButtonSecondary>
+                <Spacer />
+                <DrawerButtonSecondary
+                    onClick={props.onClickFull}
+                    disabled={props.disabledFull}
+                >
+                    Until {props.nextFullHour}
+                </DrawerButtonSecondary>
+            </>
+        );
+    }
+};
 
 const BookingDrawer = (props: Props) => {
     const {
@@ -186,13 +354,25 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilFull,
         onAddTimeUntilNext,
         availableMinutes,
-        startingTime
+        startingTime,
+        setBookingDuration,
+        setAdditionalDuration,
+        setDuration,
+        setExpandDurationTimePickerDrawer,
+        setStartingTime
     } = props;
 
     useEffect(() => {
         updateHalfHour();
         updateFullHour();
     });
+
+    const handleDurationChange = (newDuration: number) => {
+        if (newDuration !== -1) {
+            setBookingDuration(newDuration);
+        }
+        setAdditionalDuration(0);
+    };
 
     // Placeholder values
     const [nextHalfHour, setNextHalfHour] = useState('00:30');
@@ -247,6 +427,15 @@ const BookingDrawer = (props: Props) => {
                   })
                       .plus({ minutes: duration })
                       .toObject();
+
+        if (
+            halfHour.hour === undefined ||
+            halfHour.minute === undefined ||
+            Number.isNaN(halfHour.hour) ||
+            Number.isNaN(halfHour.minute)
+        ) {
+            throw new Error('Time not set');
+        }
         if (halfHour.minute >= 30) {
             halfHour.hour = halfHour.hour + 1;
         }
@@ -268,6 +457,16 @@ const BookingDrawer = (props: Props) => {
                   })
                       .plus({ minutes: duration })
                       .toObject();
+
+        if (
+            fullHour.hour === undefined ||
+            fullHour.minute === undefined ||
+            Number.isNaN(fullHour.hour) ||
+            Number.isNaN(fullHour.minute)
+        ) {
+            throw new Error('Time not set');
+        }
+
         fullHour.minute = 0;
         fullHour.hour = fullHour.hour + 1;
         let fullHourString =
@@ -275,8 +474,15 @@ const BookingDrawer = (props: Props) => {
         setNextFullHour(fullHourString);
     };
 
+    let showAlert = false;
+    let unavailable = 0;
+    if (room && DateTime.fromISO(room.nextCalendarEvent) < DateTime.now()) {
+        setStartingTime(getNextAvailableTime(room));
+        showAlert = true;
+        unavailable = getUnavailableTimeInMinutes(room);
+    }
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={getName(room)}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -293,6 +499,11 @@ const BookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
+                    <Alert
+                        startingTime={startingTime}
+                        showAlert={showAlert}
+                        unavailable={unavailable}
+                    />
                     <RowCentered>
                         <TimeTextBold>
                             {minutesToSimpleString(
@@ -312,13 +523,25 @@ const BookingDrawer = (props: Props) => {
                         </AvailableText>
                     </RowCentered>
                     <Row>
+                        <SmallText>quick duration selection</SmallText>
+                    </Row>
+
+                    <DurationPicker
+                        bookingDuration={duration}
+                        onChange={handleDurationChange}
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
+                        additionalDuration={additionalDuration}
+                    />
+                    <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>
                     </Row>
                     <Row>
                         <DrawerButtonPrimary
                             aria-label="subtract 15 minutes"
                             data-testid="subtract15"
-                            onClick={(e) => handleAdditionalTime(-15)}
+                            onClick={() => handleAdditionalTime(-15)}
                             disabled={disableSubtractTime()}
                         >
                             <RemoveIcon /> 15 min
@@ -327,35 +550,33 @@ const BookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="add 15 minutes"
                             data-testid="add15"
-                            onClick={(e) => handleAdditionalTime(15)}
+                            onClick={() => handleAdditionalTime(15)}
                             disabled={disableAddTime()}
                         >
                             <AddIcon /> 15 min
                         </DrawerButtonPrimary>
                     </Row>
                     <Row>
-                        <DrawerButtonSecondary
-                            onClick={() => handleNextHalfHour()}
-                            disabled={disableNextHalfHour()}
-                        >
-                            Until {nextHalfHour}
-                        </DrawerButtonSecondary>
-                        <Spacer />
-                        <DrawerButtonSecondary
-                            onClick={() => handleNextFullHour()}
-                            disabled={disableNextFullHour()}
-                        >
-                            Until {nextFullHour}
-                        </DrawerButtonSecondary>
+                        <FullAndHalfHourButtons
+                            onClickFull={() => handleNextFullHour()}
+                            disabledFull={disableNextFullHour()}
+                            nextFullHour={nextFullHour}
+                            onClickHalf={() => handleNextHalfHour()}
+                            disabledHalf={disableNextHalfHour()}
+                            nextHalfHour={nextHalfHour}
+                        />
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
-                            aria-label="until next meeting"
+                            aria-label="Book the whole free slot"
                             onClick={() =>
                                 handleUntilNext(getTimeAvailableMinutes(room))
                             }
+                            sx={{
+                                margin: 0
+                            }}
                         >
-                            Until next meeting
+                            Book the whole free slot
                         </DrawerButtonSecondary>
                     </Row>
                     <Row>
@@ -363,13 +584,16 @@ const BookingDrawer = (props: Props) => {
                             aria-label="book now"
                             data-testid="BookNowButton"
                             onClick={bookRoom}
+                            sx={{
+                                marginTop: '16px'
+                            }}
                         >
                             Book now
                         </DrawerButtonPrimary>
                     </Row>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

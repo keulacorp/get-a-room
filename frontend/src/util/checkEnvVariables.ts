@@ -1,7 +1,13 @@
-export const checkEnvVariables = () => {
-    const { REACT_APP_SERVER_KEY } = process.env;
+import GETAROOM_ENV from './getARoomEnv';
 
-    if (!REACT_APP_SERVER_KEY) {
+export const checkEnvVariables = () => {
+    const {
+        VITE_REACT_APP_SERVER_KEY,
+        VITE_CLARITY_ID,
+        VITE_GOOGLE_ANALYTICS_ID
+    } = GETAROOM_ENV();
+
+    if (!VITE_REACT_APP_SERVER_KEY) {
         throw new Error('Application server key not set');
     }
 };

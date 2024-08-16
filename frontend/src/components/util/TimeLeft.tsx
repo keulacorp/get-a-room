@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
+import { styled } from '@mui/material/styles';
 
 export const getTimeLeftMinutes = (endTime: string) => {
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
@@ -78,15 +79,20 @@ type TimeLeftProps = {
     endTime: string;
     timeLeftText: string;
 };
+export const TimeLeftTypography = styled(Typography)(({ theme }) => ({}));
 
 const TimeLeft = (props: TimeLeftProps) => {
     const { endTime, timeLeftText } = props;
 
     return (
         <Box>
-            <Typography data-testid="TimeLeftTest">
+            <TimeLeftTypography
+                variant={'h3'}
+                data-testid="TimeLeftTest"
+                aria-label={'Time left text'}
+            >
                 {timeLeftText} {getTimeLeft(endTime)}
-            </Typography>
+            </TimeLeftTypography>
         </Box>
     );
 };

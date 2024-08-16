@@ -1,29 +1,32 @@
 import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import { history } from '../services/axiosConfigurer';
-import { theme } from '../theme';
 import { SnackbarProvider } from 'notistack';
 import MainView from './MainView/MainView';
 import LoginView from './login/LoginView';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { ReactComponent as MobileBackground } from './images/Background image.svg';
-import { ReactComponent as DesktopBackground } from './images/Background image desktop.svg';
+import { CssBaseline, Divider, styled, ThemeProvider } from '@mui/material';
+import { theme_2024 } from '../theme_2024';
+import { UserSettingsProvider } from '../contexts/UserSettingsContext';
+import { clarity } from 'react-microsoft-clarity';
+import GETAROOM_ENV from '../util/getARoomEnv';
+
+export const GarApp = styled(Divider)(() => ({}));
 
 const App = () => {
-    // Basic solution for differentiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh
-    // to show background correctly.
-    let svgString = encodeURIComponent(
-        renderToStaticMarkup(<MobileBackground />)
-    );
-    if (window.innerWidth > 600) {
-        svgString = encodeURIComponent(
-            renderToStaticMarkup(<DesktopBackground />)
-        );
+    if (GETAROOM_ENV().VITE_CLARITY_ID != null) {
+        // Start seeing data on the Clarity dashboard with your id
+        clarity.init(GETAROOM_ENV().VITE_CLARITY_ID as string);
+
+        clarity.consent();
+
+        // Check if Clarity has been initialized before calling its methods
+        if (clarity.hasStarted()) {
+            clarity.identify('USER_ID', { userProperty: 'value' });
+        }
     }
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme_2024}>
             <CssBaseline />
             <SnackbarProvider
                 maxSnack={1}
@@ -34,26 +37,20 @@ const App = () => {
                     vertical: 'bottom'
                 }}
             >
-                <div
-                    id="app"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,${svgString}")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                    }}
-                >
-                    <Router history={history}>
-                        <Switch>
-                            <Route path="/login">
-                                <LoginView />
-                            </Route>
-                            <Route path="/">
-                                <MainView />
-                            </Route>
-                        </Switch>
-                    </Router>
-                </div>
+                <UserSettingsProvider value={{}}>
+                    <GarApp id="app" orientation={'vertical'}>
+                        <Router history={history}>
+                            <Switch>
+                                <Route path="/login">
+                                    <LoginView />
+                                </Route>
+                                <Route path="/">
+                                    <MainView />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </GarApp>
+                </UserSettingsProvider>
             </SnackbarProvider>
         </ThemeProvider>
     );

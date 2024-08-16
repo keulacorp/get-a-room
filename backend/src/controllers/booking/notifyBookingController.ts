@@ -14,6 +14,7 @@ import {
     removeScheduleDataArray
 } from '../userController';
 import { DateTime } from 'luxon';
+import { getISOTime } from '../../utils/timeUtils';
 
 const notificationOptions = {
     vapidDetails: {
@@ -124,7 +125,7 @@ export const scheduleNotification = () => {
             const endTime = DateTime.fromISO(
                 eventData.end?.dateTime as string
             ).toUTC();
-            const endTimeISO = endTime.toISO();
+            const endTimeISO = getISOTime(endTime);
             const scheduleData: ScheduleData = {
                 endTime: endTimeISO,
                 roomId: roomId

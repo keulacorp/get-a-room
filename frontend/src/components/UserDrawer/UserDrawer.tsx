@@ -1,12 +1,14 @@
 import { useHistory } from 'react-router-dom';
-import { Visibility } from '@mui/icons-material';
+import { Logout, Visibility, VisibilityOff } from '@mui/icons-material';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { DrawerButtonSecondary } from '../BookingDrawer/BookingDrawer';
 import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import BottomDrawer from '../BottomDrawer/BottomDrawer';
 
 type userSettingsProps = {
     open: boolean;
@@ -24,8 +26,12 @@ const UserDrawer = (props: userSettingsProps) => {
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
-    const handleAllFeaturesCollapse = () => {
-        setExpandedFeaturesAll(!expandedFeaturesAll);
+    const toggleShowExpandedFeatures = () => {
+        if (expandedFeaturesAll === true) {
+            setExpandedFeaturesAll(false);
+        } else {
+            setExpandedFeaturesAll(true);
+        }
     };
 
     const doLogout = () => {
@@ -41,7 +47,7 @@ const UserDrawer = (props: userSettingsProps) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={name}
             iconLeft={'Person'}
             isOpen={open}
@@ -59,22 +65,32 @@ const UserDrawer = (props: userSettingsProps) => {
                 <DrawerContent>
                     <DrawerButtonSecondary
                         aria-label="settings drawer "
-                        data-testid="BookNowButton"
-                        onClick={handleAllFeaturesCollapse}
+                        data-testid="HandleAllFeatureCollapseButton"
+                        onClick={toggleShowExpandedFeatures}
                     >
-                        <Visibility aria-label="visibility" />
-                        &nbsp;Show room resources
+                        {!expandedFeaturesAll ? (
+                            <>
+                                <Visibility aria-label="visibility" />
+                                &nbsp;Show room resources
+                            </>
+                        ) : (
+                            <>
+                                <VisibilityOff aria-label="visibility-off" />
+                                &nbsp;Hide room resources
+                            </>
+                        )}
                     </DrawerButtonSecondary>
                     <DrawerButtonSecondary
                         aria-label="logout"
-                        data-testid="BookNowButton"
+                        data-testid="UserDrawerLogoutButton"
                         onClick={doLogout}
                     >
-                        logout
+                        <Logout aria-label={'logout'}></Logout>
+                        &nbsp;Logout
                     </DrawerButtonSecondary>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

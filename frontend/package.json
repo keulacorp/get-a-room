@@ -2,38 +2,51 @@
     "name": "get-a-room-frontend",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "proxy": "http://localhost:8080",
+    "engines": {
+        "node": ">=20.12.2"
+    },
     "dependencies": {
-        "@emotion/react": "^11.4.1",
-        "@emotion/styled": "^11.3.0",
-        "@fontsource/roboto": "^4.5.0",
-        "@mui/icons-material": "^5.0.4",
-        "@mui/material": "^5.0.4",
-        "@mui/styles": "^5.0.1",
-        "@testing-library/jest-dom": "^5.14.1",
-        "@testing-library/react": "^11.2.7",
-        "@testing-library/user-event": "^12.8.3",
-        "@types/jest": "^26.0.24",
-        "@types/luxon": "^2.0.7",
-        "@types/node": "^12.20.25",
-        "@types/react": "^17.0.21",
-        "@types/react-dom": "^17.0.9",
-        "@types/react-router-dom": "^5.3.2",
-        "axios": "^0.24.0",
-        "copy-to-clipboard": "^3.3.2",
-        "luxon": "^2.1.1",
-        "notistack": "^2.0.3",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-router-dom": "^5.3.0",
-        "react-scripts": "^5.0.0",
-        "typescript": "^4.4.3",
-        "web-vitals": "^1.1.2"
+        "@emotion/babel-plugin": "^11.11.0",
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.5",
+        "@fontsource/roboto": "^5.0.13",
+        "@mui/icons-material": "^6.0.0-alpha.13",
+        "@mui/material": "^6.0.0-alpha.13",
+        "@mui/styled-engine": "^5.15.14",
+        "@mui/styles": "^6.0.0-alpha.13",
+        "@mui/x-date-pickers": "^7.7.1",
+        "@types/history": "^4.7.11",
+        "@types/luxon": "^3.4.2",
+        "@types/node": "^20.14.2",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "@types/react-router-dom": "^5.3.3",
+        "@vitejs/plugin-react": "^4.3.1",
+        "axios": "^1.7.2",
+        "copy-to-clipboard": "^3.3.3",
+        "dayjs": "^1.11.11",
+        "history": "^4.10.1",
+        "luxon": "^3.4.4",
+        "node": "^20.14.0",
+        "notistack": "^3.0.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-microsoft-clarity": "^1.2.0",
+        "react-router-dom": "^5.3.3",
+        "styled-components": ">= 5",
+        "typescript": "^5.4.5",
+        "web-vitals-reporter": "^1.0.0"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
+        "start": "vite",
+        "build": "tsc && vite build",
+        "test": "vitest",
+        "test:watch": "vitest --watch",
+        "test:coverage": "vitest --coverage .",
+        "test:debug": "vitest --inspect-brk --runInBand --no-cache",
+        "preview": "vite preview",
         "build:ci": "CI=true npm run build",
         "test:ci": "CI=true npm test",
         "eject": "react-scripts eject"
@@ -58,6 +71,41 @@
         ]
     },
     "devDependencies": {
-        "eslint-config-prettier": "^8.3.0"
+        "@testing-library/dom": "^10.3.1",
+        "@testing-library/jest-dom": "^6.4.6",
+        "@testing-library/react": "^16.0.0",
+        "@testing-library/user-event": "^14.5.2",
+        "eslint-config-prettier": "^9.1.0",
+        "happy-dom": "^14.12.3",
+        "vite": "^5.3.1",
+        "vite-plugin-radar": "^0.9.6",
+        "vite-plugin-svgr": "^4.2.0",
+        "vite-tsconfig-paths": "^4.3.2",
+        "vitest": "^1.6.0",
+        "web-vitals": "^4.1.1"
+    },
+    "peerDependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "styled-components": ">= 5"
+    },
+    "jest": {
+        "preset": "ts-jest/presets/js-with-ts",
+        "testEnvironment": "jest-environment-jsdom",
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+        },
+        "modulePaths": [
+            "<rootDir>/src"
+        ],
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/setupTests.ts"
+        ]
+    },
+    "resolve": {
+        "alias": {
+            "@mui/styled-engine": "@mui/styled-engine-sc"
+        }
     }
 }

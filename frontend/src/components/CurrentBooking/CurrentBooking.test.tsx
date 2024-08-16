@@ -1,25 +1,43 @@
-// @ts-nocheck
+/**
+ * @vitest-environment happy-dom
+ */
+
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
-import { unmountComponentAtNode } from 'react-dom';
-import { updateBooking, endBooking } from '../../services/bookingService';
+import {
+    endBooking,
+    makeBooking,
+    updateBooking
+} from '../../services/bookingService';
+import { Booking, Preferences } from '../../types';
+import { vi } from 'vitest';
 
-jest.mock('../../hooks/useCreateNotification', () => () => {
+vi.mock('../../services/bookingService');
+
+const mockedMakeBooking = vi.mocked(makeBooking, true);
+const mockedEndBooking = vi.mocked(endBooking, true);
+const mockedUpdateBooking = vi.mocked(updateBooking, true);
+vi.mock('../../hooks/useCreateNotification', () => {
     return {
-        createSuccessNotification: jest.fn(),
-        createErrorNotification: jest.fn()
+        default: () => {
+            return {
+                createSuccessNotification: vi.fn(),
+                createErrorNotification: vi.fn()
+            };
+        }
     };
 });
 
-jest.mock('../../services/bookingService');
+vi.mock('../../services/bookingService');
 
-const fakeBooking = [
+const fakeBooking: Booking[] = [
     {
         id: '123',
         startTime: '2021-10-21T17:32:28Z',
         endTime: '2021-10-21T19:32:28Z',
+        //@ts-ignore
         room: {
             id: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com',
             name: 'Amor',
@@ -30,8 +48,8 @@ const fakeBooking = [
     }
 ];
 
-let container = null;
-describe('CurrentBooking', () => {
+let container: any = null;
+describe.sequential('CurrentBooking', () => {
     beforeEach(() => {
         // setup a DOM element as a render target
         container = document.createElement('div');
@@ -40,49 +58,69 @@ describe('CurrentBooking', () => {
 
     afterEach(() => {
         // cleanup on exiting
-        jest.clearAllMocks();
-        unmountComponentAtNode(container);
+        vi.clearAllMocks();
         container.remove();
         container = null;
     });
 
     it('renders booking data with correct name', async () => {
+        //@ts-ignore
         render(<CurrentBooking bookings={fakeBooking} />, container);
 
-        const title = await screen.queryByTestId('BookingRoomTitle');
+        const title = screen.queryByTestId('BookingRoomTitle');
+
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
     });
 
     it('renders alter booking drawer', async () => {
-        (updateBooking as jest.Mock).mockResolvedValueOnce({
+        mockedUpdateBooking.mockResolvedValueOnce({
             timeToAdd: 15
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        render(
+            <CurrentBooking
+                bookings={fakeBooking}
+                setBookings={vi.fn()}
+                updateRooms={vi.fn()}
+                setPreferences={vi.fn()}
+                updateBookings={vi.fn()}
+            />,
+            container
+        );
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        if (!bookingCard) {
+            throw new Error('No bookingCard');
+        }
+        await userEvent.click(bookingCard);
 
         const drawer = screen.queryByTestId('BookingDrawer');
         await waitFor(() => expect(drawer).toBeTruthy());
     });
 
     it('extend booking by 15 min', async () => {
-        (updateBooking as jest.Mock).mockResolvedValueOnce({
+        mockedUpdateBooking.mockResolvedValueOnce({
             timeToAdd: 15,
             bookingId: fakeBooking[0].id
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        //@ts-ignore
+        render(<CurrentBooking bookings={fakeBooking} />, container);
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        if (!bookingCard) {
+            throw new Error('No booking card');
+        }
+        await userEvent.click(bookingCard);
 
         const alterButton = await screen.queryByTestId('add15');
-        userEvent.click(alterButton);
+        if (!alterButton) {
+            throw new Error('No booking card');
+        }
+        await userEvent.click(alterButton);
 
         await waitFor(() =>
-            expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(mockedUpdateBooking).toHaveBeenCalledWith(
                 { timeToAdd: 15 },
                 fakeBooking[0].id,
                 true
@@ -91,22 +129,35 @@ describe('CurrentBooking', () => {
     });
 
     it('ends booking', async () => {
-        (endBooking as jest.Mock).mockResolvedValueOnce({
+        mockedEndBooking.mockResolvedValueOnce({
             bookingId: fakeBooking[0].id
         });
 
-        render(<CurrentBooking bookings={fakeBooking} />), container;
+        render(
+            <CurrentBooking
+                bookings={fakeBooking}
+                setBookings={vi.fn()}
+                setPreferences={vi.fn()}
+                updateBookings={vi.fn()}
+                updateRooms={vi.fn()}
+            />,
+            container
+        );
 
         const bookingCard = await screen.queryByTestId('CardActiveArea');
-        userEvent.click(bookingCard);
+        if (!bookingCard) {
+            throw new Error('No booking card');
+        }
+        await userEvent.click(bookingCard);
 
         const endBookingButton = await screen.queryByTestId('EndBookingButton');
-        userEvent.click(endBookingButton);
+        if (!endBookingButton) {
+            throw new Error('No endBookingButton');
+        }
+        await userEvent.click(endBookingButton);
 
         await waitFor(() =>
-            expect(endBooking as jest.Mock).toHaveBeenCalledWith(
-                fakeBooking[0].id
-            )
+            expect(mockedEndBooking).toHaveBeenCalledWith(fakeBooking[0].id)
         );
     });
 });

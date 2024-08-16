@@ -3,15 +3,22 @@ import { TokenPayload } from 'google-auth-library';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { DateTime } from 'luxon';
 
-import { createToken, updateToken, readToken, writeToken } from './token';
+import { createToken, readToken, updateToken, writeToken } from './token';
 
 import jwtTokenPayload from '../../types/jwtTokenPayload';
-
 describe('token', () => {
     let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
     let mockNext: jest.Mock;
 
+    const createMockToken = async (): Promise<string> => {
+        await createToken()(
+            mockRequest as Request,
+            mockResponse as Response,
+            mockNext
+        );
+        return mockResponse?.locals?.token;
+    };
     const testPayload: TokenPayload = {
         iss: 'https://accounts.google.com',
         sub: 'testSub',
@@ -21,10 +28,11 @@ describe('token', () => {
         name: 'testName',
         email: 'test@email.com'
     };
-    const testToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0U3ViIiwibmFtZSI6InRlc3ROYW1lIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsImFjY2Vzc1Rva2VuIjoidG9rZW4iLCJyZWZyZXNoVG9rZW4iOiJydG9rZW4iLCJpYXQiOjE2Mzg0NjUyODAsImV4cCI6MTcwMTQzNzEzMywiaXNzIjoidGVzdERvbWFpbi5jb20ifQ.kgQjW9mcWP6C1jODwuaOojQVE8f4DfOz3wMB2mbK24Y';
+    let testToken: string;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        jest.resetAllMocks();
+
         mockRequest = {};
         mockResponse = {
             locals: {
@@ -34,13 +42,9 @@ describe('token', () => {
             }
         };
         mockNext = jest.fn();
-
         process.env.HOSTED_DOMAIN = 'testDomain.com';
         process.env.JWT_SECRET = 'testSecret';
-
-        jest.resetAllMocks();
     });
-
     describe('createToken', () => {
         test('Should set JWT token to locals', async () => {
             if (mockResponse.locals) {
@@ -66,7 +70,9 @@ describe('token', () => {
             );
         });
 
-        test('Should update the accessToken field of JWT', () => {
+        test('Should update the accessToken field of JWT', async () => {
+            testToken = await createMockToken();
+
             const newJwt = updateToken(testToken, 'token2');
             const payload = jwt.verify(
                 newJwt,
@@ -84,7 +90,19 @@ describe('token', () => {
             expect(() => readToken(testToken)).toThrow('invalid signature');
         });
 
-        test('Should return JWT payload', () => {
+        test('Should return JWT payload', async () => {
+            const testData = {
+                ...mockResponse.locals,
+                payload: {
+                    sub: 'testSub',
+                    name: 'testName',
+                    email: 'test@email.com',
+                    accessToken: 'token',
+                    refreshToken: 'rtoken'
+                }
+            };
+            mockResponse.locals = testData;
+            testToken = await createMockToken();
             const decoded = readToken(testToken);
 
             expect(decoded.sub).toEqual('testSub');

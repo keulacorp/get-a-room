@@ -21,6 +21,10 @@ export const preferencesSchema = new Schema<Preferences>(
         fav_rooms: {
             required: false,
             type: [String]
+        },
+        showRoomResources: {
+            required: false,
+            type: Boolean
         }
     },
     { _id: false }

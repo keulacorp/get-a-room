@@ -1,9 +1,13 @@
-// @ts-nocheck
+/**
+ * @vitest-environment happy-dom
+ */
+
 import React from 'react';
-import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';
 import { render, screen } from '@testing-library/react';
 import BusyRoomList from './BusyRoomList';
+
+const now = DateTime.now();
 
 const fakeRooms = [
     {
@@ -12,8 +16,14 @@ const fakeRooms = [
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 31 }).toUTC().toISO(),
-        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+        nextCalendarEvent: now.plus({ minutes: 31 }).toUTC().toISO(),
+        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com',
+        busy: [
+            {
+                start: now.plus({ minutes: 31 }).toUTC().toISO(),
+                end: now.plus({ minutes: 90 }).toUTC().toISO()
+            }
+        ]
     },
     {
         id: '126',
@@ -21,12 +31,12 @@ const fakeRooms = [
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 16 }).toUTC().toISO(),
+        nextCalendarEvent: now.plus({ minutes: 16 }).toUTC().toISO(),
         email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com',
         busy: [
             {
-                start: DateTime.now().toISO(),
-                end: DateTime.now().plus({ minutes: 31 }).toUTC().toISO()
+                start: now.plus({ minutes: 16 }).toUTC().toISO(),
+                end: now.plus({ minutes: 31 }).toUTC().toISO()
             }
         ]
     },
@@ -36,18 +46,18 @@ const fakeRooms = [
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: DateTime.now().plus({ minutes: 1 }).toUTC().toISO(),
+        nextCalendarEvent: now.plus({ minutes: 1 }).toUTC().toISO(),
         email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com',
         busy: [
             {
-                start: DateTime.now().toISO(),
-                end: DateTime.now().plus({ minutes: 30 }).toUTC().toISO()
+                start: now.plus({ minutes: 1 }).toUTC().toISO(),
+                end: now.plus({ minutes: 30 }).toUTC().toISO()
             }
         ]
     }
 ];
 
-let container = null;
+let container: any = null;
 
 describe('BusyRoomList', () => {
     beforeEach(() => {
@@ -58,24 +68,25 @@ describe('BusyRoomList', () => {
 
     afterEach(() => {
         // Cleanup on exiting
-        unmountComponentAtNode(container);
         container.remove();
         container = null;
     });
 
     it('renders rooms available in 30 minutes', async () => {
+        //@ts-ignore
         render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         expect(items).toBeTruthy();
-        expect(items).toHaveLength(1);
+        expect(items).toHaveLength(3);
     });
 
     it('renders correct room title', async () => {
+        //@ts-ignore
         render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const titles = screen.queryAllByTestId('BookingRoomTitle');
-        expect(titles).toHaveLength(1);
-        expect(titles[0]).toHaveTextContent('room3');
+        expect(titles).toHaveLength(3);
+        expect(titles[0]).toHaveTextContent('room1');
     });
 });

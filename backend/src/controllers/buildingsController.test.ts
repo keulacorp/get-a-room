@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getBuildings, getBuildingsMiddleware } from './buildingsController';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { getBuildingData } from './googleAPI/adminAPI';
 import { internalServerError } from '../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
@@ -8,8 +8,10 @@ import { OAuth2Client } from 'google-auth-library';
 jest.mock('../utils/responses');
 jest.mock('./googleAPI/adminAPI');
 
-const mockedGetBuildingData = mocked(getBuildingData, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetBuildingData = mocked(getBuildingData, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('buildingsController', () => {
     let mockRequest: Partial<Request>;

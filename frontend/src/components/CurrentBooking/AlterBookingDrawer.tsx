@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ShareIcon from '@mui/icons-material/Share';
@@ -19,6 +20,8 @@ import {
     Spacer,
     TimeTextBold
 } from '../BookingDrawer/BookingDrawer';
+import ShareMenu from './ShareMenu';
+import { useState } from 'react';
 
 const MIN_DURATION = 15;
 const LAST_HOUR = 17;
@@ -86,11 +89,19 @@ const AlterBookingDrawer = (props: Props) => {
     const text: string = 'Hello World! I shared this content via Web Share';
     const url: string | undefined = booking?.meetingLink;
 
-    const handleAdditionalTime = (minutes: number) => {
-        if (booking === undefined) {
+    const [shareMenuOpen, setShareMenuOpen] = useState(false);
+    const [shareAnchorEl, setShareAnchorEl] =
+        React.useState<null | HTMLElement>(null);
+
+    const handleAlterTime = (minutes: number) => {
+        if (booking === undefined || minutes == 0) {
             return;
         }
         onAlterTime(booking, minutes);
+    };
+
+    const shareMenuOnClose = (open: Boolean) => {
+        setShareMenuOpen(!shareMenuOpen);
     };
 
     const checkStartingTime = () => {
@@ -110,11 +121,20 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextHalfHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAlterTime(minutes - duration);
     };
 
     const nextHalfHour = () => {
         const newEndTime = checkStartingTime().toObject();
+
+        if (
+            newEndTime.hour === undefined ||
+            newEndTime.minute === undefined ||
+            Number.isNaN(newEndTime.hour) ||
+            Number.isNaN(newEndTime.minute)
+        ) {
+            throw new Error('Time not set');
+        }
         if (newEndTime.minute >= 30) {
             newEndTime.hour = newEndTime.hour + 1;
         }
@@ -127,6 +147,16 @@ const AlterBookingDrawer = (props: Props) => {
 
     const nextFullHour = () => {
         const newEndTime = checkStartingTime().toObject();
+
+        if (
+            newEndTime.hour === undefined ||
+            newEndTime.minute === undefined ||
+            Number.isNaN(newEndTime.hour) ||
+            Number.isNaN(newEndTime.minute)
+        ) {
+            throw new Error('Time not set');
+        }
+
         newEndTime.hour = newEndTime.hour + 1;
         newEndTime.minute = 0;
         newEndTime.second = 0;
@@ -155,7 +185,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextFullHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAlterTime(minutes - duration);
     };
 
     const disableNextFullHour = () => {
@@ -188,20 +218,20 @@ const AlterBookingDrawer = (props: Props) => {
             return;
         }
         if (timeNow.hour >= LAST_HOUR) {
-            handleAdditionalTime(availableMinutes - 1);
+            handleAlterTime(availableMinutes - 1);
         } else {
             const time1700 = DateTime.fromObject({ hour: LAST_HOUR });
             const endTime = checkStartingTime().plus({
                 minutes: availableMinutes
             });
             if (endTime < time1700) {
-                return handleAdditionalTime(availableMinutes);
+                return handleAlterTime(availableMinutes);
             }
             const minutes = time1700.diff(
                 DateTime.fromISO(booking?.endTime),
                 'minutes'
             ).minutes;
-            handleAdditionalTime(Math.floor(minutes));
+            handleAlterTime(Math.floor(minutes));
         }
     };
 
@@ -219,11 +249,18 @@ const AlterBookingDrawer = (props: Props) => {
         cancelBooking(booking);
     };
 
-    const handleOnShareClick = (shareDetails: ShareData) => {
+    const handleOnShareClick = (
+        event: HTMLElement | null,
+        shareDetails: ShareData
+    ) => {
         if (navigator.share) {
             navigator.share(shareDetails).catch((error) => {
                 console.error('Something went wrong sharing the link', error);
             });
+        } else if (event != null) {
+            console.log('Web Share API not enabled!');
+            setShareAnchorEl(event);
+            setShareMenuOpen(!shareMenuOpen);
         }
     };
 
@@ -237,6 +274,7 @@ const AlterBookingDrawer = (props: Props) => {
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={true}
+            zindex={1200}
         >
             <Box
                 style={{
@@ -273,16 +311,25 @@ const AlterBookingDrawer = (props: Props) => {
                     </RowCentered>
                     <Row>
                         <DrawerButtonSecondary
-                            onClick={() =>
-                                handleOnShareClick({
+                            id="shareButton"
+                            onClick={(
+                                event: React.MouseEvent<HTMLButtonElement>
+                            ) => {
+                                handleOnShareClick(event.currentTarget, {
                                     url,
                                     title,
                                     text
-                                })
-                            }
+                                });
+                            }}
                         >
                             <ShareIcon /> <Spacer /> Share meeting
                         </DrawerButtonSecondary>
+                        <ShareMenu
+                            anchorEl={shareAnchorEl}
+                            open={shareMenuOpen}
+                            onClose={shareMenuOnClose}
+                            url={url ? url : 'no link'}
+                        ></ShareMenu>
                     </Row>
 
                     <Row>
@@ -294,7 +341,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="subtract 15 minutes"
                             data-testid="subtract15"
-                            onClick={(e) => handleAdditionalTime(-15)}
+                            onClick={() => handleAlterTime(-15)}
                             disabled={disableSubtractTime()}
                         >
                             <RemoveIcon /> 15 min
@@ -303,7 +350,7 @@ const AlterBookingDrawer = (props: Props) => {
                         <DrawerButtonPrimary
                             aria-label="add 15 minutes"
                             data-testid="add15"
-                            onClick={(e) => handleAdditionalTime(15)}
+                            onClick={() => handleAlterTime(15)}
                             disabled={disableAddTime()}
                         >
                             <AddIcon /> 15 min
@@ -332,10 +379,10 @@ const AlterBookingDrawer = (props: Props) => {
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
-                            aria-label="until next meeting"
+                            aria-label="Book the whole free slot"
                             onClick={handleUntilNextMeeting}
                         >
-                            Until next meeting
+                            Book the whole free slot
                         </DrawerButtonSecondary>
                     </Row>
                     {booking &&

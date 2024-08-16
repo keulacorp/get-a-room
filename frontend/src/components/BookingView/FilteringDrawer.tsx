@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, styled, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, {
     DrawerContent
 } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
@@ -9,6 +9,9 @@ import ToggleButton from '@mui/material/ToggleButton';
 import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
+import styled from '@mui/styled-engine';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { COLORS, DEFAULT_STYLES } from '../../theme_2024';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -18,7 +21,7 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-export const SmallText = styled(Typography)(() => ({
+export const SmallText = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
     fontSize: '12px',
     lineHeight: '12px',
@@ -47,6 +50,7 @@ interface Props {
 
 // Note: Actual filtering of the rooms is done one level up in booking view
 const FilteringDrawer = (props: Props) => {
+    const { showUserSettingsMenu } = useUserSettings();
     const {
         open,
         toggle,
@@ -69,15 +73,22 @@ const FilteringDrawer = (props: Props) => {
         '& .MuiToggleButtonGroup-grouped': {
             marginRight: '16px',
             '&:not(:first-of-type)': {
-                border: 'solid',
                 borderWidth: 'thin',
                 borderRadius: '50px'
             },
             '&:first-of-type': {
+                backgroundColor: COLORS.ACCENT_PINK,
                 marginLeft: '0px',
                 borderRadius: '50px'
             }
         }
+    }));
+
+    const StyledDrawerWrapper = styled(Box)(({ theme }) => ({
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     }));
 
     const handleRoomSizeChange = (
@@ -101,11 +112,11 @@ const FilteringDrawer = (props: Props) => {
     const handleCustomDuration = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const value = event.target.value;
-
-        if (!isNaN(parseInt(value)) && typeof value === 'string') {
-            setDuration(parseInt(value));
-            onChange(parseInt(value));
+        let value = parseInt(event.target.value);
+        if (!isNaN(value)) {
+            value = Math.max(0, value);
+            setDuration(value);
+            onChange(value);
         } else {
             setDuration(NaN);
         }
@@ -119,17 +130,11 @@ const FilteringDrawer = (props: Props) => {
             iconRight={'Expand'}
             isOpen={open}
             toggle={toggle}
-            disableSwipeToOpen={false}
+            disableSwipeToOpen={showUserSettingsMenu}
             mounted={true}
+            zindex={1200}
         >
-            <Box
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}
-            >
+            <StyledDrawerWrapper>
                 <DrawerContent>
                     <Row>
                         <SmallText>Custom Filter</SmallText>
@@ -139,12 +144,14 @@ const FilteringDrawer = (props: Props) => {
                         value={customFilter}
                         placeholder="Room name, resource..."
                         size="small"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            )
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                )
+                            }
                         }}
                     />
 
@@ -199,7 +206,7 @@ const FilteringDrawer = (props: Props) => {
                         &nbsp; Only Favourites
                     </ToggleButton>
                 </DrawerContent>
-            </Box>
+            </StyledDrawerWrapper>
         </SwipeableEdgeDrawer>
     );
 };

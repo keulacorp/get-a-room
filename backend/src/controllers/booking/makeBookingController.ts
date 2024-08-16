@@ -4,6 +4,7 @@ import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
 import _ from 'lodash';
+import { getISOTime } from '../../utils/timeUtils';
 
 /**
  * Add res.locals.roomAccepted boolean that tells if the room has accepted the event
@@ -85,8 +86,8 @@ export const checkRoomIsFree = () => {
                 await calendar.freeBusyQuery(
                     client,
                     [{ id: roomId }],
-                    startTime.toISO(),
-                    endTime.toISO()
+                    getISOTime(startTime),
+                    getISOTime(endTime)
                 )
             )[roomId];
 
@@ -128,13 +129,14 @@ export const makeBooking = () => {
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
             const client: OAuth2Client = res.locals.oAuthClient;
+
             const response = await calendar.createEvent(
                 client,
                 res.locals.roomId,
                 res.locals.email,
                 res.locals.title,
-                startTime.toISO(),
-                endTime.toISO()
+                getISOTime(startTime),
+                getISOTime(endTime)
             );
 
             if (!response.id) {

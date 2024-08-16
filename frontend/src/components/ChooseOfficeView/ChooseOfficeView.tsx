@@ -6,6 +6,9 @@ import { updatePreferences } from '../../services/preferencesService';
 import { Building, Preferences } from '../../types';
 import CenteredProgress from '../util/CenteredProgress';
 import { getBuildingsWithPosition } from '../../services/buildingService';
+import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { ChooseBuildingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 
 type ChooseOfficeViewProps = {
     buildings: Building[];
@@ -51,6 +54,8 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         history.push('/');
     };
 
+    const { expandedFeaturesAll } = useUserSettings();
+
     const handlePreferencesSubmit = (buildingId: string) => {
         const foundBuilding = buildings.find(
             (building) => building.id === buildingId
@@ -58,10 +63,14 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         if (foundBuilding) {
             let newPrefs = preferences as Preferences;
             newPrefs.building = foundBuilding;
+            newPrefs.showRoomResources = expandedFeaturesAll;
             updatePreferences(newPrefs)
                 .then((savedPreferences) => {
                     setPreferences(savedPreferences);
                     createSuccessNotification('Chose building ' + buildingId);
+                    triggerGoogleAnalyticsEvent(
+                        new ChooseBuildingEvent(foundBuilding)
+                    );
                     goToMainView();
                 })
                 .catch(() => {

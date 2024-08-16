@@ -3,6 +3,7 @@ import {
     subscribeToPushNotifications,
     unsubscribeFromPushNotifications
 } from '../services/pushNotificationService';
+import GETAROOM_ENV from '../util/getARoomEnv';
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -53,7 +54,7 @@ const usePushNotificationRegistration = () => {
 
             const serviceWorker = await navigator.serviceWorker.ready;
             const applicationServerKey = urlBase64ToUint8Array(
-                process.env.REACT_APP_SERVER_KEY as string
+                GETAROOM_ENV().VITE_REACT_APP_SERVER_KEY as string
             );
 
             // Get existing / old subscription

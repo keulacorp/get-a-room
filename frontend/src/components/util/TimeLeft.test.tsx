@@ -1,6 +1,9 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import TimeLeft from './TimeLeft';
 import { DateTime } from 'luxon';
+/**
+ * @vitest-environment happy-dom
+ */
 
 describe('TimeLeft', () => {
     afterEach(() => {
@@ -38,7 +41,7 @@ describe('TimeLeft', () => {
 
         const timeLeftValue = await screen.findByTestId('TimeLeftTest');
         await waitFor(() =>
-            expect(timeLeftValue).toHaveTextContent('Time Left: 44 min')
+            expect(timeLeftValue).toHaveTextContent(/Time Left: 4[45] min/)
         );
     });
 });

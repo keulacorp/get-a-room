@@ -4,6 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import * as schema from '../../utils/googleSchema';
+import { getISOTime } from '../../utils/timeUtils';
 
 /**
  * Add time to current booking
@@ -26,10 +27,11 @@ export const addTimeToBooking = () => {
             }
 
             // New end time
-            const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
-                .plus({ minutes: timeToAdd })
-                .toUTC()
-                .toISO();
+            const endTime = getISOTime(
+                DateTime.fromISO(eventData.end?.dateTime as string)
+                    .plus({ minutes: timeToAdd })
+                    .toUTC()
+            );
 
             // Keep responseStatus as accepted, because in case of
             // conflicts in Google calendar, adding time to the existing
@@ -198,6 +200,10 @@ export const rollBackDeclinedUpdate = () => {
                 },
                 { email: res.locals.email, responseStatus: 'accepted' }
             ];
+            if (!endTime) {
+                console.error('Time parse error', endTime);
+                throw new Error('Time parse error');
+            }
 
             await calendar.updateEndTime(
                 client,

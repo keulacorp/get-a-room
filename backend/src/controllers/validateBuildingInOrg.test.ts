@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { getBuildings } from './buildingsController';
 import { badRequest, internalServerError } from '../utils/responses';
 import { validateBuildingInOrg } from './validateBuildingInOrg';
@@ -7,9 +7,11 @@ import { validateBuildingInOrg } from './validateBuildingInOrg';
 jest.mock('./buildingsController');
 jest.mock('../utils/responses');
 
-const mockedGetBuildings = mocked(getBuildings, false);
-const mockedBadRequest = mocked(badRequest, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetBuildings = mocked(getBuildings, { shallow: false });
+const mockedBadRequest = mocked(badRequest, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('buildingsController', () => {
     let mockRequest: Partial<Request>;

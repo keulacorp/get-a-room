@@ -1,5 +1,5 @@
 import express from 'express';
-import unless from 'express-unless';
+import { unless } from 'express-unless';
 import { getOAuthClient } from './utils/oAuthClient';
 import * as responses from './utils/responses';
 import { readToken, updateToken } from './controllers/auth/token';
@@ -29,7 +29,15 @@ export const authFilter = (req: express.Request) => {
  * httpOnly cookie and sets them to res.locals
  * @returns -
  */
-export const parseToken = () => {
+export type ExpressMiddlewareWithUnless = {
+    (
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ): Promise<express.Response | undefined>;
+    unless: typeof unless;
+};
+export const parseToken = (): ExpressMiddlewareWithUnless => {
     const middleware = async (
         req: express.Request,
         res: express.Response,
@@ -71,7 +79,7 @@ export const parseToken = () => {
  * @param noAuthPaths Array of paths that don't require authentication
  * @returns -
  */
-export const validateAccessToken = () => {
+export const validateAccessToken = (): ExpressMiddlewareWithUnless => {
     const middleware = async (
         req: express.Request,
         res: express.Response,

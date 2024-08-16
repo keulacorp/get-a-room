@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment happy-dom
+ */
+
 import { isNonEmptyArray } from './objectUtils';
 
 describe('isNonEmptyArray', () => {

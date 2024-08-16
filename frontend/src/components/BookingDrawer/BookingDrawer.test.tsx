@@ -1,20 +1,35 @@
-// @ts-nocheck
+/**
+ * @vitest-environment happy-dom
+ */
+
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import BookingDrawer from './BookingDrawer';
+import { Room } from '../../types';
 
-const fakeRoom = {
+const fakeRoom: Room = {
     id: '123',
     name: 'Amor',
     building: 'Hermia 5',
+    floor: '1',
     capacity: 15,
     features: ['TV', 'Whiteboard'],
     nextCalendarEvent: DateTime.now().plus({ minutes: 30 }).toUTC().toISO(),
-    email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+    favorited: false
 };
-let container = null;
+let container: any = null;
+const bookingDrawerDefault = {
+    onAddTimeUntilFull: vi.fn(),
+    onAddTimeUntilHalf: vi.fn(),
+    onAddTimeUntilNext: vi.fn(),
+    setAdditionalDuration: vi.fn(),
+    setBookingDuration: vi.fn(),
+    setDuration: vi.fn(),
+    setExpandDurationTimePickerDrawer: vi.fn(),
+    setStartingTime: vi.fn()
+};
 
 describe('BookingDrawer', () => {
     beforeEach(() => {
@@ -25,59 +40,64 @@ describe('BookingDrawer', () => {
 
     afterEach(() => {
         // Cleanup on exiting
-        unmountComponentAtNode(container);
         container.remove();
         container = null;
     });
 
     it('Books a room', async () => {
-        const bookMock = jest.fn();
+        const bookMock = vi.fn();
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
+                toggle={vi.fn()}
                 bookRoom={bookMock}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={0}
                 availableMinutes={30}
-                onAddTime={jest.fn()}
+                onAddTime={vi.fn()}
                 startingTime={'Now'}
+                {...bookingDrawerDefault}
             />,
             container
         );
 
         const bookButton = screen.queryByTestId('BookNowButton');
         await waitFor(() => expect(bookButton).toBeTruthy());
-
+        if (!bookButton) {
+            throw new Error('No bookButton');
+        }
         fireEvent.click(bookButton);
         expect(bookMock).toBeCalledTimes(1);
     });
 
     it('Disable subtract time at duration <=15 min', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={extraTime}
                 availableMinutes={30}
                 onAddTime={additionalTime}
                 startingTime={'Now'}
+                {...bookingDrawerDefault}
             />,
             container
         );
 
         const subtractTime = screen.queryByTestId('subtract15');
         await waitFor(() => expect(subtractTime).toBeTruthy());
-
+        if (!subtractTime) {
+            throw new Error('No time');
+        }
         fireEvent.click(subtractTime);
         expect(subtractTime).toBeDisabled();
         expect(additionalTime).toBeCalledTimes(0);
@@ -86,28 +106,31 @@ describe('BookingDrawer', () => {
 
     it('disable add time at max duration', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={30}
                 additionalDuration={extraTime}
                 availableMinutes={31}
                 onAddTime={additionalTime}
                 startingTime={'Now'}
+                {...bookingDrawerDefault}
             />,
             container
         );
 
         const addTime = screen.queryByTestId('add15');
         await waitFor(() => expect(addTime).toBeTruthy());
-
+        if (!addTime) {
+            throw new Error('No time');
+        }
         fireEvent.click(addTime);
 
         expect(addTime).toBeDisabled();
@@ -117,26 +140,30 @@ describe('BookingDrawer', () => {
 
     it('Subtract 15 min', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={30}
                 additionalDuration={extraTime}
                 availableMinutes={31}
                 onAddTime={additionalTime}
                 startingTime={'Now'}
+                {...bookingDrawerDefault}
             />,
             container
         );
 
         const subtractTime = screen.queryByTestId('subtract15');
+        if (!subtractTime) {
+            throw new Error('No time');
+        }
         fireEvent.click(subtractTime);
 
         expect(additionalTime).toBeCalledTimes(1);
@@ -145,26 +172,30 @@ describe('BookingDrawer', () => {
 
     it('Add 15 minutes to booking', async () => {
         let extraTime = 0;
-        const additionalTime = jest.fn((minutes) => {
+        const additionalTime = vi.fn((minutes) => {
             extraTime = extraTime + minutes;
         });
 
         render(
             <BookingDrawer
                 open={true}
-                toggle={jest.fn()}
-                bookRoom={jest.fn()}
+                toggle={vi.fn()}
+                bookRoom={vi.fn()}
                 room={fakeRoom}
                 duration={15}
                 additionalDuration={extraTime}
                 availableMinutes={30}
                 onAddTime={additionalTime}
                 startingTime={'Now'}
+                {...bookingDrawerDefault}
             />,
             container
         );
 
         const addTime = screen.queryByTestId('add15');
+        if (!addTime) {
+            throw new Error('No time');
+        }
         fireEvent.click(addTime);
 
         expect(additionalTime).toBeCalledTimes(1);

@@ -1,14 +1,15 @@
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useSnackbar } from 'notistack';
-import { useCallback } from 'react';
+import { SnackbarAction, useSnackbar } from 'notistack';
+import { ReactElement, ReactNode, useCallback } from 'react';
 
 type NotificationType = 'default' | 'error' | 'success' | 'warning' | 'info';
 
 const useCreateNotification = () => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const closeAction = useCallback(
+    // @ts-ignore TODO villep: Fix type
+    const closeAction: ReactElement = useCallback(
         (key: number) => {
             return (
                 <IconButton

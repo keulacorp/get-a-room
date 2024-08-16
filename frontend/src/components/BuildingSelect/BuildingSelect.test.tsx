@@ -1,4 +1,8 @@
-import { render, cleanup, screen, fireEvent } from '@testing-library/react';
+/**
+ * @vitest-environment happy-dom
+ */
+
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 import BuildingSelect from './BuildingSelect';
 
@@ -18,7 +22,7 @@ describe('BuildingSelect', () => {
             <BuildingSelect
                 buildings={[]}
                 selectedBuildingId=""
-                setSelectedBuildingId={jest.fn()}
+                setSelectedBuildingId={vi.fn()}
             />
         );
 
@@ -30,7 +34,7 @@ describe('BuildingSelect', () => {
             <BuildingSelect
                 buildings={TEST_BUILDINGS}
                 selectedBuildingId=""
-                setSelectedBuildingId={jest.fn()}
+                setSelectedBuildingId={vi.fn()}
             />
         );
 
@@ -46,14 +50,14 @@ describe('BuildingSelect', () => {
             <BuildingSelect
                 buildings={TEST_BUILDINGS}
                 selectedBuildingId={TEST_BUILDINGS[1].id}
-                setSelectedBuildingId={jest.fn()}
+                setSelectedBuildingId={vi.fn()}
             />
         );
         expect(screen.getByText(TEST_BUILDINGS[1].name)).toBeTruthy();
     });
 
     it('Changes buildings when an option is clicked', async () => {
-        const setBuildingIdMock = jest.fn();
+        const setBuildingIdMock = vi.fn();
         render(
             <BuildingSelect
                 buildings={TEST_BUILDINGS}

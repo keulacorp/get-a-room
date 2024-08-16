@@ -1,31 +1,45 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Room, Booking, Preferences } from '../../types';
+import { Booking, Preferences, Room } from '../../types';
 import { updatePreferences } from '../../services/preferencesService';
+import { getNumberWithOrdinalSuffix } from '../../util/commonUtils';
 
-import TimeLeft from '../util/TimeLeft';
+import TimeLeft, {
+    getTimeDiff,
+    getTimeLeft,
+    getTimeLeftMinutes
+} from '../util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import Favorite from '@mui/icons-material/Favorite';
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PendingIcon from '@mui/icons-material/Pending';
 import {
     Card,
     CardActionArea,
     CircularProgress,
-    styled,
-    IconButton
+    IconButton,
+    Stack
 } from '@mui/material';
-import { getTimeLeftMinutes, getTimeDiff, getTimeLeft } from '../util/TimeLeft';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
-import { DateTime } from 'luxon';
+import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
+import { styled } from '@mui/material/styles';
+import {
+    CenterAlignedStack,
+    CheckCircle,
+    DEFAULT_STYLES,
+    DoNotDisturb,
+    ScheduleCircle
+} from '../../theme_2024';
+import { Bookmark, BookmarkBorder } from '@mui/icons-material';
+import { dateTimeToTimeString } from '../util/Time';
+import { ReservationStatus } from '../../enums';
 
 function getName(room: Room) {
     return room.name;
+}
+
+function getFloor(room: Room) {
+    return room.floor;
 }
 
 function getCapacity(room: Room) {
@@ -67,7 +81,11 @@ export function getBookingTimeLeft(booking: Booking | undefined) {
     if (booking === undefined) {
         return 0;
     }
-    return Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2;
+    // If the booking is ongoing, i.e start time is before "now", then do getTimeLeftMinutes
+    // Otherwise just get the total duration of the booking
+    return DateTime.fromISO(booking.startTime) <= DateTime.now()
+        ? Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2
+        : getTimeDiff(booking.startTime, booking.endTime);
 }
 
 export function getTimeAvailableMinutes(booking: Booking | undefined) {
@@ -81,8 +99,8 @@ export function getTimeAvailableMinutes(booking: Booking | undefined) {
 }
 
 function busyAvailableFor(room: Room) {
-    let end = DateTime.now().endOf('day');
-    let start = DateTime.now();
+    let end: DateTimeMaybeValid = DateTime.now().endOf('day');
+    let start: DateTimeMaybeValid = DateTime.now();
 
     if (Array.isArray(room.busy) && room.busy.length > 0) {
         start = DateTime.fromISO(room.busy[0].end as string);
@@ -95,7 +113,7 @@ function busyAvailableFor(room: Room) {
 }
 
 export const GridContainer = styled(Box)(({ theme }) => ({
-    container: true,
+    //container: true,  FIXME villep : Check this
     flexDirection: 'column',
     alignItems: 'flex-start',
     padding: '16px'
@@ -148,10 +166,228 @@ type RoomCardProps = {
     setPreferences: (pref: Preferences) => void;
     bookingLoading: string;
     disableBooking: boolean;
-    isReserved?: boolean;
+    reservationStatus?: ReservationStatus;
     isSelected: boolean;
     expandFeatures: boolean;
     isBusy?: boolean;
+};
+
+const RoomCardTitleWithDescription = (props: {
+    isBusy: boolean | undefined;
+    room: Room;
+}) => {
+    return (
+        <CenterAlignedStack direction={'row'} spacing={1}>
+            <Typography
+                data-testid="BookingRoomTitle"
+                variant="h2"
+                color="text.main"
+            >
+                {getName(props.room)}
+            </Typography>
+            <Typography
+                variant={'h4'}
+                align={'left'}
+                paddingLeft={DEFAULT_STYLES.smallerSpacer}
+            >
+                {getNumberWithOrdinalSuffix(parseInt(getFloor(props.room)))}{' '}
+                floor
+            </Typography>
+        </CenterAlignedStack>
+    );
+};
+
+class RoomCardFavoriteButton extends React.Component<{
+    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    room: Room;
+    pref: Preferences | undefined;
+    busy: boolean | undefined;
+}> {
+    render() {
+        return (
+            <IconButton aria-label="favorite room" onClick={this.props.onClick}>
+                {isFavorited(this.props.room, this.props.pref) ? (
+                    <Bookmark sx={{ color: '#F04E30' }} />
+                ) : (
+                    <BookmarkBorder
+                        color={this.props.busy ? 'disabled' : 'inherit'}
+                    />
+                )}
+            </IconButton>
+        );
+    }
+}
+
+class RoomCardCapacityBox extends React.Component<{
+    busy: boolean | undefined;
+    room: Room;
+}> {
+    render() {
+        return (
+            <EndBox>
+                <Group color="inherit" />
+                <Typography
+                    fontWeight="bold"
+                    color="text.main"
+                    marginLeft={'8px'}
+                >
+                    {getCapacity(this.props.room)}
+                </Typography>
+            </EndBox>
+        );
+    }
+}
+
+const BusyRoomStatusContent = styled('div')(({ theme }) => ({
+    alignSelf: 'stretch',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 5,
+    display: 'inline-flex'
+}));
+
+const BusyRoomStatusIcon = styled('div')(({ theme }) => ({
+    textAlign: 'center',
+    color: '#E83520',
+    fontSize: 16,
+    fontFamily: 'Material Icons',
+    fontWeight: '400',
+    wordWrap: 'break-word'
+}));
+
+type BusyRoomStatusTextContentProps = {
+    props?: {
+        flex?: string;
+        width?: number;
+        fontSize?: number;
+        fontWeight?: string | number;
+    };
+};
+const BusyRoomStatusTextContent = styled('div')<BusyRoomStatusTextContentProps>(
+    ({ theme, props }) => ({
+        color: '#1D1D1D',
+        fontSize: 12,
+        fontFamily: 'Studio Feixen Sans',
+        fontWeight: '4',
+        textTransform: 'uppercase',
+        wordWrap: 'break-word',
+        ...props
+    })
+);
+export const BusyRoomCardReservationStatusIndicator = (props: {
+    room: Room;
+}) => {
+    return (
+        <BusyRoomStatusContent>
+            <BusyRoomStatusIcon>
+                <DoNotDisturb />
+            </BusyRoomStatusIcon>
+            <BusyRoomStatusTextContent
+                props={{
+                    flex: '1 1 0',
+                    fontSize: 12
+                }}
+            >
+                Occupied for {roomFreeIn(props.room)} minutes
+            </BusyRoomStatusTextContent>
+        </BusyRoomStatusContent>
+    );
+};
+
+export const getNextCalendarEventTimeString = (room: Room) => {
+    const nextStartDate = getNextCalendarEvent(room);
+    const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
+    const start = DateTime.fromISO(nextEvent!.start!);
+    let end = '';
+    if (nextEvent!.end) {
+        end = dateTimeToTimeString(DateTime.fromISO(nextEvent!.end!));
+    }
+    return dateTimeToTimeString(start) + '–' + end;
+};
+
+export const RoomCardReservationStatusIndicator = (props: {
+    reserved: ReservationStatus;
+    myBookingAccepted?: boolean;
+    reservationTime: number;
+}) => {
+    const statusIcon =
+        props.reserved === ReservationStatus.RESERVED ? (
+            <CheckCircle />
+        ) : (
+            <ScheduleCircle />
+        );
+    const textColor =
+        props.reserved === ReservationStatus.RESERVED ? '#388641' : '#F2BB32';
+    return (
+        <CenterAlignedStack direction={'row'}>
+            {statusIcon}
+            <Typography
+                color={textColor}
+                marginLeft={'5px'}
+                variant={'subtitle1'}
+            >
+                Reserved To you for {props.reservationTime} minutes.
+            </Typography>
+        </CenterAlignedStack>
+    );
+};
+
+const ReservationStatusText = (props: {
+    reservationStatus: ReservationStatus | undefined;
+    booking: Booking | undefined;
+    busy: boolean | undefined;
+    room: Room;
+}) => {
+    const myBookingAccepted =
+        props.booking?.resourceStatus === 'accepted' &&
+        DateTime.fromISO(props.booking.startTime) > DateTime.now();
+    return (
+        <>
+            {props.reservationStatus !== undefined ? (
+                <>
+                    <Stack direction={'row'}>
+                        <RoomCardReservationStatusIndicator
+                            reserved={props.reservationStatus}
+                            reservationTime={getBookingTimeLeft(props.booking)}
+                        />
+                    </Stack>
+                    <Typography>
+                        {props.booking && myBookingAccepted
+                            ? `Your booking starts in ${getTimeLeft(
+                                  props.booking.startTime
+                              )}`
+                            : `Available for another ${minutesToSimpleString(
+                                  getTimeAvailableMinutes(props.booking)
+                              )}`}
+                    </Typography>
+                </>
+            ) : props.busy ? (
+                <>
+                    <BusyRoomCardReservationStatusIndicator room={props.room} />
+
+                    <BusyRoomStatusTextContent>
+                        <BusyRoomStatusTextContent
+                            props={{
+                                width: 283,
+                                fontSize: 16,
+                                fontWeight: '2'
+                            }}
+                        >
+                            Next available slot:{' '}
+                            {getNextCalendarEventTimeString(props.room)}
+                        </BusyRoomStatusTextContent>
+                    </BusyRoomStatusTextContent>
+                </>
+            ) : (
+                <>
+                    <TimeLeft
+                        timeLeftText="Available for "
+                        endTime={getNextCalendarEvent(props.room)}
+                    />
+                </>
+            )}
+        </>
+    );
 };
 
 const RoomCard = (props: RoomCardProps) => {
@@ -161,7 +397,7 @@ const RoomCard = (props: RoomCardProps) => {
         onClick,
         bookingLoading,
         disableBooking,
-        isReserved,
+        reservationStatus,
         isSelected,
         expandFeatures,
         preferences,
@@ -215,7 +451,7 @@ const RoomCard = (props: RoomCardProps) => {
     };
 
     const cardStyle = () => {
-        if (isSelected && isReserved) {
+        if (isSelected && reservationStatus) {
             return selectedReservedVars;
         }
         if (isSelected) {
@@ -223,60 +459,6 @@ const RoomCard = (props: RoomCardProps) => {
         }
 
         return defaultVars;
-    };
-
-    const bookingTime = () => {
-        if (isReserved) {
-            if (booking?.resourceStatus === 'accepted') {
-                if (DateTime.fromISO(booking.startTime) <= DateTime.now()) {
-                    return (
-                        <StartBox>
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography
-                                variant="subtitle1"
-                                color="success.main"
-                                margin={'0 0 0 5px'}
-                            >
-                                Booked to you for {getBookingTimeLeft(booking)}{' '}
-                                minutes.
-                            </Typography>
-                        </StartBox>
-                    );
-                } else {
-                    return (
-                        <StartBox>
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography
-                                variant="subtitle1"
-                                color="success.main"
-                                margin={'0 0 0 5px'}
-                            >
-                                Booked to you for{' '}
-                                {getTimeDiff(
-                                    booking.startTime,
-                                    booking.endTime
-                                )}{' '}
-                                minutes.
-                            </Typography>
-                        </StartBox>
-                    );
-                }
-            } else {
-                return (
-                    <StartBox>
-                        <PendingIcon color="warning" fontSize="small" />
-                        <Typography
-                            variant="subtitle1"
-                            color="warning.main"
-                            margin={'0 0 0 5px'}
-                        >
-                            Waiting Google calendar confirmation.
-                        </Typography>
-                    </StartBox>
-                );
-            }
-        }
-        return null;
     };
 
     return (
@@ -288,76 +470,35 @@ const RoomCard = (props: RoomCardProps) => {
             >
                 <GridContainer>
                     <Row>
-                        <Typography
-                            data-testid="BookingRoomTitle"
-                            variant="h3"
-                            color={isBusy ? 'text.disabled' : 'text.main'}
-                        >
-                            {getName(room)}
-                        </Typography>
-                        <EndBox>
-                            <Group color={isBusy ? 'disabled' : 'inherit'} />
-                            <Typography
-                                fontWeight="bold"
-                                color={isBusy ? 'text.disabled' : 'text.main'}
-                            >
-                                {getCapacity(room)}
-                            </Typography>
-                        </EndBox>
+                        <RoomCardTitleWithDescription
+                            isBusy={isBusy}
+                            room={room}
+                        />
+                        <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
-
-                    {bookingTime()}
-
                     <Row>
-                        {isReserved ? (
-                            <Typography>
-                                {booking?.resourceStatus === 'accepted' &&
-                                DateTime.fromISO(booking.startTime) >
-                                    DateTime.now()
-                                    ? `Your booking starts in ${getTimeLeft(
-                                          booking.startTime
-                                      )}`
-                                    : `Available for another ${minutesToSimpleString(
-                                          getTimeAvailableMinutes(booking)
-                                      )}`}
-                            </Typography>
-                        ) : isBusy ? (
-                            <Typography
-                                variant="body1"
-                                color="text.disabled"
-                                align="left"
-                            >
-                                Available in <b>{roomFreeIn(room)} minutes</b>{' '}
-                                for{' '}
-                                {minutesToSimpleString(busyAvailableFor(room))}
-                            </Typography>
-                        ) : (
-                            <TimeLeft
-                                timeLeftText="Available for "
-                                endTime={getNextCalendarEvent(room)}
+                        <Stack direction={'column'}>
+                            <ReservationStatusText
+                                reservationStatus={reservationStatus}
+                                booking={booking}
+                                busy={isBusy}
+                                room={room}
                             />
-                        )}
+                        </Stack>
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
 
-                        <IconButton
-                            aria-label="favorite room"
+                        <RoomCardFavoriteButton
                             onClick={handleFavoriteClick}
-                        >
-                            {isFavorited(room, preferences) ? (
-                                <Favorite sx={{ color: '#F04E30' }} />
-                            ) : (
-                                <FavoriteBorderIcon
-                                    color={isBusy ? 'disabled' : 'inherit'}
-                                />
-                            )}
-                        </IconButton>
+                            room={room}
+                            pref={preferences}
+                            busy={isBusy}
+                        />
                     </Row>
-
                     {expandFeatures ? (
                         <Row>
-                            <Typography variant="body1" color="text.disabled">
+                            <Typography variant="h4" color="text.disabled">
                                 {getFeatures(room)}
                             </Typography>
                         </Row>

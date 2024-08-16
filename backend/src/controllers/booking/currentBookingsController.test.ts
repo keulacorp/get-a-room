@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import * as schema from '../../utils/googleSchema';
 import { DateTime } from 'luxon';
 import { internalServerError } from '../../utils/responses';
@@ -16,9 +16,11 @@ jest.mock('../../utils/responses');
 jest.mock('../googleAPI/calendarAPI');
 jest.mock('../googleAPI/adminAPI');
 
-const mockedGetCurrentBookings = mocked(getCurrentBookings, false);
-const mockedGetRoomData = mocked(getRoomData, false);
-const mockedInternalServerError = mocked(internalServerError, false);
+const mockedGetCurrentBookings = mocked(getCurrentBookings, { shallow: false });
+const mockedGetRoomData = mocked(getRoomData, { shallow: false });
+const mockedInternalServerError = mocked(internalServerError, {
+    shallow: false
+});
 
 describe('currentBookingsController', () => {
     let mockRequest: Partial<Request>;
