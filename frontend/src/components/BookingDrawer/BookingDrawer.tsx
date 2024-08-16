@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -290,6 +290,57 @@ interface Props {
     setStartingTime: (s: string) => void;
 }
 
+const FullAndHalfHourButtons = (props: {
+    onClickFull: () => void;
+    disabledFull: boolean;
+    nextFullHour: string;
+    onClickHalf: () => void;
+    disabledHalf: boolean;
+    nextHalfHour: string;
+}) => {
+    const nextIsFull: boolean = useMemo(() => {
+        return parseInt(props.nextHalfHour?.split(':')?.at(1) || '0') < 30;
+    }, [props.nextHalfHour, props.nextFullHour]);
+
+    if (nextIsFull) {
+        return (
+            <>
+                <DrawerButtonSecondary
+                    onClick={props.onClickFull}
+                    disabled={props.disabledFull}
+                >
+                    Until {props.nextFullHour}
+                </DrawerButtonSecondary>
+                <Spacer />
+                <DrawerButtonSecondary
+                    onClick={props.onClickHalf}
+                    disabled={props.disabledHalf}
+                >
+                    Until {props.nextHalfHour}
+                </DrawerButtonSecondary>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <DrawerButtonSecondary
+                    onClick={props.onClickHalf}
+                    disabled={props.disabledHalf}
+                >
+                    Until {props.nextHalfHour}
+                </DrawerButtonSecondary>
+                <Spacer />
+                <DrawerButtonSecondary
+                    onClick={props.onClickFull}
+                    disabled={props.disabledFull}
+                >
+                    Until {props.nextFullHour}
+                </DrawerButtonSecondary>
+            </>
+        );
+    }
+};
+
 const BookingDrawer = (props: Props) => {
     const {
         open,
@@ -506,19 +557,14 @@ const BookingDrawer = (props: Props) => {
                         </DrawerButtonPrimary>
                     </Row>
                     <Row>
-                        <DrawerButtonSecondary
-                            onClick={() => handleNextHalfHour()}
-                            disabled={disableNextHalfHour()}
-                        >
-                            Until {nextHalfHour}
-                        </DrawerButtonSecondary>
-                        <Spacer />
-                        <DrawerButtonSecondary
-                            onClick={() => handleNextFullHour()}
-                            disabled={disableNextFullHour()}
-                        >
-                            Until {nextFullHour}
-                        </DrawerButtonSecondary>
+                        <FullAndHalfHourButtons
+                            onClickFull={() => handleNextFullHour()}
+                            disabledFull={disableNextFullHour()}
+                            nextFullHour={nextFullHour}
+                            onClickHalf={() => handleNextHalfHour()}
+                            disabledHalf={disableNextHalfHour()}
+                            nextHalfHour={nextHalfHour}
+                        />
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
