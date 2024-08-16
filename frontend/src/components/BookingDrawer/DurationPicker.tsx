@@ -4,12 +4,12 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { styled, Typography } from '@mui/material';
 
 const DurationButton = styled(ToggleButton)(() => ({
-    padding: '8px 16px'
+    padding: '4px 4px'
 }));
 
 const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
     minWidth: '100%',
-    padding: '6px 8px',
+    paddingTop: '8px',
     marginBottom: '0px !important'
 }));
 

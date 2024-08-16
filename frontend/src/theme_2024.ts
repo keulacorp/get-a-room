@@ -16,7 +16,8 @@ import { DoNotDisturbOn, Schedule, WatchLater } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { RoomCardReservationStatusIndicator } from './components/RoomCard/RoomCard';
 import Person from '@mui/icons-material/Person';
-import FeixenSansWoff2 from './fonts/StudioFeixenVincit-Regular.woff2';
+import FeixenSansBold from './fonts/StudioFeixenVincit-Bold.ttf';
+import FeixenSansRegular from './fonts/StudioFeixenVincit-Regular.ttf';
 
 export const COLORS = {
     ACCENT_PINK: '#FFCAFF',
@@ -48,7 +49,7 @@ export const UserIcon = styled(Person)(({ theme }) => ({
 export const DEFAULT_STYLES = {
     defaultSpacer: '24px',
     smallerSpacer: '16px',
-    defaultFont: 'Studio Feixen Sans'
+    defaultFont: 'StudioFeixenSans-Bold'
 };
 const { defaultFont } = DEFAULT_STYLES;
 
@@ -131,6 +132,19 @@ declare module '@mui/material/styles' {
     }
 }
 
+const FONT_FACE_BOLD = `
+        @font-face {
+          font-family: 'StudioFeixenSans-Bold';
+          src: url(${FeixenSansBold}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+        @font-face {
+          font-family: 'StudioFeixenSans-Regular';
+          src: url(${FeixenSansRegular}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+      `;
+
 export const DEFAULT_THEME_2024: ThemeOptions = {
     palette: {
         // background: { default: '#f6f5f5' },
@@ -189,7 +203,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
         },
         h4: {
             color: COLORS.TEXT_DIMGREY,
-            fontFamily: defaultFont,
+            fontFamily: 'StudioFeixenSans-Regular',
             fontStyle: 'normal',
             fontWeight: 2,
             fontSize: '16px',
@@ -208,13 +222,7 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
     },
     components: {
         MuiCssBaseline: {
-            styleOverrides: `
-        @font-face {
-          font-family: 'Studio Feixen Sans';
-          src: local('Studio Feixen Sans'), local('Studio Feixen Sans'), url(${FeixenSansWoff2}) format('woff2');
-          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-        }
-      `
+            styleOverrides: FONT_FACE_BOLD
         },
         GarApp: {
             styleOverrides: {
