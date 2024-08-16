@@ -38,6 +38,7 @@ const LoginTitle = styled(Typography)(({ theme }) => ({
     color: COLORS.BACKGROUND_WHITE,
     justifyContent: 'center',
     fontSize: '2em',
+    marginTop: '4%',
     marginBottom: '20%'
 }));
 
