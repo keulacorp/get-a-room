@@ -69,29 +69,6 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     return (
         <Box id="available-room-list">
-            <div
-                id="available-booking-typography"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '20px'
-                }}
-            >
-                <Typography
-                    variant="subtitle1"
-                    textAlign="left"
-                    marginLeft="24px"
-                >
-                    Available rooms:
-                </Typography>
-                <TimePickerButton
-                    aria-label="starting-booking-time"
-                    onClick={() => setExpandTimePickerDrawer(true)}
-                    value={startingTime}
-                >
-                    {startingTime} <ArrowDropDownIcon />
-                </TimePickerButton>
-            </div>
             <List>
                 {noAvailableRooms(rooms) ? (
                     <NoRoomsCard />

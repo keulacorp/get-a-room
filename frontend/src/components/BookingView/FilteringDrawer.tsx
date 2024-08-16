@@ -11,6 +11,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
+import { COLORS, DEFAULT_STYLES } from '../../theme_2024';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -72,11 +73,11 @@ const FilteringDrawer = (props: Props) => {
         '& .MuiToggleButtonGroup-grouped': {
             marginRight: '16px',
             '&:not(:first-of-type)': {
-                border: 'solid',
                 borderWidth: 'thin',
                 borderRadius: '50px'
             },
             '&:first-of-type': {
+                backgroundColor: COLORS.ACCENT_PINK,
                 marginLeft: '0px',
                 borderRadius: '50px'
             }

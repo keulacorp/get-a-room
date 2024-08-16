@@ -267,7 +267,7 @@ export const SmallText = styled(Typography)(({ theme }) => ({
 }));
 
 export const Spacer = styled('div')(() => ({
-    padding: '8px'
+    padding: '4px'
 }));
 
 interface Props {
@@ -526,6 +526,9 @@ const BookingDrawer = (props: Props) => {
                             onClick={() =>
                                 handleUntilNext(getTimeAvailableMinutes(room))
                             }
+                            sx={{
+                                margin: 0
+                            }}
                         >
                             Book the whole free slot
                         </DrawerButtonSecondary>
@@ -535,6 +538,9 @@ const BookingDrawer = (props: Props) => {
                             aria-label="book now"
                             data-testid="BookNowButton"
                             onClick={bookRoom}
+                            sx={{
+                                marginTop: '16px'
+                            }}
                         >
                             Book now
                         </DrawerButtonPrimary>
