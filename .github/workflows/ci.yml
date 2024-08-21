@@ -35,7 +35,7 @@ jobs:
             - uses: actions/checkout@main
             - uses: actions/setup-node@main
               with:
-                  node-version: 16
+                  node-version: 20
                   cache: npm
 
             - run: npm ci
@@ -60,7 +60,7 @@ jobs:
             - uses: actions/checkout@main
             - uses: actions/setup-node@main
               with:
-                  node-version: 16
+                  node-version: 20
                   cache: npm
             - run: npm ci
             - run: npm run test:ci
@@ -180,7 +180,7 @@ jobs:
             - uses: actions/checkout@main
             - uses: actions/setup-node@main
               with:
-                  node-version: 16
+                  node-version: 20
                   cache: npm
             - run: npm ci
             - run: npm run lint:ci
@@ -203,7 +203,7 @@ jobs:
             - uses: actions/checkout@main
             - uses: actions/setup-node@main
               with:
-                  node-version: 16
+                  node-version: 20
                   cache: npm
             - run: npm ci
             - run: npm run test:ci
