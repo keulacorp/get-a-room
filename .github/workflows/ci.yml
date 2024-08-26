@@ -17,7 +17,7 @@ jobs:
             - uses: actions/checkout@main
             - uses: actions/setup-node@main
               with:
-                  node-version: 16
+                  node-version: 20
                   cache: npm
             - run: npm ci
             - run: npm run check-style
@@ -41,7 +41,7 @@ jobs:
             - run: npm ci
             - run: npm run build:ci
               env:
-                  REACT_APP_SERVER_KEY: "${{ github.ref == 'refs/heads/main' && secrets.REACT_FRONTEND_VAPID_KEY_PRODUCTION || secrets.REACT_FRONTEND_VAPID_KEY_STAGING }}"
+                  VITE_REACT_APP_SERVER_KEY: "${{ github.ref == 'refs/heads/main' && secrets.REACT_FRONTEND_VAPID_KEY_PRODUCTION || secrets.REACT_FRONTEND_VAPID_KEY_STAGING }}"
             - uses: actions/upload-artifact@main
               with:
                   name: frontend-build
