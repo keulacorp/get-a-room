@@ -41,6 +41,7 @@
     },
     "scripts": {
         "start": "vite",
+        "start:docker": "vite --host --no-open",
         "build": "tsc && vite build",
         "test": "vitest",
         "test:watch": "vitest --watch",
