@@ -51,8 +51,21 @@ export const parseToken = (): ExpressMiddlewareWithUnless => {
             }
 
             const payload = readToken(TOKEN);
-
             if (!payload.refreshToken) {
+                console.warn(
+                    'oAuth refresh token not found. Revoking access token',
+                    payload
+                );
+
+                getOAuthClient()
+                    .revokeToken(payload.accessToken)
+                    .then(() => {
+                        console.warn('Access token revoked', payload);
+                    })
+                    .catch((reason) => {
+                        console.error('Error revoking access token', reason);
+                    });
+
                 return responses.invalidToken(req, res);
             }
 
@@ -94,7 +107,6 @@ export const validateAccessToken = (): ExpressMiddlewareWithUnless => {
             });
 
             const newToken = (await client.getAccessToken()).token;
-
             if (!newToken) {
                 return responses.invalidToken(req, res);
             }

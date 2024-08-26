@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
         optimizeDeps: {
             include: ['@emotion/styled', '@mui/styled-engine']
         },
+        useCredentials: true,
         server: {
             // this ensures that the browser opens upon server start
             open: true,
@@ -49,9 +50,9 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 // with options: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
                 '/api': {
-                    target: 'http://localhost:8080',
+                    target: env.VITE_BACKEND_URL || 'http://localhost:8080',
                     changeOrigin: false,
-                    secure: true
+                    secure: false
                     // rewrite: (path) => path.replace(/^\/api/, '')
                 }
             }

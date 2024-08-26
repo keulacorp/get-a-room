@@ -1,0 +1,107 @@
+services:
+    mongodb:
+        image: mongo:7
+        container_name: getaroom-mongodb
+        hostname: mongodb
+        volumes:
+            - ./db/mongodb-single/mongodb/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+        env_file:
+            - .env
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+        ports:
+            - '${MONGO_LOCAL_PORT}:27017'
+        networks:
+            - getaroom_network
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+            interval: 10s
+            timeout: 10s
+            retries: 2
+            start_period: 5s
+
+    mongo-express:
+        image: mongo-express:latest
+        container_name: getaroom-mongo-express
+        restart: always
+        environment:
+            - ME_CONFIG_MONGODB_SERVER=mongodb
+            - ME_CONFIG_MONGODB_URL=${ME_CONFIG_MONGODB_URL}
+            - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD}
+            - ME_CONFIG_MONGODB_PORT=27017
+            - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USERNAME}
+        ports:
+            - 8081:8081
+        networks:
+            - getaroom_network
+        depends_on:
+            mongodb:
+                condition: service_healthy
+
+    backend:
+        env_file:
+            - .env
+        build:
+            context: .
+            dockerfile: ./dev.Dockerfile
+            args:
+                - DIR=backend
+                - TZ=${TZ}
+        container_name: getaroom-backend
+        hostname: backend
+        volumes:
+            - ./:/usr/src/app/
+        ports:
+            - '${BACKEND_LOCAL_PORT}:8080'
+        networks:
+            - getaroom_network
+        healthcheck:
+            test: curl --fail http://localhost:8080/api || exit 1
+            interval: 20s
+            retries: 5
+            start_period: 5s
+            timeout: 10s
+        depends_on:
+            mongodb:
+                condition: service_healthy
+        command: |
+            bash -c "
+            npm --prefix /usr/src/app/backend run generate_vapid_keys &&
+            export VAPID_PUBLIC_KEY="$(sed -n '1p' ../.vapidkey)" &&
+            export VAPID_PRIVATE_KEY="$(sed -n '2p' ../.vapidkey)" &&
+            npm run nodemon
+            "
+    frontend:
+        env_file:
+            - .env
+        build:
+            context: .
+            dockerfile: ./dev.Dockerfile
+            args:
+                - DIR=frontend
+                - TZ=${TZ}
+        container_name: getaroom-frontend
+        depends_on:
+            backend:
+                condition: service_healthy
+        hostname: frontend
+        volumes:
+            - ./:/usr/src/app/
+        ports:
+            - '${FRONTEND_LOCAL_PORT}:3000'
+        expose:
+            - 3000
+        networks:
+            - getaroom_network
+        command: |
+            bash -c "export VITE_REACT_APP_SERVER_KEY="$(sed -n '1p' ../.vapidkey)"
+            npm run start:docker --host"
+
+networks:
+    getaroom_network:
+        driver: bridge
+        name: getaroom_network

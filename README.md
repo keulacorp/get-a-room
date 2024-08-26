@@ -58,3 +58,36 @@ After this you probably want to point some domain to this application. This can 
 As a last thing, new OAuth 2.0 Client should be created in Google Cloud -> "APIs and services" -> "CREATE CREDENTIALS" -> "OAuth Client ID". Application type is "Web Application". Authorized JavaScript origins can be left empty. And to the "Authorised redirect URIs" this URL should be added: "https://yourdomainname.com/api/auth/google/callback" And of course remember to replace "yourdomainname" with the new domain name that was reserved for this application.
 
 Now you should have a working GitHub actions deployment and a new environment!
+
+## Running local dev environment
+
+<br/>
+
+### Docker compose
+
+    1. Copy .env.example files to .env files in
+    	/
+    	/frontend
+    	/backend
+    2. Edit root env file and add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_CUSTOMER_ID values
+    3. Run docker compose build && docker compose up -d
+
+ <br/>
+
+### Npm
+
+MongoDb needed
+
+      1. Copy .env.example files to .env files in
+         /frontend
+         /backend
+      2. Run npm install
+      3. Run npm run generate_vapid_keys
+      4. Copy VAPID keys from logged output to backend and frontend .env files
+      5. Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_CUSTOMER_ID and database setting to .env-files
+      6. Run npm run nodemon in /backend folder
+      7. Run npm run start in /frontend folder
+
+<br/>
+ 
+After frontend startup go to /login page and log in with valid OAuth-user.
