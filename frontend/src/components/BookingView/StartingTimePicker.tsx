@@ -13,6 +13,9 @@ import {
 const StartingTimeButton = styled(ToggleButton)(() => ({
     padding: '8px 16px'
 }));
+const StartingTimePickerContent = styled(Box)(({ theme }) => ({
+    margin: '8px 24px'
+}));
 
 type StartingTimePickerProps = {
     startingTime: string;
@@ -68,7 +71,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     };
 
     return (
-        <Box>
+        <StartingTimePickerContent>
             <Typography
                 variant="subtitle1"
                 textAlign="left"
@@ -124,7 +127,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     {startingTimeCustom}
                 </StartingTimeButton>
             </ToggleButtonGroup>
-        </Box>
+        </StartingTimePickerContent>
     );
 };
 
