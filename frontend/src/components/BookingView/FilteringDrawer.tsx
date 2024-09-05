@@ -11,7 +11,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
-import { COLORS, DEFAULT_STYLES } from '../../theme_2024';
+import { COLORS } from '../../theme_2024';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -70,18 +70,26 @@ const FilteringDrawer = (props: Props) => {
     } = props;
 
     const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+        paddingBottom: '8px',
         '& .MuiToggleButtonGroup-grouped': {
-            marginRight: '16px',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: COLORS.ACCENT_PINK,
+            borderRadius: '20px',
             '&:not(:first-of-type)': {
-                borderWidth: 'thin',
-                borderRadius: '50px'
+                borderLeft: '1px solid COLORS.ACCENT_PINK', // Ensure the left border is visible
+                borderRadius: '20px', // Maintain the rounded corners
+                marginLeft: '-1px' // To prevent gaps between buttons
             },
             '&:first-of-type': {
-                backgroundColor: COLORS.ACCENT_PINK,
-                marginLeft: '0px',
-                borderRadius: '50px'
+                backgroundColor: COLORS.ACCENT_PINK
             }
         }
+    }));
+
+    const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
+        borderRadius: '20px',
+        marginRight: '8px'
     }));
 
     const StyledDrawerWrapper = styled(Box)(({ theme }) => ({
@@ -175,10 +183,12 @@ const FilteringDrawer = (props: Props) => {
                         value={roomSize}
                         onChange={handleRoomSizeChange}
                     >
-                        <ToggleButton value="1-2">1-2</ToggleButton>
-                        <ToggleButton value="3-5">3-5</ToggleButton>
-                        <ToggleButton value="6-7">6-7</ToggleButton>
-                        <ToggleButton value="8-99999">8+</ToggleButton>
+                        <StyledToggleButton value="1-2">1-2</StyledToggleButton>
+                        <StyledToggleButton value="3-5">3-5</StyledToggleButton>
+                        <StyledToggleButton value="6-7">6-7</StyledToggleButton>
+                        <StyledToggleButton value="8-99999">
+                            8+
+                        </StyledToggleButton>
                     </StyledToggleButtonGroup>
                     <Row>
                         <SmallText>Resources</SmallText>
@@ -189,9 +199,9 @@ const FilteringDrawer = (props: Props) => {
                         sx={{ minHeight: '56px' }}
                     >
                         {allFeatures.map((feature) => (
-                            <ToggleButton key={feature} value={feature}>
+                            <StyledToggleButton key={feature} value={feature}>
                                 {feature}
-                            </ToggleButton>
+                            </StyledToggleButton>
                         ))}
                     </StyledToggleButtonGroup>
                     <Row>
