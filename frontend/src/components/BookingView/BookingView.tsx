@@ -26,9 +26,9 @@ import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import {
     CenterAlignedStack,
+    COLORS,
     DEFAULT_STYLES,
     DefaultVerticalSpacer,
-    StretchingHorizontalSpacer,
     UserIcon
 } from '../../theme_2024';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
@@ -88,7 +88,31 @@ type BookingViewProps = {
     setBookingDuration: (min: number) => void;
 };
 
-const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
+export function UserIconButton(props: { open: boolean; onClick: () => void }) {
+    return (
+        <IconButton
+            aria-label="profile menu"
+            size="small"
+            sx={{
+                color: COLORS.TEXT_PRIMARY,
+                backgroundColor: props.open
+                    ? COLORS.ACCENT_PINK
+                    : COLORS.BACKGROUND_PRIMARY,
+                position: 'absolute',
+                right: 50,
+                cursor: 'pointer'
+            }}
+            onClick={props.onClick}
+        >
+            <UserIcon />
+        </IconButton>
+    );
+}
+
+const RoomsPageHeaderWithUserIcon = (props: {
+    onClick: () => void;
+    isOpen: boolean;
+}) => {
     return (
         <CenterAlignedStack
             direction={'row'}
@@ -97,24 +121,8 @@ const RoomsPageHeaderWithUserIcon = (props: { onClick: () => void }) => {
             }}
             onClick={props.onClick}
         >
-            <Typography variant={'h1'}>
-                ROOMS
-                <IconButton
-                    aria-label="profile menu"
-                    size="small"
-                    sx={{
-                        bgcolor: 'primary.main',
-                        color: '#fff',
-                        position: 'absolute',
-                        right: 50
-                    }}
-                    onClick={props.onClick}
-                    style={{ cursor: 'pointer' }}
-                ></IconButton>
-            </Typography>
-            <StretchingHorizontalSpacer />
-            {/*// TODO: Button not implemented*/}
-            <UserIcon />
+            <Typography variant={'h1'}>ROOMS</Typography>
+            <UserIconButton open={props.isOpen} onClick={props.onClick} />
         </CenterAlignedStack>
     );
 };
@@ -503,6 +511,7 @@ function BookingView(props: BookingViewProps) {
             .minute(mm % 60)
             .hour(Math.floor(mm / 60));
     }
+
     const handleUntilHalf = () => {
         let halfTime =
             startingTime === 'Now'
@@ -749,6 +758,7 @@ function BookingView(props: BookingViewProps) {
                     <RowCentered>
                         <RoomsPageHeaderWithUserIcon
                             onClick={openSettingsDrawer}
+                            isOpen={showUserSettingsMenu}
                         />
                     </RowCentered>
                 </Box>

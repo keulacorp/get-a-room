@@ -18,11 +18,11 @@ import LocationOffIcon from '@mui/icons-material/LocationOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import {
     CenterAlignedStack,
-    StretchingHorizontalSpacer,
-    UserIcon
+    StretchingHorizontalSpacer
 } from '../../theme_2024';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import UserDrawer from '../UserDrawer/UserDrawer';
+import { UserIconButton } from '../BookingView/BookingView';
 
 type BuildingSelectProps = {
     selectedBuildingId: string;
@@ -166,7 +166,8 @@ const BuildingList = (props: BuildingSelectProps) => {
                             </Typography>
                             <StretchingHorizontalSpacer />
                             {/*TODO villep: NOT IMPLEMENTED*/}
-                            <UserIcon
+                            <UserIconButton
+                                open={showUserSettingsMenu}
                                 onClick={() => setShowUserSettingsMenu(true)}
                             />
                         </CenterAlignedStack>
