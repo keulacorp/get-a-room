@@ -44,6 +44,7 @@ import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
 import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 import PageHeaderWithUserIcon from '../util/pageHeaderWithUserIcon';
+import AlertBox from '../util/alertBox';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;

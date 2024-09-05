@@ -9,10 +9,9 @@ import {
     timeToHalfAndFullHours,
     formatTimeToHalfAndFullHours
 } from '../util/Time';
+import AlertBox from '../util/alertBox';
 
-const StartingTimeButton = styled(ToggleButton)(() => ({
-    padding: '8px 16px'
-}));
+const StartingTimeButton = styled(ToggleButton)(() => ({}));
 const StartingTimePickerContent = styled(Box)(({ theme }) => ({
     margin: '8px 24px'
 }));
@@ -72,12 +71,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
 
     return (
         <StartingTimePickerContent>
-            <Typography
-                variant="subtitle1"
-                textAlign="left"
-                marginBottom={'8px'}
-                marginLeft={'24px'}
-            >
+            <Typography variant="subtitle1" textAlign="left">
                 {title}
             </Typography>
             <ToggleButtonGroup
@@ -87,7 +81,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
-                sx={{ marginBottom: '24px' }}
+                sx={{ margin: '8px 0' }}
                 fullWidth
             >
                 <StartingTimeButton
@@ -127,6 +121,11 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     {startingTimeCustom}
                 </StartingTimeButton>
             </ToggleButtonGroup>
+            {props.startingTime !== 'Now' && (
+                <AlertBox
+                    alertText={`Note! You are booking the room for a future time`}
+                />
+            )}
         </StartingTimePickerContent>
     );
 };

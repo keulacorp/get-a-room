@@ -192,6 +192,13 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             fontSize: '12px',
             lineHeight: 'normal'
         },
+        body2: {
+            fontFamily: defaultFont,
+            fontStyle: 'normal',
+            fontWeight: 4,
+            fontSize: '16px',
+            lineHeight: 'normal'
+        },
         subtitle1: {
             color: COLORS.TEXT_PRIMARY,
             fontFamily: defaultFont,
