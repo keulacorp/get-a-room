@@ -6,9 +6,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ShareIcon from '@mui/icons-material/Share';
 import { DateTime } from 'luxon';
 
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Booking, Room } from '../../types';
 import {
     AvailableText,
@@ -22,6 +19,7 @@ import {
 } from '../BookingDrawer/BookingDrawer';
 import ShareMenu from './ShareMenu';
 import { useState } from 'react';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 const MIN_DURATION = 15;
 const LAST_HOUR = 17;
@@ -265,7 +263,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={getName(
                 booking === undefined ? undefined : booking.room
             )}
@@ -409,7 +407,7 @@ const AlterBookingDrawer = (props: Props) => {
                     )}
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

@@ -8,12 +8,11 @@ import {
     DrawerButtonSecondary,
     Row
 } from '../BookingDrawer/BookingDrawer';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
 import dayjs from 'dayjs';
 import GetARoomForm from '../GetARoomForm/GetARoomForm';
 import { getHourMinute, nowDate } from '../util/Time';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 export const BoxForm = styled(GetARoomForm)(({ theme }) => ({
     display: 'flex',
@@ -70,7 +69,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
     }
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={'Edit starting time'}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -132,7 +131,7 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                     </Row>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

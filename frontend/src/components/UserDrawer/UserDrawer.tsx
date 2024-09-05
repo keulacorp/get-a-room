@@ -1,14 +1,12 @@
 import { useHistory } from 'react-router-dom';
 import { Logout, Visibility, VisibilityOff } from '@mui/icons-material';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
 import { DrawerButtonSecondary } from '../BookingDrawer/BookingDrawer';
 import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import { Box, Typography } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 import { COLORS } from '../../theme_2024';
 
 type userSettingsProps = {

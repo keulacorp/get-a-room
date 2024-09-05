@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
 import TextField from '@mui/material/TextField';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -12,6 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import { COLORS } from '../../theme_2024';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -131,7 +130,7 @@ const FilteringDrawer = (props: Props) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={'Filters'}
             filterCount={filterCount}
             iconLeft={'FilterList'}
@@ -217,7 +216,7 @@ const FilteringDrawer = (props: Props) => {
                     </ToggleButton>
                 </DrawerContent>
             </StyledDrawerWrapper>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

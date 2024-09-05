@@ -4,12 +4,11 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
 import { styled } from '@mui/material/styles';
-import { DrawerContent } from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 import { theme } from '../../theme';
 import DurationPicker from './DurationPicker';
-import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 import { dateTimeToTimeString } from '../util/Time';
 
 const MIN_DURATION = 15;

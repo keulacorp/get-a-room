@@ -18,9 +18,7 @@ import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
 import UserDrawer from '../UserDrawer/UserDrawer';
 import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
@@ -45,6 +43,7 @@ import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/goo
 import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 import PageHeaderWithUserIcon from '../util/pageHeaderWithUserIcon';
 import AlertBox from '../util/alertBox';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -668,7 +667,7 @@ function BookingView(props: BookingViewProps) {
                 pb={'120px'}
             >
                 <div id="gps-container">
-                    <SwipeableEdgeDrawer
+                    <BottomDrawer
                         headerTitle={'GPS has your back!'}
                         iconLeft={'Map'}
                         iconRight={'Close'}
@@ -701,7 +700,7 @@ function BookingView(props: BookingViewProps) {
                                 </RowCentered>
                             </DrawerContent>
                         </Box>
-                    </SwipeableEdgeDrawer>
+                    </BottomDrawer>
                 </div>
                 <Box
                     sx={{
