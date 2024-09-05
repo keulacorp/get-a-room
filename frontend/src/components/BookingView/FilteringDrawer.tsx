@@ -11,6 +11,7 @@ import styled from '@mui/styled-engine';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import { COLORS } from '../../theme_2024';
 import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
+import { Bookmark, BookmarkBorder } from '@mui/icons-material';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -211,8 +212,12 @@ const FilteringDrawer = (props: Props) => {
                         selected={onlyFavourites}
                         onChange={() => setOnlyFavourites(!onlyFavourites)}
                     >
-                        <FavoriteBorderIcon />
-                        &nbsp; Only Favourites
+                        {props.onlyFavourites ? (
+                            <Bookmark sx={{ color: '#F04E30' }} />
+                        ) : (
+                            <BookmarkBorder />
+                        )}
+                        &nbsp; Only bookmarked
                     </ToggleButton>
                 </DrawerContent>
             </StyledDrawerWrapper>

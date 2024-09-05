@@ -12,13 +12,7 @@ import TimeLeft, {
 } from '../util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
-import {
-    Card,
-    CardActionArea,
-    CircularProgress,
-    IconButton,
-    Stack
-} from '@mui/material';
+import { Card, CardActionArea, CircularProgress, Stack } from '@mui/material';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
@@ -30,9 +24,9 @@ import {
     DoNotDisturb,
     ScheduleCircle
 } from '../../theme_2024';
-import { Bookmark, BookmarkBorder } from '@mui/icons-material';
 import { dateTimeToTimeString } from '../util/Time';
 import { ReservationStatus } from '../../enums';
+import BookmarkButton from '../util/bookmarkButton';
 
 function getName(room: Room) {
     return room.name;
@@ -205,15 +199,11 @@ class RoomCardFavoriteButton extends React.Component<{
 }> {
     render() {
         return (
-            <IconButton aria-label="favorite room" onClick={this.props.onClick}>
-                {isFavorited(this.props.room, this.props.pref) ? (
-                    <Bookmark sx={{ color: '#F04E30' }} />
-                ) : (
-                    <BookmarkBorder
-                        color={this.props.busy ? 'disabled' : 'inherit'}
-                    />
-                )}
-            </IconButton>
+            <BookmarkButton
+                onClick={this.props.onClick}
+                isSelected={isFavorited(this.props.room, this.props.pref)}
+                changeColor={this.props.busy}
+            />
         );
     }
 }
