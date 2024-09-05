@@ -43,6 +43,7 @@ import { triggerClarityEvent } from '../../analytics/clarityService';
 import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
 import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
+import PageHeaderWithUserIcon from '../util/pageHeaderWithUserIcon';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -108,24 +109,6 @@ export function UserIconButton(props: { open: boolean; onClick: () => void }) {
         </IconButton>
     );
 }
-
-const RoomsPageHeaderWithUserIcon = (props: {
-    onClick: () => void;
-    isOpen: boolean;
-}) => {
-    return (
-        <CenterAlignedStack
-            direction={'row'}
-            sx={{
-                width: '100%'
-            }}
-            onClick={props.onClick}
-        >
-            <Typography variant={'h1'}>ROOMS</Typography>
-            <UserIconButton open={props.isOpen} onClick={props.onClick} />
-        </CenterAlignedStack>
-    );
-};
 
 function BookingView(props: BookingViewProps) {
     const {
@@ -756,9 +739,10 @@ function BookingView(props: BookingViewProps) {
                         </Box>
                     </CenterAlignedStack>
                     <RowCentered>
-                        <RoomsPageHeaderWithUserIcon
+                        <PageHeaderWithUserIcon
                             onClick={openSettingsDrawer}
                             isOpen={showUserSettingsMenu}
+                            title={'ROOMS'}
                         />
                     </RowCentered>
                 </Box>
