@@ -226,11 +226,7 @@ class RoomCardCapacityBox extends React.Component<{
         return (
             <EndBox>
                 <Group color="inherit" />
-                <Typography
-                    fontWeight="bold"
-                    color="text.main"
-                    marginLeft={'8px'}
-                >
+                <Typography variant={'h3'} marginLeft={'8px'}>
                     {getCapacity(this.props.room)}
                 </Typography>
             </EndBox>

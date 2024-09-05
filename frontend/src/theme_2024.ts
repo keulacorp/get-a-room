@@ -3,7 +3,7 @@ import {
     Theme as MuiTheme,
     ThemeOptions
 } from '@mui/material/styles';
-import { TimeLeftTypography } from './components/util/TimeLeft';
+import { TimeLeftValueTypography } from './components/util/TimeLeft';
 import {
     ComponentsOverrides,
     ComponentsVariants,
@@ -101,7 +101,7 @@ declare module '@mui/material/styles' {
 
     interface ComponentsPropsList {
         GarApp: Partial<typeof GarApp>;
-        TimeLeftTypography: Partial<typeof TimeLeftTypography>;
+        TimeLeftTypography: Partial<typeof TimeLeftValueTypography>;
         BackButtonAndHeader: Partial<typeof CenterAlignedStack>;
         RoomCardReservationStatusIndicator: Partial<
             typeof RoomCardReservationStatusIndicator
