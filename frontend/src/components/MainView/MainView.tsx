@@ -17,7 +17,17 @@ import { useHistory } from 'react-router-dom';
 import usePushNotificationRegistration from '../../hooks/usePushNotificationRegistration';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import { useBookingDurationState } from '../BookingView/BookingDurationState';
+import { styled } from '@mui/material/styles';
+import { COLORS } from '../../theme_2024';
 
+const MainContent = styled(Box)(({ theme }) => ({
+    id: 'main-view', // Changed to proper object key-value pair
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    alignItems: 'center',
+    backgroundColor: COLORS.BACKGROUND_PRIMARY
+}));
 const MainView = () => {
     const { preferences, setPreferences } = useUserSettings();
     const [buildings, setBuildings] = useState<Building[]>([]);
@@ -120,13 +130,7 @@ const MainView = () => {
     };
 
     return (
-        <Box
-            id="main-view"
-            display="flex"
-            flexDirection="column"
-            minHeight="100vh"
-            alignItems="center"
-        >
+        <MainContent>
             <Box
                 id="main-view-content"
                 sx={{ flexGrow: 1, maxWidth: '1000px', width: '100%' }}
@@ -154,7 +158,7 @@ const MainView = () => {
                     </Route>
                 </Switch>
             </Box>
-        </Box>
+        </MainContent>
     );
 };
 
