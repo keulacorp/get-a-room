@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
-import { TextField, Box, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { DateTime } from 'luxon';
 
-import {
-    DrawerButtonPrimary,
-    DrawerButtonSecondary,
-    Row
-} from '../BookingDrawer/BookingDrawer';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+import { DrawerButtonPrimary, Row } from '../BookingDrawer/BookingDrawer';
 import dayjs from 'dayjs';
 import GetARoomForm from '../GetARoomForm/GetARoomForm';
 import { getHourMinute, nowDate } from '../util/Time';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 const BoxForm = styled(GetARoomForm)(({ theme }) => ({
     display: 'flex',
@@ -79,7 +73,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={'Custom duration'}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -106,6 +100,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                     <Row>
                         <DrawerButtonPrimary
                             aria-label="confirm"
+                            data-testid={'set-duration-button'}
                             onClick={() => handleSetDuration()}
                         >
                             Confirm
@@ -113,7 +108,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                     </Row>
                 </DurationDrawerContent>
             </DurationBox>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

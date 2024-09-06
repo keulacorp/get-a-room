@@ -16,13 +16,9 @@ import Box from '@mui/material/Box';
 import { GpsFixed } from '@mui/icons-material';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
-import {
-    CenterAlignedStack,
-    StretchingHorizontalSpacer,
-    UserIcon
-} from '../../theme_2024';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import UserDrawer from '../UserDrawer/UserDrawer';
+import PageHeaderWithUserIcon from '../util/pageHeaderWithUserIcon';
 
 type BuildingSelectProps = {
     selectedBuildingId: string;
@@ -160,16 +156,11 @@ const BuildingList = (props: BuildingSelectProps) => {
                             Welcome, {name}!
                         </Typography>
 
-                        <CenterAlignedStack direction={'row'}>
-                            <Typography textAlign="left" variant="h1">
-                                offices
-                            </Typography>
-                            <StretchingHorizontalSpacer />
-                            {/*TODO villep: NOT IMPLEMENTED*/}
-                            <UserIcon
-                                onClick={() => setShowUserSettingsMenu(true)}
-                            />
-                        </CenterAlignedStack>
+                        <PageHeaderWithUserIcon
+                            title={'OFFICES'}
+                            isOpen={showUserSettingsMenu}
+                            onClick={() => setShowUserSettingsMenu(true)}
+                        />
                         <Typography
                             textAlign="left"
                             variant="subtitle1"

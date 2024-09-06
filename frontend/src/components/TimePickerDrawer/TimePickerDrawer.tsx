@@ -7,9 +7,8 @@ import {
     DrawerButtonSecondary,
     Row
 } from '../BookingDrawer/BookingDrawer';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 interface TimePickerDrawerProps {
     open: boolean;
@@ -56,7 +55,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={'Edit starting time'}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
@@ -127,7 +126,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
                     </Row>
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

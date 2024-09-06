@@ -90,7 +90,7 @@ describe('Duration selection from picker', () => {
         const hour1 = getByText(hours, '01');
         fireEvent.click(hour1);
 
-        const btn = screen.getByRole('button');
+        const btn = screen.getByTestId('set-duration-button');
 
         fireEvent.click(btn);
 

@@ -1,14 +1,13 @@
 import { useHistory } from 'react-router-dom';
 import { Logout, Visibility, VisibilityOff } from '@mui/icons-material';
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+
 import { DrawerButtonSecondary } from '../BookingDrawer/BookingDrawer';
 import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import { Box, Typography } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
+import { COLORS } from '../../theme_2024';
 
 type userSettingsProps = {
     open: boolean;
@@ -67,16 +66,21 @@ const UserDrawer = (props: userSettingsProps) => {
                         aria-label="settings drawer "
                         data-testid="HandleAllFeatureCollapseButton"
                         onClick={toggleShowExpandedFeatures}
+                        sx={{
+                            backgroundColor: expandedFeaturesAll
+                                ? COLORS.ACCENT_PINK
+                                : COLORS.BACKGROUND_PRIMARY
+                        }}
                     >
-                        {!expandedFeaturesAll ? (
+                        {expandedFeaturesAll ? (
                             <>
                                 <Visibility aria-label="visibility" />
-                                &nbsp;Show room resources
+                                &nbsp;Showing room resources
                             </>
                         ) : (
                             <>
                                 <VisibilityOff aria-label="visibility-off" />
-                                &nbsp;Hide room resources
+                                &nbsp;Hiding room resources
                             </>
                         )}
                     </DrawerButtonSecondary>

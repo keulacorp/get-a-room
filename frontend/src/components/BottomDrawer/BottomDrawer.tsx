@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Drawer, IconButton, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
@@ -84,6 +83,8 @@ interface Props {
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
     mounted?: boolean;
+    zindex?: number;
+    testId?: string;
 }
 
 const BottomDrawer = (props: Props) => {
@@ -162,7 +163,7 @@ const BottomDrawer = (props: Props) => {
                 }}
             />
             <Drawer
-                data-testid="BottomDrawer"
+                data-testid={props.testId || 'BottomDrawer'}
                 anchor="bottom"
                 open={isOpen}
                 onClose={toggleDrawer(false)}
@@ -170,7 +171,9 @@ const BottomDrawer = (props: Props) => {
                 style={{
                     position: 'relative',
                     width: '100%',
-                    maxWidth: '1000px'
+                    maxWidth: '1000px',
+
+                    zIndex: props.zindex
                 }}
             >
                 {headerTitle && headerTitle != '' ? (

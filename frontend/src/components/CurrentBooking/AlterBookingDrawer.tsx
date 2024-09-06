@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
@@ -6,9 +7,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ShareIcon from '@mui/icons-material/Share';
 import { DateTime } from 'luxon';
 
-import SwipeableEdgeDrawer, {
-    DrawerContent
-} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Booking, Room } from '../../types';
 import {
     AvailableText,
@@ -21,7 +19,11 @@ import {
     TimeTextBold
 } from '../BookingDrawer/BookingDrawer';
 import ShareMenu from './ShareMenu';
-import { useState } from 'react';
+import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
+import Typography from '@mui/material/Typography';
+import AlertBox from '../util/alertBox';
+import { RoomCardReservationStatusIndicator } from '../RoomCard/RoomCard';
+import { ReservationStatus } from '../../enums';
 
 const MIN_DURATION = 15;
 const LAST_HOUR = 17;
@@ -50,13 +52,13 @@ const TimeTextBoldGreen = styled(TimeTextBold)(({ theme }) => ({
     color: theme.palette.success.main
 }));
 
-const PreBookBoldRed = styled(TimeTextBold)(({ theme }) => ({
-    color: theme.palette.error.main,
+const PreBookBoldYellow = styled(TimeTextBold)(({ theme }) => ({
+    color: theme.palette.warning.main,
     fontSize: '16px'
 }));
 
-const AvailableTextGreen = styled(AvailableText)(({ theme }) => ({
-    color: theme.palette.success.main
+const AvailableTextMain = styled(AvailableText)(({ theme }) => ({
+    color: theme.palette.text.primary
 }));
 
 interface Props {
@@ -265,7 +267,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     return (
-        <SwipeableEdgeDrawer
+        <BottomDrawer
             headerTitle={getName(
                 booking === undefined ? undefined : booking.room
             )}
@@ -275,6 +277,7 @@ const AlterBookingDrawer = (props: Props) => {
             toggle={toggle}
             disableSwipeToOpen={true}
             zindex={1200}
+            testId={'BookingDrawer'}
         >
             <Box
                 style={{
@@ -285,29 +288,42 @@ const AlterBookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
-                    {!bookingStarted && (
+                    {props.booking?.startTime !== 'Now' && (
                         <RowCentered>
-                            <PreBookBoldRed>
-                                You have pre-booked the room
-                            </PreBookBoldRed>
+                            <AlertBox
+                                alertText={`Note! You are booking the room for a future time`}
+                                sx={{
+                                    width: '100%',
+                                    height: 60,
+                                    margin: '8px 0'
+                                }}
+                            />
+                        </RowCentered>
+                    )}
+                    {props.booking && !bookingStarted && (
+                        <RowCentered sx={{ margin: '8px 0' }}>
+                            <RoomCardReservationStatusIndicator
+                                reserved={ReservationStatus.RESERVED_LATER}
+                                booking={props.booking}
+                            />
                         </RowCentered>
                     )}
                     <RowCentered>
-                        <TimeTextBoldGreen>
+                        <Typography variant={'h2'}>
                             {duration} min remaining
-                        </TimeTextBoldGreen>
+                        </Typography>
                     </RowCentered>
                     <RowCentered>
-                        <AvailableTextGreen>
+                        <Typography variant={'h6'}>
                             Room booked for you until{' '}
                             {getSimpleEndTime(booking)}
-                        </AvailableTextGreen>
+                        </Typography>
                     </RowCentered>
                     <RowCentered>
-                        <AvailableText>
+                        <Typography variant={'h6'}>
                             {minutesToSimpleString(availableMinutes)} more
                             available
-                        </AvailableText>
+                        </Typography>
                     </RowCentered>
                     <Row>
                         <DrawerButtonSecondary
@@ -409,7 +425,7 @@ const AlterBookingDrawer = (props: Props) => {
                     )}
                 </DrawerContent>
             </Box>
-        </SwipeableEdgeDrawer>
+        </BottomDrawer>
     );
 };
 

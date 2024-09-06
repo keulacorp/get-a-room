@@ -3,7 +3,7 @@ import {
     Theme as MuiTheme,
     ThemeOptions
 } from '@mui/material/styles';
-import { TimeLeftTypography } from './components/util/TimeLeft';
+import { TimeLeftValueTypography } from './components/util/TimeLeft';
 import {
     ComponentsOverrides,
     ComponentsVariants,
@@ -101,7 +101,7 @@ declare module '@mui/material/styles' {
 
     interface ComponentsPropsList {
         GarApp: Partial<typeof GarApp>;
-        TimeLeftTypography: Partial<typeof TimeLeftTypography>;
+        TimeLeftTypography: Partial<typeof TimeLeftValueTypography>;
         BackButtonAndHeader: Partial<typeof CenterAlignedStack>;
         RoomCardReservationStatusIndicator: Partial<
             typeof RoomCardReservationStatusIndicator
@@ -192,6 +192,13 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             fontSize: '12px',
             lineHeight: 'normal'
         },
+        body2: {
+            fontFamily: defaultFont,
+            fontStyle: 'normal',
+            fontWeight: 4,
+            fontSize: '16px',
+            lineHeight: 'normal'
+        },
         subtitle1: {
             color: COLORS.TEXT_PRIMARY,
             fontFamily: defaultFont,
@@ -213,8 +220,12 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             color: COLORS.TEXT_PRIMARY,
             fontWeight: 'bold',
             fontSize: '12px',
-
             textTransform: 'uppercase'
+        },
+        h6: {
+            color: COLORS.TEXT_PRIMARY,
+            fontFamily: 'StudioFeixenSans-Regular',
+            fontSize: '16px'
         }
     },
     zIndex: {

@@ -9,7 +9,7 @@ const DurationButton = styled(ToggleButton)(() => ({
 
 const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
     minWidth: '100%',
-    paddingTop: '8px',
+    padding: '8px 24px',
     marginBottom: '0px !important'
 }));
 
