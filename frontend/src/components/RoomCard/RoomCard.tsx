@@ -173,21 +173,37 @@ const RoomCardTitleWithDescription = (props: {
 }) => {
     return (
         <CenterAlignedStack direction={'row'} spacing={1}>
-            <Typography
-                data-testid="BookingRoomTitle"
-                variant="h2"
-                color="text.main"
-            >
-                {getName(props.room)}
-            </Typography>
-            <Typography
-                variant={'h4'}
-                align={'left'}
-                paddingLeft={DEFAULT_STYLES.smallerSpacer}
-            >
-                {getNumberWithOrdinalSuffix(parseInt(getFloor(props.room)))}{' '}
-                floor
-            </Typography>
+            <Box sx={{ width: '100%' }}>
+                <Typography
+                    data-testid="BookingRoomTitle"
+                    variant="h2"
+                    color="text.main"
+                    sx={{
+                        wordWrap: 'break-word',
+                        whiteSpace: 'normal', // Ensures long text wraps
+                        overflowWrap: 'break-word'
+                    }}
+                >
+                    {getName(props.room)}
+                </Typography>
+            </Box>
+            {/* Wrap the h4 in a Box */}
+            <Box sx={{ width: '100%', marginTop: '8px' }}>
+                {' '}
+                {/* You can adjust margin as needed */}
+                <Typography
+                    variant={'h4'}
+                    align={'left'}
+                    sx={{
+                        paddingLeft: DEFAULT_STYLES.smallerSpacer,
+                        wordWrap: 'break-word', // Wrap text if necessary
+                        whiteSpace: 'normal'
+                    }}
+                >
+                    {getNumberWithOrdinalSuffix(parseInt(getFloor(props.room)))}{' '}
+                    floor
+                </Typography>
+            </Box>
         </CenterAlignedStack>
     );
 };
