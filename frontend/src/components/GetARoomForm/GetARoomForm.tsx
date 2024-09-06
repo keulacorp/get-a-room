@@ -9,7 +9,6 @@ var GetARoomForm = ({ children }: Props) => {
     return (
         <Box component="form" noValidate>
             {children}
-            after
         </Box>
     );
 };

@@ -66,7 +66,6 @@ const getUnavailableTimeInMinutes = (room: Room) => {
     const nextEvent = room.busy!.find((b) => b.start === nextStartDate);
     const end = DateTime.fromISO(nextEvent!.end!);
 
-    console.log(end, 'end');
     console.log(getNextCalendarEvent(room), 'etNextCalendarEvent(room)');
 
     const now = DateTime.now();
@@ -261,6 +260,7 @@ interface Props {
     bookRoom: () => void;
     duration: number;
     additionalDuration: number;
+    setAdditionalDuration: (minutes: number) => void;
     onAddTime: (minutes: number) => void;
     onAddTimeUntilHalf: () => void;
     onAddTimeUntilFull: () => void;
@@ -269,7 +269,6 @@ interface Props {
     room?: Room;
     startingTime: string;
     setBookingDuration: (minutes: number) => void;
-    setAdditionalDuration: (minutes: number) => void;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
     setExpandDurationTimePickerDrawer: (show: boolean) => void;
     setStartingTime: (s: string) => void;
@@ -334,6 +333,7 @@ const BookingDrawer = (props: Props) => {
         room,
         duration,
         additionalDuration,
+        setAdditionalDuration,
         onAddTime,
         onAddTimeUntilHalf,
         onAddTimeUntilFull,
@@ -341,7 +341,6 @@ const BookingDrawer = (props: Props) => {
         availableMinutes,
         startingTime,
         setBookingDuration,
-        setAdditionalDuration,
         setDuration,
         setExpandDurationTimePickerDrawer,
         setStartingTime
@@ -526,7 +525,9 @@ const BookingDrawer = (props: Props) => {
                         </AvailableText>
                     </RowCentered>
                     <Row>
-                        <SmallText>quick duration selection</SmallText>
+                        <SmallText>
+                            quick duration selection (Minutes)
+                        </SmallText>
                     </Row>
 
                     <DurationPicker
