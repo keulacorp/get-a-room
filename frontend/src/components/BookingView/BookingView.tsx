@@ -157,7 +157,6 @@ function BookingView(props: BookingViewProps) {
             const buildingPreference = preferences.building?.id;
             getRooms(buildingPreference, GET_RESERVED)
                 .then((allRooms) => {
-                    console.log('Setting rooms at update');
                     setRooms(allRooms);
                 })
                 .catch((error) => console.log(error));
@@ -488,11 +487,11 @@ function BookingView(props: BookingViewProps) {
         useState(false);
 
     function maxDuration(room: Room | undefined, startingTime: String) {
-        const mm = availableForMinutes(room, startingTime);
+        const minutesAvailable = availableForMinutes(room, startingTime);
 
         return dayjs()
-            .minute(mm % 60)
-            .hour(Math.floor(mm / 60));
+            .minute(minutesAvailable % 60)
+            .hour(Math.floor(minutesAvailable / 60));
     }
 
     const handleUntilHalf = () => {
@@ -622,6 +621,7 @@ function BookingView(props: BookingViewProps) {
                     room={selectedRoom}
                     duration={getBookingDuration()}
                     additionalDuration={additionalDuration}
+                    setAdditionalDuration={setAdditionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionalDurationChange}
                     onAddTimeUntilHalf={handleUntilHalf}
@@ -629,7 +629,6 @@ function BookingView(props: BookingViewProps) {
                     onAddTimeUntilNext={handleUntilNextDurationChange}
                     startingTime={startingTime}
                     setBookingDuration={setBookingDuration}
-                    setAdditionalDuration={setAdditionalDuration}
                     setDuration={setDuration}
                     setExpandDurationTimePickerDrawer={
                         setExpandDurationTimePickerDrawer
@@ -805,9 +804,15 @@ function BookingView(props: BookingViewProps) {
                         setOnlyFavourites={setOnlyFavourites}
                         filterCount={filterCount}
                         allFeatures={allFeatures}
-                        duration={duration}
+                        duration={getBookingDuration()}
                         setDuration={setDuration}
                         onChange={handleDurationChange}
+                        additionalDuration={additionalDuration}
+                        setBookingDuration={setBookingDuration}
+                        setAdditionalDuration={setAdditionalDuration}
+                        setExpandDurationTimePickerDrawer={
+                            setExpandDurationTimePickerDrawer
+                        }
                     />
                 </div>
             </Box>

@@ -5,13 +5,13 @@ import TextField from '@mui/material/TextField';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import SearchIcon from '@mui/icons-material/Search';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from '@mui/styled-engine';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import { COLORS } from '../../theme_2024';
 import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 import { Bookmark, BookmarkBorder } from '@mui/icons-material';
+import DurationPicker from '../BookingDrawer/DurationPicker';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -46,6 +46,10 @@ interface Props {
     onChange: (duration: number) => void;
     duration: number;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
+    setExpandDurationTimePickerDrawer: (show: boolean) => void;
+    additionalDuration: number;
+    setAdditionalDuration: (minutes: number) => void;
+    setBookingDuration: (minutes: number) => void;
 }
 
 // Note: Actual filtering of the rooms is done one level up in booking view
@@ -66,7 +70,10 @@ const FilteringDrawer = (props: Props) => {
         allFeatures,
         onChange,
         duration,
-        setDuration
+        setDuration,
+        additionalDuration,
+        setAdditionalDuration,
+        setBookingDuration
     } = props;
 
     const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -116,11 +123,22 @@ const FilteringDrawer = (props: Props) => {
     const handleCustomFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCustomFilter(event.target.value);
     };
+    const handleDurationChange = (newDuration: number) => {
+        if (newDuration !== -1) {
+            setBookingDuration(newDuration);
+        } else {
+            setDuration(duration);
+        }
+        setAdditionalDuration(0);
+    };
 
     const handleCustomDuration = (
-        event: React.ChangeEvent<HTMLInputElement>
+        event: React.MouseEvent<HTMLElement>,
+        customDuration: string
     ) => {
-        let value = parseInt(event.target.value);
+        if (customDuration === 'Custom') {
+        }
+        let value = parseInt(customDuration);
         if (!isNaN(value)) {
             value = Math.max(0, value);
             setDuration(value);
@@ -166,14 +184,13 @@ const FilteringDrawer = (props: Props) => {
                     <Row>
                         <SmallText>Custom Duration (Minutes)</SmallText>
                     </Row>
-
-                    <TextField
-                        size="small"
-                        type="number"
-                        placeholder="Give duration in minutes"
-                        inputProps={{ min: 0, max: 1439 }}
-                        value={duration}
-                        onChange={handleCustomDuration}
+                    <DurationPicker
+                        onChange={handleDurationChange}
+                        bookingDuration={duration}
+                        setExpandDurationTimePickerDrawer={
+                            props.setExpandDurationTimePickerDrawer
+                        }
+                        additionalDuration={additionalDuration}
                     />
 
                     <Row>

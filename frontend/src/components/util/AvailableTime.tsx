@@ -4,15 +4,12 @@ import { Room } from '../../types';
 export function availableForMinutes(
     room: Room | undefined,
     startingTime: String
-) {
-    if (room === undefined) {
-        return 0;
-    }
-
+): number {
     let availableUntil: DateTime<true> | DateTime<false> = DateTime.now()
         .set({ hour: 23, minute: 59 })
         .toUTC();
-    if (room.nextCalendarEvent) {
+
+    if (room && room.nextCalendarEvent) {
         availableUntil = DateTime.fromISO(room.nextCalendarEvent).toUTC();
     }
 

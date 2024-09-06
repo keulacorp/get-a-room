@@ -74,7 +74,7 @@ const DurationPicker = (props: DurationPickerProps) => {
                     value={quickDuration}
                     aria-label={toHourMinuteFormat(quickDuration)}
                 >
-                    {toHourMinuteFormat(quickDuration)}
+                    {quickDuration}
                 </DurationButton>
             );
         }
@@ -98,28 +98,28 @@ const DurationPicker = (props: DurationPickerProps) => {
                     value={'15'}
                     aria-label="15 minutes"
                 >
-                    15 min
+                    15
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker30"
                     value={'30'}
                     aria-label="30 minutes"
                 >
-                    30 min
+                    30
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker60"
                     value={'60'}
                     aria-label="1 hour"
                 >
-                    1 h
+                    60
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker120"
                     value={'120'}
                     aria-label="2 hours"
                 >
-                    2 h
+                    120
                 </DurationButton>
                 {CustomDurationValueButton()}
                 <DurationButton

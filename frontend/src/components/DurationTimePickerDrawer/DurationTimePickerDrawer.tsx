@@ -72,6 +72,8 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
         setExpandDurationTimePickerDrawer(false);
     };
 
+    const nowValue = dayjs(nowDate() + ' ' + time);
+
     return (
         <BottomDrawer
             headerTitle={'Custom duration'}
@@ -92,7 +94,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                                 setTime(val ? getHourMinute(val) : '03:00');
                             }}
                             ampm={false}
-                            value={dayjs(nowDate() + ' ' + time)}
+                            value={nowValue}
                             maxTime={maxDuration}
                             data-testid="CustomDurationClock"
                         />
