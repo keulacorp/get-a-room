@@ -277,6 +277,7 @@ const AlterBookingDrawer = (props: Props) => {
             toggle={toggle}
             disableSwipeToOpen={true}
             zindex={1200}
+            testId={'BookingDrawer'}
         >
             <Box
                 style={{

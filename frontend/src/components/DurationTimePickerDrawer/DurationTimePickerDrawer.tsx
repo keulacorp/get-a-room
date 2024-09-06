@@ -100,6 +100,7 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                     <Row>
                         <DrawerButtonPrimary
                             aria-label="confirm"
+                            data-testid={'set-duration-button'}
                             onClick={() => handleSetDuration()}
                         >
                             Confirm

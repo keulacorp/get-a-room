@@ -99,7 +99,7 @@ describe('Starting time selection from drawer', () => {
         const hour = getByText(hours, (h < 10 ? '0' : '') + h.toString());
         fireEvent.click(hour);
 
-        const btn = screen.getAllByRole('button')[1];
+        const btn = screen.getByTestId('ConfirmStartingTimeButton');
         fireEvent.click(btn);
 
         expect(testObj.setExpandTimePickerDrawer).toBeCalledTimes(1);

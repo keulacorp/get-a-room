@@ -84,6 +84,7 @@ interface Props {
     disableSwipeToOpen: boolean;
     mounted?: boolean;
     zindex?: number;
+    testId?: string;
 }
 
 const BottomDrawer = (props: Props) => {
@@ -162,7 +163,7 @@ const BottomDrawer = (props: Props) => {
                 }}
             />
             <Drawer
-                data-testid="BottomDrawer"
+                data-testid={props.testId || 'BottomDrawer'}
                 anchor="bottom"
                 open={isOpen}
                 onClose={toggleDrawer(false)}

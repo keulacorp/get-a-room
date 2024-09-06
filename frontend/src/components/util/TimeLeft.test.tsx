@@ -24,7 +24,7 @@ describe('TimeLeft', () => {
 
         const timeLeftValue = await screen.findByTestId('TimeLeftTest');
         await waitFor(() =>
-            expect(timeLeftValue).toHaveTextContent('Time Left: 1 h 29 min')
+            expect(timeLeftValue).toHaveTextContent('1 h 29 min')
         );
     });
 
@@ -41,7 +41,7 @@ describe('TimeLeft', () => {
 
         const timeLeftValue = await screen.findByTestId('TimeLeftTest');
         await waitFor(() =>
-            expect(timeLeftValue).toHaveTextContent(/Time Left: 4[45] min/)
+            expect(timeLeftValue).toHaveTextContent(/4[45] min/)
         );
     });
 });
