@@ -5,6 +5,7 @@ import RoomCard from '../RoomCard/RoomCard';
 import { Booking, Preferences, Room } from '../../types';
 import { useUserSettings } from '../../contexts/UserSettingsContext';
 import { ReservationStatus } from '../../enums';
+import { sortByFavoritedAndName } from '../../util/arrayUtils';
 
 export function roomFreeIn(room: Room) {
     let end;
@@ -16,7 +17,7 @@ export function roomFreeIn(room: Room) {
     return 0;
 }
 
-function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
+function filterBusyRooms(room: Room, bookings: Booking[]): boolean {
     // filter if room booked for the current user
     for (const booking of bookings) {
         if (booking.room.id === room.id) {
@@ -56,7 +57,7 @@ const BusyRoomList = (props: BusyRoomListProps) => {
 
     return (
         <Box id="available-in-30-min-room-list">
-            {rooms.filter((room) => filterBusyRoom(room, bookings)).length >
+            {rooms.filter((rooms) => filterBusyRooms(rooms, bookings)).length >
             0 ? (
                 <>
                     <Typography
@@ -67,27 +68,26 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                         rooms available in later time
                     </Typography>
                     <List>
-                        {rooms
-                            .sort((a, b) => (a.name < b.name ? -1 : 1))
-                            .filter((room) => filterBusyRoom(room, bookings))
-                            .map((room) => (
-                                <li key={room.id}>
-                                    <RoomCard
-                                        room={room}
-                                        onClick={handleCardClick}
-                                        disableBooking={false}
-                                        isSelected={selectedRoom === room}
-                                        expandFeatures={expandedFeaturesAll}
-                                        bookingLoading={bookingLoading}
-                                        setPreferences={setPreferences}
-                                        preferences={preferences}
-                                        reservationStatus={
-                                            ReservationStatus.BUSY
-                                        }
-                                        isBusy={true}
-                                    />
-                                </li>
-                            ))}
+                        {sortByFavoritedAndName<Room>(
+                            rooms.filter((room) =>
+                                filterBusyRooms(room, bookings)
+                            )
+                        ).map((room) => (
+                            <li key={room.id}>
+                                <RoomCard
+                                    room={room}
+                                    onClick={handleCardClick}
+                                    disableBooking={false}
+                                    isSelected={selectedRoom === room}
+                                    expandFeatures={expandedFeaturesAll}
+                                    bookingLoading={bookingLoading}
+                                    setPreferences={setPreferences}
+                                    preferences={preferences}
+                                    reservationStatus={ReservationStatus.BUSY}
+                                    isBusy={true}
+                                />
+                            </li>
+                        ))}
                     </List>
                 </>
             ) : null}

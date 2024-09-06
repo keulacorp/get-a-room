@@ -1,6 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
 import { styled } from '@mui/material/styles';
+import CenteredText from './centeredText';
 
 export const getTimeLeftMinutes = (endTime: string) => {
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
@@ -79,21 +80,24 @@ type TimeLeftProps = {
     endTime: string;
     timeLeftText: string;
 };
-export const TimeLeftTypography = styled(Typography)(({ theme }) => ({}));
+
+export const TimeLeftValueTypography = styled(Typography)(({ theme }) => ({}));
 
 const TimeLeft = (props: TimeLeftProps) => {
     const { endTime, timeLeftText } = props;
 
     return (
-        <Box>
-            <TimeLeftTypography
-                variant={'h3'}
-                data-testid="TimeLeftTest"
-                aria-label={'Time left text'}
-            >
-                {timeLeftText} {getTimeLeft(endTime)}
-            </TimeLeftTypography>
-        </Box>
+        <CenteredText
+            text1={timeLeftText}
+            text1Variant={'body1'}
+            text1AriaLabel={'Time left text'}
+            text1TestId={'TimeLeftLabelTest'}
+            text2={getTimeLeft(endTime)}
+            text2Variant={'body1'}
+            text2TestId={'TimeLeftTest'}
+            text2AriaLabel={'Time left text'}
+            text2Sx={{ fontWeight: 'bold' }}
+        />
     );
 };
 
