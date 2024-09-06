@@ -220,8 +220,12 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             color: COLORS.TEXT_PRIMARY,
             fontWeight: 'bold',
             fontSize: '12px',
-
             textTransform: 'uppercase'
+        },
+        h6: {
+            color: COLORS.TEXT_PRIMARY,
+            fontFamily: 'StudioFeixenSans-Regular',
+            fontSize: '16px'
         }
     },
     zIndex: {

@@ -1,7 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import React from 'react';
 
-const AlertBox = (props: { alertText: string }) => {
+const AlertBox = (props: { alertText: string; sx?: SxProps }) => {
     return (
         <Box
             sx={{
@@ -10,7 +10,8 @@ const AlertBox = (props: { alertText: string }) => {
                 display: 'flex',
                 alignItems: 'center',
                 borderRadius: 2,
-                border: '1px solid #F2BB32'
+                border: '2px solid #F2BB32',
+                ...props.sx
             }}
         >
             {/* Icon Container */}
@@ -29,6 +30,7 @@ const AlertBox = (props: { alertText: string }) => {
                     color="#FBFBF6"
                     fontSize={20}
                     fontFamily="Material Icons"
+                    aria-label={'Warning indicator'}
                 >
                     not_interested
                 </Typography>
@@ -42,7 +44,7 @@ const AlertBox = (props: { alertText: string }) => {
                 display="flex"
                 alignItems="center"
             >
-                <Typography variant="body1">{props.alertText}</Typography>
+                <Typography variant="h6">{props.alertText}</Typography>
             </Box>
         </Box>
     );

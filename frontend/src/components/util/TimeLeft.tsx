@@ -80,11 +80,7 @@ type TimeLeftProps = {
     endTime: string;
     timeLeftText: string;
 };
-export const TimeLeftLabelTypography = styled(Typography)(({ theme }) => ({
-    variant: 'body1',
-    sx: { verticalAlign: 'middle' },
-    justifyContent: 'center'
-}));
+
 export const TimeLeftValueTypography = styled(Typography)(({ theme }) => ({}));
 
 const TimeLeft = (props: TimeLeftProps) => {
@@ -97,9 +93,10 @@ const TimeLeft = (props: TimeLeftProps) => {
             text1AriaLabel={'Time left text'}
             text1TestId={'TimeLeftLabelTest'}
             text2={getTimeLeft(endTime)}
-            text2Variant={'h3'}
+            text2Variant={'body1'}
             text2TestId={'TimeLeftTest'}
             text2AriaLabel={'Time left text'}
+            text2Sx={{ fontWeight: 'bold' }}
         />
     );
 };

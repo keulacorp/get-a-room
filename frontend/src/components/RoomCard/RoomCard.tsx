@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Booking, Preferences, Room } from '../../types';
@@ -12,7 +13,7 @@ import TimeLeft, {
 } from '../util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
-import { Card, CardActionArea, CircularProgress, Stack } from '@mui/material';
+import { Card, CardActionArea, CircularProgress } from '@mui/material';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime, DateTimeMaybeValid } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
@@ -293,9 +294,13 @@ export const getNextCalendarEventTimeString = (room: Room) => {
 
 export const RoomCardReservationStatusIndicator = (props: {
     reserved: ReservationStatus;
+    booking: Booking;
     myBookingAccepted?: boolean;
-    reservationTime: number;
 }) => {
+    const reservationTime = useMemo(
+        () => getBookingTimeLeft(props.booking),
+        [props.booking]
+    );
     const statusIcon =
         props.reserved === ReservationStatus.RESERVED ? (
             <CheckCircle />
@@ -304,6 +309,42 @@ export const RoomCardReservationStatusIndicator = (props: {
         );
     const textColor =
         props.reserved === ReservationStatus.RESERVED ? '#388641' : '#F2BB32';
+
+    const StrongText = styled('strong')(({ theme }) => ({}));
+
+    const reservedText = useMemo(() => {
+        let textElement = <></>;
+
+        if (props.reserved === ReservationStatus.RESERVED) {
+            textElement = (
+                <Typography>
+                    Reserved To you for{' '}
+                    <StrongText>{reservationTime}</StrongText> minutes.
+                </Typography>
+            );
+        }
+
+        if (props.reserved === ReservationStatus.RESERVED_LATER) {
+            textElement = (
+                <Typography>
+                    Pre booked at{' '}
+                    <StrongText>
+                        {DateTime.fromISO(props.booking.startTime)
+                            .toFormat('HH:mm')
+                            .toString()}
+                    </StrongText>{' '}
+                    for <StrongText>{reservationTime}</StrongText> minutes.
+                </Typography>
+            );
+        }
+        return textElement;
+    }, [
+        props.reserved,
+        props.myBookingAccepted,
+        props.booking,
+        reservationTime
+    ]);
+
     return (
         <CenterAlignedStack direction={'row'}>
             {statusIcon}
@@ -312,7 +353,7 @@ export const RoomCardReservationStatusIndicator = (props: {
                 marginLeft={'5px'}
                 variant={'subtitle1'}
             >
-                Reserved To you for {props.reservationTime} minutes.
+                {reservedText}
             </Typography>
         </CenterAlignedStack>
     );
@@ -327,30 +368,40 @@ const ReservationStatusText = (props: {
     const myBookingAccepted =
         props.booking?.resourceStatus === 'accepted' &&
         DateTime.fromISO(props.booking.startTime) > DateTime.now();
+
+    const bookingStartText = useMemo(
+        () =>
+            `Your booking starts in ${getTimeLeft(props.booking?.startTime || '')}`,
+        [props.booking]
+    );
+
+    const availableText = useMemo(
+        () =>
+            `Available for another ${minutesToSimpleString(getTimeAvailableMinutes(props.booking))}`,
+        [props.booking]
+    );
+
     return (
         <>
             {props.reservationStatus !== undefined ? (
-                <>
-                    <Stack direction={'row'}>
+                <Box sx={{ textAlign: 'left' }}>
+                    {' '}
+                    {/* Add textAlign: 'left' here */}
+                    {props.booking && (
                         <RoomCardReservationStatusIndicator
                             reserved={props.reservationStatus}
-                            reservationTime={getBookingTimeLeft(props.booking)}
+                            booking={props.booking}
                         />
-                    </Stack>
-                    <Typography>
-                        {props.booking && myBookingAccepted
-                            ? `Your booking starts in ${getTimeLeft(
-                                  props.booking.startTime
-                              )}`
-                            : `Available for another ${minutesToSimpleString(
-                                  getTimeAvailableMinutes(props.booking)
-                              )}`}
-                    </Typography>
-                </>
+                    )}
+                    {props.booking && myBookingAccepted
+                        ? bookingStartText
+                        : availableText}
+                </Box>
             ) : props.busy ? (
-                <>
+                <Box sx={{ textAlign: 'left' }}>
+                    {' '}
+                    {/* Add textAlign: 'left' here */}
                     <BusyRoomCardReservationStatusIndicator room={props.room} />
-
                     <BusyRoomStatusTextContent>
                         <BusyRoomStatusTextContent
                             props={{
@@ -363,14 +414,16 @@ const ReservationStatusText = (props: {
                             {getNextCalendarEventTimeString(props.room)}
                         </BusyRoomStatusTextContent>
                     </BusyRoomStatusTextContent>
-                </>
+                </Box>
             ) : (
-                <>
+                <Box sx={{ textAlign: 'left' }}>
+                    {' '}
+                    {/* Add textAlign: 'left' here */}
                     <TimeLeft
                         timeLeftText="Available for "
                         endTime={getNextCalendarEvent(props.room)}
                     />
-                </>
+                </Box>
             )}
         </>
     );
@@ -462,15 +515,13 @@ const RoomCard = (props: RoomCardProps) => {
                         />
                         <RoomCardCapacityBox busy={isBusy} room={room} />
                     </Row>
-                    <Row>
-                        <Stack direction={'column'}>
-                            <ReservationStatusText
-                                reservationStatus={reservationStatus}
-                                booking={booking}
-                                busy={isBusy}
-                                room={room}
-                            />
-                        </Stack>
+                    <Row justifyContent={'left'} alignItems={'left'}>
+                        <ReservationStatusText
+                            reservationStatus={reservationStatus}
+                            booking={booking}
+                            busy={isBusy}
+                            room={room}
+                        />
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
