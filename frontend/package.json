@@ -34,7 +34,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-microsoft-clarity": "^1.2.0",
-        "react-router-dom": "^5.3.3",
+        "react-router-dom": "^6.26.2",
         "styled-components": ">= 5",
         "typescript": "^5.4.5",
         "web-vitals-reporter": "^1.0.0"
