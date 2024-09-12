@@ -11,7 +11,7 @@ const Floor = () => {
                 d="M5 15V16H14C14.5523 16 15 15.5523 15 15V6H14V9H11V12H8V15H5Z"
                 fill="#1D1D1D"
                 stroke="#1D1D1D"
-                stroke-width="2"
+                strokeWidth="2"
             />
         </svg>
     );

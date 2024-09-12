@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 
 import TextField from '@mui/material/TextField';
@@ -50,6 +50,52 @@ interface Props {
     additionalDuration: number;
     setAdditionalDuration: (minutes: number) => void;
     setBookingDuration: (minutes: number) => void;
+}
+
+function CustomFilterTextField(props: {
+    value: string;
+    setCustomFilter: (customFilter: string) => void;
+}) {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            props.setCustomFilter(searchTerm);
+            // Send Axios request here
+        }, 2000);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        setSearchTerm(props.value);
+    }, [props.value]);
+
+    return (
+        <TextField
+            onChange={(event) => setSearchTerm(event.target.value)}
+            value={searchTerm}
+            placeholder="Room name, resource..."
+            size="small"
+            slotProps={{
+                input: {
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                    sx: {
+                        fontFamily: 'Studio Feixen Sans',
+                        fontSize: '16px',
+                        fontStyle: 'normal',
+                        fontWeight: 2,
+                        lineHeight: 'normal',
+                        borderRadius: '20px'
+                    }
+                }
+            }}
+        />
+    );
 }
 
 // Note: Actual filtering of the rooms is done one level up in booking view
@@ -120,9 +166,6 @@ const FilteringDrawer = (props: Props) => {
         setResources(newResources);
     };
 
-    const handleCustomFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCustomFilter(event.target.value);
-    };
     const handleDurationChange = (newDuration: number) => {
         if (newDuration !== -1) {
             setBookingDuration(newDuration);
@@ -165,20 +208,9 @@ const FilteringDrawer = (props: Props) => {
                     <Row>
                         <SmallText>Custom Filter</SmallText>
                     </Row>
-                    <TextField
-                        onChange={handleCustomFilter}
+                    <CustomFilterTextField
+                        setCustomFilter={setCustomFilter}
                         value={customFilter}
-                        placeholder="Room name, resource..."
-                        size="small"
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                )
-                            }
-                        }}
                     />
 
                     <Row sx={{ marginTop: '24px' }}>
