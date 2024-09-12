@@ -3,14 +3,11 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { styled, Typography } from '@mui/material';
 
-const DurationButton = styled(ToggleButton)(() => ({
-    padding: '4px 4px'
-}));
+const DurationButton = styled(ToggleButton)(() => ({}));
 
 const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
     minWidth: '100%',
-    padding: '8px 24px',
-    marginBottom: '0px !important'
+    padding: '16px 8px'
 }));
 
 type DurationPickerProps = {
@@ -74,7 +71,7 @@ const DurationPicker = (props: DurationPickerProps) => {
                     value={quickDuration}
                     aria-label={toHourMinuteFormat(quickDuration)}
                 >
-                    {quickDuration}
+                    {quickDuration} min
                 </DurationButton>
             );
         }
@@ -90,7 +87,6 @@ const DurationPicker = (props: DurationPickerProps) => {
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
-                sx={{ marginBottom: '24px' }}
                 fullWidth
             >
                 <DurationButton
@@ -98,28 +94,28 @@ const DurationPicker = (props: DurationPickerProps) => {
                     value={'15'}
                     aria-label="15 minutes"
                 >
-                    15
+                    15 min
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker30"
                     value={'30'}
                     aria-label="30 minutes"
                 >
-                    30
+                    30 min
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker60"
                     value={'60'}
                     aria-label="1 hour"
                 >
-                    60
+                    60 min
                 </DurationButton>
                 <DurationButton
                     data-testid="DurationPicker120"
                     value={'120'}
                     aria-label="2 hours"
                 >
-                    120
+                    120 min
                 </DurationButton>
                 {CustomDurationValueButton()}
                 <DurationButton
