@@ -10,7 +10,10 @@ import { UserSettingsProvider } from '../contexts/UserSettingsContext';
 import { clarity } from 'react-microsoft-clarity';
 import GETAROOM_ENV from '../util/getARoomEnv';
 
-export const GarApp = styled(Divider)(() => ({}));
+export const GarApp = styled(Divider)(() => ({
+    width: '100%',
+    height: '100%'
+}));
 
 const App = () => {
     if (GETAROOM_ENV().VITE_CLARITY_ID != null) {

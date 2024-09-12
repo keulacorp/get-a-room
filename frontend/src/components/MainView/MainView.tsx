@@ -23,6 +23,7 @@ import { COLORS } from '../../theme_2024';
 const MainContent = styled(Box)(({ theme }) => ({
     id: 'main-view', // Changed to proper object key-value pair
     display: 'flex',
+    width: '100%',
     flexDirection: 'column',
     minHeight: '100vh',
     alignItems: 'center',
