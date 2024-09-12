@@ -1,5 +1,4 @@
 import React, { StrictMode } from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import reportWebVitals from './create-react-app/reportWebVitals';
@@ -11,6 +10,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { createRoot } from 'react-dom/client';
+import { COLORS } from './theme_2024';
 
 checkEnvVariables();
 const element: HTMLElement | null = document.getElementById('root');
@@ -22,6 +22,11 @@ if (!element) {
 const root = createRoot(element);
 root.render(
     <StrictMode>
+        <style>
+            {`body {
+               background-color: ${COLORS.BACKGROUND_PRIMARY};
+            }`}
+        </style>
         <App />
     </StrictMode>
 );

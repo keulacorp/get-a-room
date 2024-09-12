@@ -30,6 +30,12 @@ const DurationDrawerContent = styled(DrawerContent)(({ theme }) => ({
     justifyContent: 'center'
 }));
 
+const DurationDrawerButtons = styled('div')(({ theme }) => ({
+    width: '100%',
+    margin: '8px 24px',
+    padding: '0px 24px'
+}));
+
 interface DurationTimePickerDrawerProps {
     open: boolean;
     toggle: (open: boolean) => void;
@@ -100,13 +106,15 @@ const DurationTimePickerDrawer = (props: DurationTimePickerDrawerProps) => {
                         />
                     </BoxForm>
                     <Row>
-                        <DrawerButtonPrimary
-                            aria-label="confirm"
-                            data-testid={'set-duration-button'}
-                            onClick={() => handleSetDuration()}
-                        >
-                            Confirm
-                        </DrawerButtonPrimary>
+                        <DurationDrawerButtons>
+                            <DrawerButtonPrimary
+                                aria-label="confirm"
+                                data-testid={'set-duration-button'}
+                                onClick={() => handleSetDuration()}
+                            >
+                                Confirm
+                            </DrawerButtonPrimary>
+                        </DurationDrawerButtons>
                     </Row>
                 </DurationDrawerContent>
             </DurationBox>
