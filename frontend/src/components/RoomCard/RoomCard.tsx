@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Booking, Preferences, Room } from '../../types';
 import { updatePreferences } from '../../services/preferencesService';
-import { getNumberWithOrdinalSuffix } from '../../util/commonUtils';
 
 import TimeLeft, {
     getTimeDiff,
@@ -21,7 +20,6 @@ import { styled } from '@mui/material/styles';
 import {
     CenterAlignedStack,
     CheckCircle,
-    DEFAULT_STYLES,
     DoNotDisturb,
     ScheduleCircle
 } from '../../theme_2024';
