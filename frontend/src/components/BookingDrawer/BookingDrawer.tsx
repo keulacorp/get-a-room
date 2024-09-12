@@ -110,7 +110,8 @@ export const Row = styled(Box)(({ theme }) => ({
     flexDirection: 'row',
     alignItems: 'flex-start',
     padding: '0px',
-    width: '100%'
+    width: '100%',
+    marginBottom: '8px'
 }));
 
 export const RowAlert = styled(Box)(({ theme }) => ({
@@ -540,15 +541,16 @@ const BookingDrawer = (props: Props) => {
                             quick duration selection (Minutes)
                         </SmallText>
                     </Row>
-
-                    <DurationPicker
-                        bookingDuration={duration}
-                        onChange={handleDurationChange}
-                        setExpandDurationTimePickerDrawer={
-                            setExpandDurationTimePickerDrawer
-                        }
-                        additionalDuration={additionalDuration}
-                    />
+                    <Row>
+                        <DurationPicker
+                            bookingDuration={duration}
+                            onChange={handleDurationChange}
+                            setExpandDurationTimePickerDrawer={
+                                setExpandDurationTimePickerDrawer
+                            }
+                            additionalDuration={additionalDuration}
+                        />
+                    </Row>
                     <Row>
                         <SmallText>booking (rounded to next 5 min)</SmallText>
                     </Row>
