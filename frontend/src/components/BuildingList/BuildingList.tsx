@@ -45,6 +45,10 @@ const EndBox = styled(Box)(({ theme }) => ({
     alignItems: 'center'
 }));
 
+const BuildingListContent = styled('div')(({ theme }) => ({
+    paddingTop: '60px'
+}));
+
 const handleProfileMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
     // TODO villep NOT IMPLEMENTED
 };
@@ -137,108 +141,112 @@ const BuildingList = (props: BuildingSelectProps) => {
     };
 
     return (
-        <div style={{ padding: '16px' }}>
-            <Stack
-                id="preferences-view"
-                height="100%"
-                justifyContent="space-around"
-                alignItems="left"
-            >
-                <div
-                    style={{
-                        height: '100%',
-                        width: '100%',
-                        padding: '0px 16px'
-                    }}
+        <BuildingListContent>
+            <div style={{ padding: '16px' }}>
+                <Stack
+                    id="preferences-view"
+                    height="100%"
+                    justifyContent="space-around"
+                    alignItems="left"
                 >
-                    <FormGroup sx={{ alignItems: 'left' }}>
-                        <Typography textAlign="left" variant="h5">
-                            Welcome, {name}!
-                        </Typography>
+                    <div
+                        style={{
+                            height: '100%',
+                            width: '100%',
+                            padding: '0px 16px'
+                        }}
+                    >
+                        <FormGroup sx={{ alignItems: 'left' }}>
+                            <Typography textAlign="left" variant="h5">
+                                Welcome, {name}!
+                            </Typography>
 
-                        <PageHeaderWithUserIcon
-                            title={'OFFICES'}
-                            isOpen={showUserSettingsMenu}
-                            onClick={() => setShowUserSettingsMenu(true)}
-                        />
+                            <PageHeaderWithUserIcon
+                                title={'OFFICES'}
+                                isOpen={showUserSettingsMenu}
+                                onClick={() => setShowUserSettingsMenu(true)}
+                            />
+                            <Typography
+                                textAlign="left"
+                                variant="subtitle1"
+                                paddingTop="24px"
+                                paddingBottom="8px"
+                            >
+                                SORT BASED ON
+                            </Typography>
+                        </FormGroup>
+                    </div>
+
+                    <ToggleButtonGroup
+                        className="ToggleButtonGroupStyle"
+                        color="primary"
+                        value={alignment}
+                        exclusive
+                        onChange={handleChange}
+                        style={{
+                            overflow: 'auto',
+                            display: 'flex',
+                            padding: '0px',
+                            width: '100%'
+                        }}
+                    >
+                        <ToggleButton
+                            style={{
+                                minWidth: '150px',
+                                maxWidth: '250px',
+                                width: '50%'
+                            }}
+                            value="proximity"
+                        >
+                            <GpsFixed style={{ minWidth: '40px' }}></GpsFixed>
+                            Proximity
+                        </ToggleButton>
+
+                        <ToggleButton
+                            style={{
+                                minWidth: '150px',
+                                maxWidth: '250px',
+                                width: '50%'
+                            }}
+                            value="names"
+                        >
+                            <SortByAlphaIcon
+                                style={{ minWidth: '40px' }}
+                            ></SortByAlphaIcon>
+                            Names
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                    <div
+                        style={{
+                            height: '100%',
+                            width: '100%',
+                            padding: '0px 16px'
+                        }}
+                    >
                         <Typography
                             textAlign="left"
                             variant="subtitle1"
                             paddingTop="24px"
-                            paddingBottom="8px"
+                            marginBottom="-8px"
                         >
-                            SORT BASED ON
+                            OFFICES
                         </Typography>
-                    </FormGroup>
-                </div>
+                    </div>
+                </Stack>
 
-                <ToggleButtonGroup
-                    className="ToggleButtonGroupStyle"
-                    color="primary"
-                    value={alignment}
-                    exclusive
-                    onChange={handleChange}
-                    style={{
-                        overflow: 'auto',
-                        display: 'flex',
-                        padding: '0px',
-                        width: '100%'
-                    }}
-                >
-                    <ToggleButton
-                        style={{
-                            minWidth: '150px',
-                            maxWidth: '250px',
-                            width: '50%'
-                        }}
-                        value="proximity"
-                    >
-                        <GpsFixed style={{ minWidth: '40px' }}></GpsFixed>
-                        Proximity
-                    </ToggleButton>
+                {renderBuildingList()}
 
-                    <ToggleButton
-                        style={{
-                            minWidth: '150px',
-                            maxWidth: '250px',
-                            width: '50%'
-                        }}
-                        value="names"
-                    >
-                        <SortByAlphaIcon
-                            style={{ minWidth: '40px' }}
-                        ></SortByAlphaIcon>
-                        Names
-                    </ToggleButton>
-                </ToggleButtonGroup>
-                <div
-                    style={{
-                        height: '100%',
-                        width: '100%',
-                        padding: '0px 16px'
-                    }}
-                >
-                    <Typography
-                        textAlign="left"
-                        variant="subtitle1"
-                        paddingTop="24px"
-                        marginBottom="-8px"
-                    >
-                        OFFICES
-                    </Typography>
-                </div>
-            </Stack>
-
-            {renderBuildingList()}
-
-            <UserDrawer
-                open={showUserSettingsMenu}
-                toggle={() => setShowUserSettingsMenu(!showUserSettingsMenu)}
-                name={name}
-                expandedFeaturesAll={expandedFeaturesAll}
-                setExpandedFeaturesAll={setExpandedFeaturesAll}
-            />
-        </div>
+                <UserDrawer
+                    open={showUserSettingsMenu}
+                    toggle={() =>
+                        setShowUserSettingsMenu(!showUserSettingsMenu)
+                    }
+                    name={name}
+                    expandedFeaturesAll={expandedFeaturesAll}
+                    setExpandedFeaturesAll={setExpandedFeaturesAll}
+                />
+            </div>
+        </BuildingListContent>
     );
 };
 
