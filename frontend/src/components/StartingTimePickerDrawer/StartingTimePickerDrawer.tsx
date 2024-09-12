@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
-import { TextField, Box, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { DateTime } from 'luxon';
 
 import {
@@ -17,6 +17,12 @@ import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 export const BoxForm = styled(GetARoomForm)(({ theme }) => ({
     display: 'flex',
     flexWrap: 'wrap'
+}));
+
+const TimePickerButtons = styled('div')(({ theme }) => ({
+    width: '100%',
+    margin: '8px 24px',
+    padding: '0px 24px'
 }));
 
 interface StartingTimePickerDrawerProps {
@@ -112,23 +118,25 @@ const StartingTimePickerDrawer = (props: StartingTimePickerDrawerProps) => {
                             data-testid="CustomStartingTimeClock"
                         />
                     </BoxForm>
-                    <Row>
-                        <DrawerButtonSecondary
-                            aria-label="set to now"
-                            onClick={() => handleSetTime(true)}
-                        >
-                            Set to Now
-                        </DrawerButtonSecondary>
-                    </Row>
-                    <Row>
-                        <DrawerButtonPrimary
-                            aria-label="confirm"
-                            onClick={() => handleSetTime(false)}
-                            data-testid="ConfirmStartingTimeButton"
-                        >
-                            Confirm
-                        </DrawerButtonPrimary>
-                    </Row>
+                    <TimePickerButtons>
+                        <Row>
+                            <DrawerButtonSecondary
+                                aria-label="set to now"
+                                onClick={() => handleSetTime(true)}
+                            >
+                                Set to Now
+                            </DrawerButtonSecondary>
+                        </Row>
+                        <Row>
+                            <DrawerButtonPrimary
+                                aria-label="confirm"
+                                onClick={() => handleSetTime(false)}
+                                data-testid="ConfirmStartingTimeButton"
+                            >
+                                Confirm
+                            </DrawerButtonPrimary>
+                        </Row>
+                    </TimePickerButtons>
                 </DrawerContent>
             </Box>
         </BottomDrawer>
