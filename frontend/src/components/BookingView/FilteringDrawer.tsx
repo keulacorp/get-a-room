@@ -255,7 +255,7 @@ const FilteringDrawer = (props: Props) => {
                         ))}
                     </StyledToggleButtonGroup>
                     <Row>
-                        <SmallText>Favourites</SmallText>
+                        <SmallText>Pinned rooms</SmallText>
                     </Row>
                     <ToggleButton
                         value="favourites"
