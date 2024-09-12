@@ -45,6 +45,10 @@ const EndBox = styled(Box)(({ theme }) => ({
     alignItems: 'center'
 }));
 
+const BuildingListContent = styled('div')(({ theme }) => ({
+    paddingTop: '60px'
+}));
+
 const handleProfileMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
     // TODO villep NOT IMPLEMENTED
 };
@@ -137,18 +141,18 @@ const BuildingList = (props: BuildingSelectProps) => {
     };
 
     return (
-        <div style={{ padding: '16px' }}>
+        <BuildingListContent>
             <Stack
                 id="preferences-view"
                 height="100%"
                 justifyContent="space-around"
                 alignItems="left"
             >
-                <div
-                    style={{
+                <Box
+                    sx={{
                         height: '100%',
                         width: '100%',
-                        padding: '0px 16px'
+                        padding: '24px 16px'
                     }}
                 >
                     <FormGroup sx={{ alignItems: 'left' }}>
@@ -170,7 +174,7 @@ const BuildingList = (props: BuildingSelectProps) => {
                             SORT BASED ON
                         </Typography>
                     </FormGroup>
-                </div>
+                </Box>
 
                 <ToggleButtonGroup
                     className="ToggleButtonGroupStyle"
@@ -238,7 +242,7 @@ const BuildingList = (props: BuildingSelectProps) => {
                 expandedFeaturesAll={expandedFeaturesAll}
                 setExpandedFeaturesAll={setExpandedFeaturesAll}
             />
-        </div>
+        </BuildingListContent>
     );
 };
 

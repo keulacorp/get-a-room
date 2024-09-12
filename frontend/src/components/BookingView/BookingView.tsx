@@ -42,7 +42,6 @@ import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
 import { BookingEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
 import PageHeaderWithUserIcon from '../util/pageHeaderWithUserIcon';
-import AlertBox from '../util/alertBox';
 import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 
 const UPDATE_FREQUENCY = 30000;
@@ -77,6 +76,10 @@ const RowCentered = styled(Box)(({ theme }) => ({
     justifyContent: 'left',
     padding: '0px',
     width: '100%'
+}));
+
+const BookingViewContent = styled('div')(({ theme }) => ({
+    paddingTop: '56px'
 }));
 
 type BookingViewProps = {
@@ -701,120 +704,122 @@ function BookingView(props: BookingViewProps) {
                         </Box>
                     </BottomDrawer>
                 </div>
-                <Box
-                    sx={{
-                        paddingLeft: '16px',
-                        marginBottom: DEFAULT_STYLES.defaultSpacer
-                    }}
-                >
-                    <UserDrawer
-                        open={showUserSettingsMenu}
-                        toggle={toggleSettingsDrawer}
-                        name={name}
-                        expandedFeaturesAll={expandedFeaturesAll}
-                        setExpandedFeaturesAll={setExpandedFeaturesAll}
-                    />
-                    <DefaultVerticalSpacer />
-                    <CenterAlignedStack
-                        direction={'row'}
-                        onClick={moveToChooseOfficePage}
+                <BookingViewContent>
+                    <Box
+                        sx={{
+                            paddingLeft: '16px',
+                            marginBottom: DEFAULT_STYLES.defaultSpacer
+                        }}
                     >
-                        <Typography
-                            textAlign="left"
-                            variant="subtitle1"
-                            color={'#ce3b20'}
-                            style={{ cursor: 'pointer' }}
-                            display="flex"
+                        <UserDrawer
+                            open={showUserSettingsMenu}
+                            toggle={toggleSettingsDrawer}
+                            name={name}
+                            expandedFeaturesAll={expandedFeaturesAll}
+                            setExpandedFeaturesAll={setExpandedFeaturesAll}
                         />
-                        <ArrowBackIcon
-                            sx={{ fontSize: '20px' }}
-                        ></ArrowBackIcon>
-                        <Box>
-                            <Typography variant={'subtitle1'}>
-                                {preferences?.building
-                                    ? preferences.building.name
-                                    : 'Back'}
-                            </Typography>
-                        </Box>
-                    </CenterAlignedStack>
-                    <RowCentered>
+                        <DefaultVerticalSpacer />
+                        <CenterAlignedStack
+                            direction={'row'}
+                            onClick={moveToChooseOfficePage}
+                        >
+                            <Typography
+                                textAlign="left"
+                                variant="subtitle1"
+                                color={'#ce3b20'}
+                                style={{ cursor: 'pointer' }}
+                                display="flex"
+                            />
+                            <ArrowBackIcon
+                                sx={{ fontSize: '20px' }}
+                            ></ArrowBackIcon>
+                            <Box>
+                                <Typography variant={'subtitle1'}>
+                                    {preferences?.building
+                                        ? preferences.building.name
+                                        : 'Back'}
+                                </Typography>
+                            </Box>
+                        </CenterAlignedStack>
                         <PageHeaderWithUserIcon
                             onClick={openSettingsDrawer}
                             isOpen={showUserSettingsMenu}
                             title={'ROOMS'}
                         />
-                    </RowCentered>
-                </Box>
-                <StartingTimePicker
-                    startingTime={startingTime}
-                    setStartingTime={setStartingTime}
-                    title="starting time"
-                    setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                />
-
-                <CurrentBooking
-                    bookings={bookings}
-                    updateRooms={updateRooms}
-                    updateBookings={updateBookings}
-                    setBookings={setBookings}
-                    preferences={preferences}
-                    setPreferences={setPreferences}
-                />
-
-                {!areRoomsFetched(rooms) ? (
-                    <CenteredProgress />
-                ) : (
-                    <AvailableRoomList
-                        bookingDuration={getBookingDuration()}
+                    </Box>
+                    <StartingTimePicker
                         startingTime={startingTime}
-                        rooms={displayRooms}
-                        expandedFeaturesAll={expandedFeaturesAll}
-                        preferences={preferences}
-                        setPreferences={setPreferences}
+                        setStartingTime={setStartingTime}
+                        title="starting time"
                         setExpandTimePickerDrawer={setExpandTimePickerDrawer}
-                        bookingLoading={bookingLoading}
-                        handleCardClick={handleCardClick}
-                        selectedRoom={selectedRoom}
                     />
-                )}
 
-                {areRoomsFetched(rooms) ? (
-                    <BusyRoomList
-                        rooms={rooms}
+                    <CurrentBooking
                         bookings={bookings}
+                        updateRooms={updateRooms}
+                        updateBookings={updateBookings}
+                        setBookings={setBookings}
                         preferences={preferences}
                         setPreferences={setPreferences}
-                        bookingLoading={bookingLoading}
-                        handleCardClick={handleCardClick}
-                        selectedRoom={selectedRoom}
                     />
-                ) : null}
 
-                <div id="filtering-container" onClick={openFiltering}>
-                    <FilteringDrawer
-                        open={expandFilteringDrawer}
-                        toggle={toggleFilteringDrawn}
-                        roomSize={roomSize}
-                        setRoomSize={setRoomSize}
-                        resources={resources}
-                        setResources={setResources}
-                        customFilter={customFilter}
-                        setCustomFilter={setCustomFilter}
-                        onlyFavourites={onlyFavourites}
-                        setOnlyFavourites={setOnlyFavourites}
-                        filterCount={filterCount}
-                        allFeatures={allFeatures}
-                        duration={getBookingDuration()}
-                        setDuration={setDuration}
-                        onChange={handleDurationChange}
-                        additionalDuration={additionalDuration}
-                        setBookingDuration={setBookingDuration}
-                        setAdditionalDuration={setAdditionalDuration}
-                        setExpandDurationTimePickerDrawer={
-                            setExpandDurationTimePickerDrawer
-                        }
-                    />
-                </div>
+                    {!areRoomsFetched(rooms) ? (
+                        <CenteredProgress />
+                    ) : (
+                        <AvailableRoomList
+                            bookingDuration={getBookingDuration()}
+                            startingTime={startingTime}
+                            rooms={displayRooms}
+                            expandedFeaturesAll={expandedFeaturesAll}
+                            preferences={preferences}
+                            setPreferences={setPreferences}
+                            setExpandTimePickerDrawer={
+                                setExpandTimePickerDrawer
+                            }
+                            bookingLoading={bookingLoading}
+                            handleCardClick={handleCardClick}
+                            selectedRoom={selectedRoom}
+                        />
+                    )}
+
+                    {areRoomsFetched(rooms) ? (
+                        <BusyRoomList
+                            rooms={rooms}
+                            bookings={bookings}
+                            preferences={preferences}
+                            setPreferences={setPreferences}
+                            bookingLoading={bookingLoading}
+                            handleCardClick={handleCardClick}
+                            selectedRoom={selectedRoom}
+                        />
+                    ) : null}
+
+                    <div id="filtering-container" onClick={openFiltering}>
+                        <FilteringDrawer
+                            open={expandFilteringDrawer}
+                            toggle={toggleFilteringDrawn}
+                            roomSize={roomSize}
+                            setRoomSize={setRoomSize}
+                            resources={resources}
+                            setResources={setResources}
+                            customFilter={customFilter}
+                            setCustomFilter={setCustomFilter}
+                            onlyFavourites={onlyFavourites}
+                            setOnlyFavourites={setOnlyFavourites}
+                            filterCount={filterCount}
+                            allFeatures={allFeatures}
+                            duration={getBookingDuration()}
+                            setDuration={setDuration}
+                            onChange={handleDurationChange}
+                            additionalDuration={additionalDuration}
+                            setBookingDuration={setBookingDuration}
+                            setAdditionalDuration={setAdditionalDuration}
+                            setExpandDurationTimePickerDrawer={
+                                setExpandDurationTimePickerDrawer
+                            }
+                        />
+                    </div>
+                </BookingViewContent>
             </Box>
         </Box>
     );

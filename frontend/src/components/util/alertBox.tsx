@@ -5,8 +5,8 @@ const AlertBox = (props: { alertText: string; sx?: SxProps }) => {
     return (
         <Box
             sx={{
-                width: 327,
-                height: 73,
+                minWidth: '327px',
+                minHeight: '73px',
                 display: 'flex',
                 alignItems: 'center',
                 borderRadius: 2,
@@ -18,6 +18,7 @@ const AlertBox = (props: { alertText: string; sx?: SxProps }) => {
             <Box
                 sx={{
                     width: 40,
+                    minHeight: '73px',
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
@@ -38,13 +39,25 @@ const AlertBox = (props: { alertText: string; sx?: SxProps }) => {
 
             {/* Text Container */}
             <Box
-                flexGrow={1}
-                paddingX={1}
-                paddingY={1}
-                display="flex"
-                alignItems="center"
+                sx={{
+                    flexGrow: 1,
+                    px: 1, // Shorthand for paddingX
+                    py: 1, // Shorthand for paddingY
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    lineHeight: 'normal'
+                }}
             >
-                <Typography variant="h6">{props.alertText}</Typography>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word'
+                    }}
+                >
+                    {props.alertText}
+                </Typography>
             </Box>
         </Box>
     );
