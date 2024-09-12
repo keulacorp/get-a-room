@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { IconButton } from '@mui/material';
+import { Container, Divider, IconButton, styled } from '@mui/material';
 import { Bookmark, BookmarkBorder } from '@mui/icons-material';
 import { PropsWithChildren } from 'react';
 import { children } from 'happy-dom/lib/PropertySymbol';
+const ButtonContent = styled('span')(({ theme }) => ({}));
 
 function BookmarkButton(
     props: PropsWithChildren<{
@@ -14,16 +15,16 @@ function BookmarkButton(
     }>
 ) {
     return (
-        <IconButton aria-label="favorite room" onClick={props.onClick}>
+        <ButtonContent aria-label="favorite room" onClick={props.onClick}>
             {props.isSelected ? (
-                <Bookmark sx={{ color: '#F04E30' }} />
+                <Bookmark sx={{ color: '#F04E30', padding: '1px' }} />
             ) : (
                 <BookmarkBorder
                     color={props.changeColor ? 'disabled' : 'inherit'}
                 />
             )}
             {props.children}
-        </IconButton>
+        </ButtonContent>
     );
 }
 

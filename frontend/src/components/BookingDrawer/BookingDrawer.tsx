@@ -162,24 +162,30 @@ export const Alert = (props: {
         return <></>;
     }
     return (
-        <RowAlert>
-            <ColAlertIcon>
-                <span
-                    style={{
-                        color: '#FBFBF6',
-                        fontSize: '20px',
-                        fontFamily: 'Material Icons',
-                        textAlign: 'center',
-                        fontWeight: '400'
-                    }}
-                >
-                    not_interested
-                </span>
-            </ColAlertIcon>
-            <ColAlertMessage>
-                <Typography variant={'body2'}>{props.alertText}</Typography>
-            </ColAlertMessage>
-        </RowAlert>
+        <>
+            {props.showAlert && (
+                <RowAlert>
+                    <ColAlertIcon>
+                        <span
+                            style={{
+                                color: '#FBFBF6',
+                                fontSize: '20px',
+                                fontFamily: 'Material Icons',
+                                textAlign: 'center',
+                                fontWeight: '400'
+                            }}
+                        >
+                            not_interested
+                        </span>
+                    </ColAlertIcon>
+                    <ColAlertMessage>
+                        <Typography variant={'body2'}>
+                            {props.alertText}
+                        </Typography>
+                    </ColAlertMessage>
+                </RowAlert>
+            )}
+        </>
     );
 };
 
@@ -470,7 +476,8 @@ const BookingDrawer = (props: Props) => {
     }, [startingTime]);
 
     useEffect(() => {
-        if (room && DateTime.fromISO(room.nextCalendarEvent) < DateTime.now()) {
+        const date = DateTime.fromFormat(startingTime, 'hh:mm');
+        if (room && date < DateTime.now()) {
             setAlertText(
                 `Room is currently unavailable for ${unavailable}
              minutes. You may book the room in advance. Your starting
@@ -479,8 +486,12 @@ const BookingDrawer = (props: Props) => {
             setStartingTime(getNextAvailableTime(room));
             setShowAlert(true);
             unavailable = getUnavailableTimeInMinutes(room);
+        } else {
+            if (showAlert) {
+                setShowAlert(false);
+            }
         }
-    }, [room]);
+    }, [startingTime]);
 
     return (
         <BottomDrawer

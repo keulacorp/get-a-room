@@ -3,17 +3,12 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Box, styled, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
-import {
-    getHourMinute,
-    timeFormat,
-    timeToHalfAndFullHours,
-    formatTimeToHalfAndFullHours
-} from '../util/Time';
+import { formatTimeToHalfAndFullHours } from '../util/Time';
 import AlertBox from '../util/alertBox';
 
 const StartingTimeButton = styled(ToggleButton)(() => ({}));
 const StartingTimePickerContent = styled(Box)(({ theme }) => ({
-    margin: '8px 24px'
+    margin: '8px 0px'
 }));
 
 type StartingTimePickerProps = {
@@ -70,63 +65,69 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
     };
 
     return (
-        <StartingTimePickerContent>
-            <Typography variant="subtitle1" textAlign="left">
+        <>
+            <Typography
+                variant="subtitle1"
+                textAlign="left"
+                sx={{ marginLeft: '16px' }}
+            >
                 {title}
             </Typography>
-            <ToggleButtonGroup
-                data-testid="StartingTimePicker"
-                color="primary"
-                value={startingTime}
-                exclusive
-                onChange={handleChange}
-                aria-label="duration picker"
-                sx={{ margin: '8px 0' }}
-                fullWidth
-            >
-                <StartingTimeButton
-                    data-testid="StartingTimePicker1"
-                    value={startingTimeNow}
-                    aria-label={startingTimeNow}
+            <StartingTimePickerContent>
+                <ToggleButtonGroup
+                    data-testid="StartingTimePicker"
+                    color="primary"
+                    value={startingTime}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label="duration picker"
+                    sx={{ margin: '8px 0' }}
+                    fullWidth
                 >
-                    {startingTimeNow}
-                </StartingTimeButton>
-                <StartingTimeButton
-                    data-testid="StartingTimePicker2"
-                    value={startingTime2}
-                    aria-label={startingTime2}
-                >
-                    {startingTime2}
-                </StartingTimeButton>
-                <StartingTimeButton
-                    data-testid="StartingTimePicker3"
-                    value={startingTime3}
-                    aria-label={startingTime3}
-                >
-                    {startingTime3}
-                </StartingTimeButton>
-                <StartingTimeButton
-                    data-testid="StartingTimePicker4"
-                    value={startingTime4}
-                    aria-label={startingTime4}
-                >
-                    {startingTime4}
-                </StartingTimeButton>
-                {CustomStartingTimeButton()}
-                <StartingTimeButton
-                    data-testid="StartingTimePickerCustom"
-                    value={startingTimeCustom}
-                    aria-label={startingTimeCustom}
-                >
-                    {startingTimeCustom}
-                </StartingTimeButton>
-            </ToggleButtonGroup>
-            {props.startingTime !== 'Now' && (
-                <AlertBox
-                    alertText={`Note! You are booking the room for a future time`}
-                />
-            )}
-        </StartingTimePickerContent>
+                    <StartingTimeButton
+                        data-testid="StartingTimePicker1"
+                        value={startingTimeNow}
+                        aria-label={startingTimeNow}
+                    >
+                        {startingTimeNow}
+                    </StartingTimeButton>
+                    <StartingTimeButton
+                        data-testid="StartingTimePicker2"
+                        value={startingTime2}
+                        aria-label={startingTime2}
+                    >
+                        {startingTime2}
+                    </StartingTimeButton>
+                    <StartingTimeButton
+                        data-testid="StartingTimePicker3"
+                        value={startingTime3}
+                        aria-label={startingTime3}
+                    >
+                        {startingTime3}
+                    </StartingTimeButton>
+                    <StartingTimeButton
+                        data-testid="StartingTimePicker4"
+                        value={startingTime4}
+                        aria-label={startingTime4}
+                    >
+                        {startingTime4}
+                    </StartingTimeButton>
+                    {CustomStartingTimeButton()}
+                    <StartingTimeButton
+                        data-testid="StartingTimePickerCustom"
+                        value={startingTimeCustom}
+                        aria-label={startingTimeCustom}
+                    >
+                        {startingTimeCustom}
+                    </StartingTimeButton>
+                </ToggleButtonGroup>
+                {props.startingTime !== 'Now' && (
+                    <AlertBox
+                        alertText={`Note! You are booking the room for a future time`}
+                    />
+                )}
+            </StartingTimePickerContent>
+        </>
     );
 };
 

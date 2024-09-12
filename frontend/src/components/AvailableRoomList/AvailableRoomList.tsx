@@ -1,7 +1,7 @@
-import { Box, List, ToggleButton, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, List, ToggleButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Booking, Preferences, Room } from '../../types';
+import { Preferences, Room } from '../../types';
 import RoomCard from '../RoomCard/RoomCard';
 import NoRoomsCard from '../RoomCard/NoRoomsCard';
 import { sortByFavoritedAndName } from '../../util/arrayUtils';
@@ -20,24 +20,12 @@ const TimePickerButton = styled(ToggleButton)(() => ({
     }
 }));
 
-export async function isFavorited(room: Room, pref?: Preferences) {
-    try {
-        if (pref === undefined || pref.fav_rooms === undefined) {
-            return false;
-        }
-        if (pref.fav_rooms.includes(room.id)) {
-            room.favorited = true;
-        } else {
-            room.favorited = false;
-        }
-    } catch {
-        // add error notification
+async function checkIfFavorited(room: Room, pref?: Preferences) {
+    if (pref && pref.fav_rooms) {
+        room.favorited = pref.fav_rooms.includes(room.id);
+    } else {
         room.favorited = false;
     }
-}
-
-function noAvailableRooms(rooms: Room[]) {
-    return rooms.length === 0;
 }
 
 type BookingListProps = {
@@ -67,30 +55,42 @@ const AvailableRoomList = (props: BookingListProps) => {
         selectedRoom
     } = props;
 
+    const [updatedRooms, setUpdatedRooms] = useState<Room[]>([]);
+
+    // Effect to update room favorited status
+    useEffect(() => {
+        const updateFavoritedRooms = async () => {
+            const roomsCopy = [...rooms]; // Make a shallow copy of rooms
+            for (const room of roomsCopy) {
+                await checkIfFavorited(room, preferences);
+            }
+            setUpdatedRooms(roomsCopy); // Update state after processing all rooms
+        };
+
+        updateFavoritedRooms();
+    }, [rooms, preferences]);
+
     return (
         <Box id="available-room-list">
             <List>
-                {noAvailableRooms(rooms) ? (
+                {updatedRooms.length === 0 ? (
                     <NoRoomsCard />
                 ) : (
-                    sortByFavoritedAndName<Room>(rooms).map((room) =>
-                        isAvailableFor(bookingDuration, room, startingTime)
-                            ? (isFavorited(room, preferences),
-                              (
-                                  <li key={room.id}>
-                                      <RoomCard
-                                          room={room}
-                                          onClick={handleCardClick}
-                                          bookingLoading={bookingLoading}
-                                          disableBooking={false}
-                                          isSelected={selectedRoom === room}
-                                          expandFeatures={expandedFeaturesAll}
-                                          preferences={preferences}
-                                          setPreferences={setPreferences}
-                                      />
-                                  </li>
-                              ))
-                            : null
+                    sortByFavoritedAndName<Room>(updatedRooms).map((room) =>
+                        isAvailableFor(bookingDuration, room, startingTime) ? (
+                            <li key={room.id}>
+                                <RoomCard
+                                    room={room}
+                                    onClick={handleCardClick}
+                                    bookingLoading={bookingLoading}
+                                    disableBooking={false}
+                                    isSelected={selectedRoom === room}
+                                    expandFeatures={expandedFeaturesAll}
+                                    preferences={preferences}
+                                    setPreferences={setPreferences}
+                                />
+                            </li>
+                        ) : null
                     )
                 )}
             </List>
