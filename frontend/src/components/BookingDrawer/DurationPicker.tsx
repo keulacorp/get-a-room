@@ -6,8 +6,7 @@ import { styled, Typography } from '@mui/material';
 const DurationButton = styled(ToggleButton)(() => ({}));
 
 const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
-    minWidth: '100%',
-    padding: '16px 8px'
+    minWidth: '100%'
 }));
 
 type DurationPickerProps = {

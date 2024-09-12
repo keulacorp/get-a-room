@@ -27,7 +27,7 @@ export const SmallText = styled(Typography)(({ theme }) => ({
     lineHeight: '12px',
     fontWeight: 'bold',
     fontStyle: 'normal',
-    margin: '24px 8px 8px 0'
+    margin: '8px 0px'
 }));
 
 interface Props {
@@ -181,18 +181,19 @@ const FilteringDrawer = (props: Props) => {
                         }}
                     />
 
-                    <Row>
+                    <Row sx={{ marginTop: '24px' }}>
                         <SmallText>Custom Duration (Minutes)</SmallText>
                     </Row>
-                    <DurationPicker
-                        onChange={handleDurationChange}
-                        bookingDuration={duration}
-                        setExpandDurationTimePickerDrawer={
-                            props.setExpandDurationTimePickerDrawer
-                        }
-                        additionalDuration={additionalDuration}
-                    />
-
+                    <Row>
+                        <DurationPicker
+                            onChange={handleDurationChange}
+                            bookingDuration={duration}
+                            setExpandDurationTimePickerDrawer={
+                                props.setExpandDurationTimePickerDrawer
+                            }
+                            additionalDuration={additionalDuration}
+                        />
+                    </Row>
                     <Row>
                         <SmallText>Room Size (People)</SmallText>
                     </Row>
