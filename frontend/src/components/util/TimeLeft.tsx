@@ -89,14 +89,14 @@ const TimeLeft = (props: TimeLeftProps) => {
     return (
         <CenteredText
             text1={timeLeftText}
-            text1Variant={'body1'}
+            text1Variant={'subtitle2'}
             text1AriaLabel={'Time left text'}
             text1TestId={'TimeLeftLabelTest'}
             text2={getTimeLeft(endTime)}
-            text2Variant={'body1'}
+            text2Variant={'body2'}
             text2TestId={'TimeLeftTest'}
             text2AriaLabel={'Time left text'}
-            text2Sx={{ fontWeight: 'bold' }}
+            text2Sx={{ fontWeight: 4 }}
         />
     );
 };

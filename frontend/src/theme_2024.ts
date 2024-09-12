@@ -208,6 +208,14 @@ export const DEFAULT_THEME_2024: ThemeOptions = {
             lineHeight: '12px',
             textTransform: 'uppercase'
         },
+        subtitle2: {
+            color: COLORS.TEXT_PRIMARY,
+            fontFamily: 'StudioFeixenSans-Regular',
+            fontStyle: 'normal',
+            fontWeight: 2,
+            fontSize: '16px',
+            lineHeight: 'normal'
+        },
         h4: {
             color: COLORS.TEXT_DIMGREY,
             fontFamily: 'StudioFeixenSans-Regular',
