@@ -1,15 +1,13 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
 
 const DurationButton = styled(ToggleButton)(() => ({}));
 
 const DurationButtonGroup = styled(ToggleButtonGroup)(() => ({
-    overflow: 'scroll',
-    width: '100%',
-    marginBottom: '8px',
-    paddingBottom: '8px'
+    overflow: 'auto',
+    width: '100%'
 }));
 
 type DurationPickerProps = {
