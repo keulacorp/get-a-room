@@ -1,13 +1,21 @@
 import * as React from 'react';
-import { Typography, styled } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import { CustomCard, GridContainer, Row } from './RoomCard';
 
 const CardTitleText = styled(Typography)(({ theme }) => ({
-    color: theme.palette.primary.main,
+    color: '#E83520',
     fontStyle: 'normal',
     fontSize: '24px',
-    fontWeight: 'bold',
+    fontWeight: 2,
     lineHeight: '24px'
+}));
+const CardTextWrapper = styled(Box)(({ theme }) => ({
+    textAlign: 'left',
+    lineHeight: 'normal',
+    wordWrap: 'break-word', // Wrap long words to the next line
+    whiteSpace: 'normal', // Allow text to wrap normally
+    wordBreak: 'break-word', // Break long words if necessary
+    overflowY: 'auto'
 }));
 
 type NoRoomsCardProps = {};
@@ -18,14 +26,16 @@ const NoRoomsCard = (props: NoRoomsCardProps) => {
             <CustomCard>
                 <GridContainer>
                     <Row>
-                        <CardTitleText>No rooms available :/</CardTitleText>
+                        <CardTitleText>No rooms found :/</CardTitleText>
                     </Row>
 
                     <Row>
-                        <Typography>
-                            Please, check out rooms available in the next 30
-                            min:
-                        </Typography>
+                        <CardTextWrapper>
+                            <Typography variant={'h6'}>
+                                There were no rooms found that match your
+                                filters. Please revise your filters.
+                            </Typography>
+                        </CardTextWrapper>
                     </Row>
                 </GridContainer>
             </CustomCard>

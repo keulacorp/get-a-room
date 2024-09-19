@@ -59,11 +59,13 @@ export const DoNotDisturb = styled(DoNotDisturbOn)(({ theme }) => ({
 }));
 export const CheckCircle = styled(CheckCircleIcon)(({ theme }) => ({
     color: COLORS.ACCENT_GREEN,
-    ariaLabel: 'Check circle'
+    ariaLabel: 'Check circle',
+    fontSize: '16px'
 }));
 
 export const ScheduleCircle = styled(WatchLater)(({ theme }) => ({
-    color: '#F2BB32'
+    color: '#F2BB32',
+    fontSize: '16px'
 }));
 
 export const CenterAlignedStack = styled(Stack)(({ theme }) => ({
