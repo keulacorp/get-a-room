@@ -85,7 +85,7 @@ function CustomFilterTextField(props: {
                         </InputAdornment>
                     ),
                     sx: {
-                        fontFamily: 'Studio Feixen Sans',
+                        fontFamily: 'StudioFeixenSans-Regular',
                         fontSize: '16px',
                         fontStyle: 'normal',
                         fontWeight: 2,
