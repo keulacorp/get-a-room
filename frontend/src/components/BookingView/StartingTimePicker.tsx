@@ -7,9 +7,7 @@ import { formatTimeToHalfAndFullHours } from '../util/Time';
 import AlertBox from '../util/alertBox';
 
 const StartingTimeButton = styled(ToggleButton)(() => ({}));
-const StartingTimePickerContent = styled(Box)(({ theme }) => ({
-    margin: '8px 0px'
-}));
+const StartingTimePickerContent = styled(Box)(({ theme }) => ({}));
 
 type StartingTimePickerProps = {
     startingTime: string;
@@ -81,7 +79,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     exclusive
                     onChange={handleChange}
                     aria-label="duration picker"
-                    sx={{ margin: '8px 0' }}
+                    sx={{ marginTop: '8px', paddingBottom: '8px' }}
                     fullWidth
                 >
                     <StartingTimeButton

@@ -20,7 +20,7 @@ const TimePickerButton = styled(ToggleButton)(() => ({
     }
 }));
 
-async function checkIfFavorited(room: Room, pref?: Preferences) {
+function checkIfFavorited(room: Room, pref?: Preferences) {
     if (pref && pref.fav_rooms) {
         room.favorited = pref.fav_rooms.includes(room.id);
     } else {
@@ -59,10 +59,10 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     // Effect to update room favorited status
     useEffect(() => {
-        const updateFavoritedRooms = async () => {
+        const updateFavoritedRooms = () => {
             const roomsCopy = [...rooms]; // Make a shallow copy of rooms
             for (const room of roomsCopy) {
-                await checkIfFavorited(room, preferences);
+                checkIfFavorited(room, preferences);
             }
             setUpdatedRooms(roomsCopy); // Update state after processing all rooms
         };

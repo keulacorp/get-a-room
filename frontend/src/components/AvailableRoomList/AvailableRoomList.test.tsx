@@ -119,6 +119,7 @@ describe('AvailableRoomList', () => {
         },
         selectedRoom: fakeRooms[0]
     };
+
     it('renders room data', async () => {
         render(
             <AvailableRoomList
