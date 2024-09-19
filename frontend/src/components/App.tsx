@@ -12,7 +12,10 @@ import GETAROOM_ENV from '../util/getARoomEnv';
 
 export const GarApp = styled(Divider)(() => ({
     width: '100%',
-    height: '100%'
+    height: '100%',
+    '.MuiDivider-wrapperVertical': {
+        padding: 0
+    }
 }));
 
 const App = () => {
@@ -34,7 +37,6 @@ const App = () => {
             <SnackbarProvider
                 maxSnack={1}
                 dense
-                style={{ marginBottom: '8vh' }}
                 anchorOrigin={{
                     horizontal: 'center',
                     vertical: 'bottom'
