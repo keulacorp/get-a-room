@@ -19,10 +19,7 @@ export const drawerBleeding = 88;
 
 const Root = styled('div')(({ theme }) => ({
     height: '100%',
-    backgroundColor:
-        theme.palette.mode === 'light'
-            ? grey[100]
-            : theme.palette.background.default
+    backgroundColor: '#fff'
 }));
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
