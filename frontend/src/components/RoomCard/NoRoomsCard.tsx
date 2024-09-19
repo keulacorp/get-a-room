@@ -3,10 +3,10 @@ import { Typography, styled } from '@mui/material';
 import { CustomCard, GridContainer, Row } from './RoomCard';
 
 const CardTitleText = styled(Typography)(({ theme }) => ({
-    color: theme.palette.primary.main,
+    color: '#E83520',
     fontStyle: 'normal',
     fontSize: '24px',
-    fontWeight: 'bold',
+    fontWeight: 2,
     lineHeight: '24px'
 }));
 
@@ -18,13 +18,13 @@ const NoRoomsCard = (props: NoRoomsCardProps) => {
             <CustomCard>
                 <GridContainer>
                     <Row>
-                        <CardTitleText>No rooms available :/</CardTitleText>
+                        <CardTitleText>No rooms found :/</CardTitleText>
                     </Row>
 
                     <Row>
                         <Typography>
-                            Please, check out rooms available in the next 30
-                            min:
+                            There were no rooms found that match your filters.
+                            Please revise your filters.
                         </Typography>
                     </Row>
                 </GridContainer>

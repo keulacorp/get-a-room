@@ -181,7 +181,8 @@ const RoomCardTitleWithDescription = (props: {
                     sx={{
                         wordWrap: 'break-word',
                         whiteSpace: 'normal', // Ensures long text wraps
-                        overflowWrap: 'break-word'
+                        overflowWrap: 'break-word',
+                        textAlign: 'left'
                     }}
                 >
                     {getName(props.room)}
@@ -300,6 +301,7 @@ export const getNextCalendarEventTimeString = (room: Room) => {
     }
     return dateTimeToTimeString(start) + '–' + end;
 };
+const StrongText = styled('strong')(({ theme }) => ({}));
 
 export const RoomCardReservationStatusIndicator = (props: {
     reserved: ReservationStatus;
@@ -312,14 +314,16 @@ export const RoomCardReservationStatusIndicator = (props: {
     );
     const statusIcon =
         props.reserved === ReservationStatus.RESERVED ? (
-            <CheckCircle />
+            <CheckCircle
+                sx={{
+                    fontSize: '16px'
+                }}
+            />
         ) : (
             <ScheduleCircle />
         );
     const textColor =
         props.reserved === ReservationStatus.RESERVED ? '#388641' : '#F2BB32';
-
-    const StrongText = styled('strong')(({ theme }) => ({}));
 
     const reservedText = useMemo(() => {
         let textElement = <></>;
@@ -355,7 +359,7 @@ export const RoomCardReservationStatusIndicator = (props: {
     ]);
 
     return (
-        <CenterAlignedStack direction={'row'}>
+        <CenterAlignedStack direction={'row'} sx={{ marginBottom: '8px' }}>
             {statusIcon}
             <Typography
                 color={textColor}
@@ -379,14 +383,29 @@ const ReservationStatusText = (props: {
         DateTime.fromISO(props.booking.startTime) > DateTime.now();
 
     const bookingStartText = useMemo(
-        () =>
-            `Your booking starts in ${getTimeLeft(props.booking?.startTime || '')}`,
+        () => (
+            <Typography variant={'h6'}>
+                Your booking starts in{' '}
+                <StrongText>
+                    {' '}
+                    {getTimeLeft(props.booking?.startTime || '')}
+                </StrongText>
+            </Typography>
+        ),
         [props.booking]
     );
 
     const availableText = useMemo(
-        () =>
-            `Available for another ${minutesToSimpleString(getTimeAvailableMinutes(props.booking))}`,
+        () => (
+            <Typography variant={'h6'}>
+                Available for another{' '}
+                <StrongText>
+                    {minutesToSimpleString(
+                        getTimeAvailableMinutes(props.booking)
+                    )}
+                </StrongText>
+            </Typography>
+        ),
         [props.booking]
     );
 
