@@ -10,6 +10,13 @@ import { theme } from '../../theme';
 import DurationPicker from './DurationPicker';
 import BottomDrawer, { DrawerContent } from '../BottomDrawer/BottomDrawer';
 import { dateTimeToTimeString } from '../util/Time';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import {
+    GenericGoogleAnalyticsEvent,
+    QuickDurationEvent
+} from '../../analytics/googleAnalytics/googleAnalyticsEvents';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 
 const MIN_DURATION = 15;
 
@@ -359,9 +366,16 @@ const BookingDrawer = (props: Props) => {
     });
 
     const handleDurationChange = (newDuration: number) => {
+        // In case of "custom" duration, the newDuration will be -1
         if (newDuration !== -1) {
             setBookingDuration(newDuration);
+            triggerGoogleAnalyticsEvent(
+                new QuickDurationEvent(newDuration.toString())
+            );
+        } else {
+            triggerGoogleAnalyticsEvent(new QuickDurationEvent('Custom'));
         }
+        triggerClarityEvent(AnalyticsEventEnum.QUICK_DURATION_SELECTION);
         setAdditionalDuration(0);
     };
 
@@ -371,14 +385,38 @@ const BookingDrawer = (props: Props) => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
     const handleAdditionalTime = (minutes: number) => {
+        let analyticsEvent: AnalyticsEventEnum;
+        if (minutes == -15) {
+            analyticsEvent = AnalyticsEventEnum.TIME_CONTROL_DEDUCT_FIFTEEN;
+        } else {
+            analyticsEvent = AnalyticsEventEnum.TIME_CONTROL_ADD_FIFTEEN;
+        }
+        triggerGoogleAnalyticsEvent(
+            new GenericGoogleAnalyticsEvent(analyticsEvent)
+        );
+        triggerClarityEvent(analyticsEvent);
         onAddTime(minutes);
     };
 
     const handleNextHalfHour = () => {
+        triggerGoogleAnalyticsEvent(
+            new GenericGoogleAnalyticsEvent(
+                AnalyticsEventEnum.TIME_CONTROL_NEXT_THIRTY_MINUTES
+            )
+        );
+        triggerClarityEvent(
+            AnalyticsEventEnum.TIME_CONTROL_NEXT_THIRTY_MINUTES
+        );
         onAddTimeUntilHalf();
     };
 
     const handleNextFullHour = () => {
+        triggerGoogleAnalyticsEvent(
+            new GenericGoogleAnalyticsEvent(
+                AnalyticsEventEnum.TIME_CONTROL_NEXT_FULL_HOUR
+            )
+        );
+        triggerClarityEvent(AnalyticsEventEnum.TIME_CONTROL_NEXT_FULL_HOUR);
         onAddTimeUntilFull();
     };
 
@@ -494,6 +532,16 @@ const BookingDrawer = (props: Props) => {
         }
     }, [startingTime]);
 
+    const bookWholeFreeSlot = () => {
+        triggerGoogleAnalyticsEvent(
+            new GenericGoogleAnalyticsEvent(
+                AnalyticsEventEnum.TIME_CONTROL_WHOLE_SLOT
+            )
+        );
+        triggerClarityEvent(AnalyticsEventEnum.TIME_CONTROL_WHOLE_SLOT);
+        handleUntilNext(getTimeAvailableMinutes(room));
+    };
+
     return (
         <BottomDrawer
             headerTitle={getName(room)}
@@ -586,9 +634,7 @@ const BookingDrawer = (props: Props) => {
                     <Row>
                         <DrawerButtonSecondary
                             aria-label="Book the whole free slot"
-                            onClick={() =>
-                                handleUntilNext(getTimeAvailableMinutes(room))
-                            }
+                            onClick={bookWholeFreeSlot}
                             sx={{
                                 margin: 0
                             }}

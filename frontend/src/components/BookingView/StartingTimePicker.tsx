@@ -5,6 +5,10 @@ import { Box, styled, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 import { formatTimeToHalfAndFullHours } from '../util/Time';
 import AlertBox from '../util/alertBox';
+import { triggerGoogleAnalyticsEvent } from '../../analytics/googleAnalytics/googleAnalyticsService';
+import { StartingTimeSelectionEvent } from '../../analytics/googleAnalytics/googleAnalyticsEvents';
+import { triggerClarityEvent } from '../../analytics/clarityService';
+import { AnalyticsEventEnum } from '../../analytics/AnalyticsEvent';
 
 const StartingTimeButton = styled(ToggleButton)(() => ({}));
 const StartingTimePickerContent = styled(Box)(({ theme }) => ({}));
@@ -37,12 +41,22 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
         event: React.MouseEvent<HTMLElement>,
         newStartingTime: string
     ) => {
-        if (newStartingTime !== null) {
-            if (newStartingTime !== 'Custom') {
-                setStartingTime(newStartingTime);
-            } else {
-                setExpandTimePickerDrawer(true);
-            }
+        // Also handle the case when the starting time would be null (shouldnt happen)
+        // Adding this to analytics will let us see these erroneous events as well
+        const testId = event.currentTarget.getAttribute('data-testid');
+        triggerGoogleAnalyticsEvent(
+            new StartingTimeSelectionEvent(testId ? testId : '')
+        );
+        triggerClarityEvent(AnalyticsEventEnum.STARTING_TIME_SELECTION);
+
+        if (newStartingTime == null) {
+            return;
+        }
+
+        if (newStartingTime !== 'Custom') {
+            setStartingTime(newStartingTime);
+        } else {
+            setExpandTimePickerDrawer(true);
         }
     };
 
@@ -83,28 +97,28 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                     fullWidth
                 >
                     <StartingTimeButton
-                        data-testid="StartingTimePicker1"
+                        data-testid="StartingTimePickerNow"
                         value={startingTimeNow}
                         aria-label={startingTimeNow}
                     >
                         {startingTimeNow}
                     </StartingTimeButton>
                     <StartingTimeButton
-                        data-testid="StartingTimePicker2"
+                        data-testid="StartingTimePickerNext"
                         value={startingTime2}
                         aria-label={startingTime2}
                     >
                         {startingTime2}
                     </StartingTimeButton>
                     <StartingTimeButton
-                        data-testid="StartingTimePicker3"
+                        data-testid="StartingTimePickerSecond"
                         value={startingTime3}
                         aria-label={startingTime3}
                     >
                         {startingTime3}
                     </StartingTimeButton>
                     <StartingTimeButton
-                        data-testid="StartingTimePicker4"
+                        data-testid="StartingTimePickerThird"
                         value={startingTime4}
                         aria-label={startingTime4}
                     >
