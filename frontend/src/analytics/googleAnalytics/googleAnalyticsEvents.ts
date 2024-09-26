@@ -7,6 +7,15 @@ export interface GoogleAnalyticsEvent {
     eventObject: object;
 }
 
+export class GenericGoogleAnalyticsEvent implements GoogleAnalyticsEvent {
+    eventObject: object = {};
+    eventType: AnalyticsEventEnum;
+
+    constructor(eventType: AnalyticsEventEnum) {
+        this.eventType = eventType;
+    }
+}
+
 export class BookingEvent implements GoogleAnalyticsEvent {
     eventType: AnalyticsEventEnum = AnalyticsEventEnum.BOOKING;
     eventObject: object;
@@ -65,6 +74,28 @@ export class ChooseBuildingEvent implements GoogleAnalyticsEvent {
     constructor(building: Building) {
         this.eventObject = {
             buildingName: building.name
+        };
+    }
+}
+
+export class QuickDurationEvent implements GoogleAnalyticsEvent {
+    eventType: AnalyticsEventEnum = AnalyticsEventEnum.QUICK_DURATION_SELECTION;
+    eventObject: object;
+
+    constructor(quickDuration: String) {
+        this.eventObject = {
+            quickDuration: quickDuration
+        };
+    }
+}
+
+export class StartingTimeSelectionEvent implements GoogleAnalyticsEvent {
+    eventType: AnalyticsEventEnum = AnalyticsEventEnum.STARTING_TIME_SELECTION;
+    eventObject: object;
+
+    constructor(startingTime: String) {
+        this.eventObject = {
+            startingTime: startingTime
         };
     }
 }
