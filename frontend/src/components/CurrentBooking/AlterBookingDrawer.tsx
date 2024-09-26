@@ -290,14 +290,14 @@ const AlterBookingDrawer = (props: Props) => {
                 <DrawerContent>
                     {props.booking?.startTime !== 'Now' && (
                         <RowCentered>
-                            <AlertBox
-                                alertText={`Note! You are booking the room for a future time`}
-                                sx={{
-                                    width: '100%',
-                                    height: 60,
-                                    margin: '8px 0'
-                                }}
-                            />
+                            {/*<AlertBox*/}
+                            {/*    alertText={`Note! You are booking the room for a future time`}*/}
+                            {/*    sx={{*/}
+                            {/*        width: '100%',*/}
+                            {/*        height: 60,*/}
+                            {/*        margin: '8px 0'*/}
+                            {/*    }}*/}
+                            {/*/>*/}
                         </RowCentered>
                     )}
                     {props.booking && !bookingStarted && (

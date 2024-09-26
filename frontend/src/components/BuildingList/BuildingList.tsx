@@ -155,7 +155,7 @@ const BuildingList = (props: BuildingSelectProps) => {
                         sx={{
                             height: '100%',
                             width: '100%',
-                            padding: '24px 0'
+                            paddingTop: '24px'
                         }}
                     >
                         <FormGroup sx={{ alignItems: 'left' }}>
@@ -172,6 +172,7 @@ const BuildingList = (props: BuildingSelectProps) => {
                                 textAlign="left"
                                 variant="subtitle1"
                                 paddingTop="16px"
+                                paddingBottom="8px"
                             >
                                 SORT BASED ON
                             </Typography>
@@ -227,7 +228,8 @@ const BuildingList = (props: BuildingSelectProps) => {
                             textAlign="left"
                             variant="subtitle1"
                             paddingTop="24px"
-                            marginBottom="-8px"
+                            marginBottom="8px"
+                            marginLeft="8px"
                         >
                             OFFICES
                         </Typography>
