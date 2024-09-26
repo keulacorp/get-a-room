@@ -116,7 +116,7 @@ export const GridContainer = styled(Box)(({ theme }) => ({
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'space-between',
-    margin: '8px'
+    gap: '8px'
 }));
 
 const EndBox = styled(Box)(({ theme }) => ({
