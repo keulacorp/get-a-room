@@ -67,7 +67,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
             <Typography
                 variant="subtitle1"
                 textAlign="left"
-                sx={{ marginLeft: '16px' }}
+                sx={{ marginLeft: '16px', marginBottom: '16px' }}
             >
                 {title}
             </Typography>
@@ -122,6 +122,7 @@ const StartingTimePicker = (props: StartingTimePickerProps) => {
                 {props.startingTime !== 'Now' && (
                     <AlertBox
                         alertText={`Note! You are booking the room for a future time`}
+                        sx={{ marginBottom: '8px' }}
                     />
                 )}
             </StartingTimePickerContent>
